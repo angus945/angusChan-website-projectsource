@@ -9,12 +9,8 @@ order: 1
 
 my first website :)
 
-ahter that I well throw some tutorial, note ore blog in this site 
+In the furture, I well update some tutorial,note and blog on this site. 
 
-update by random time ~
+My English is pretty limited, if some sentence not used at right time, please correct me 
 
-website is created by [Hugo](https://gohugo.io/), theme is modify by [Even](https://github.com/olOwOlo/hugo-theme-even)
-
-
-
-
+website is build by [Hugo](https://gohugo.io/), theme is [Even](https://github.com/olOwOlo/hugo-theme-even)

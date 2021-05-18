@@ -42,19 +42,11 @@ sequenceDiagrams:
 
 ---
 
-# HomeContent
+### welcome to angusChan-website
 
-## english version home
+In the furture, I well update some tutorial,note and blog on this site :D
 
-Under construction ~~
-
-Under construction ~~
-
-Under construction ~~
-
-
-
-
-
+### Tags
+{{< sc_listOutAllTags "all" >}}
 
 
