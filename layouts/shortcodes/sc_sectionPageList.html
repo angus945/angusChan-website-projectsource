@@ -1,0 +1,38 @@
+
+{{ $paginator := .Page }}
+{{ $displayAmount := (.Get "displayAmount")}}
+{{ $displayData := (.Get "displayData")}}
+{{/*  TODO Fixed 命名錯誤  */}}
+
+<section id="archive" class="archive"> 
+
+  {{ if $displayAmount }}
+    <div class="archive-title">
+      <span class="archive-post-counter">
+        {{ T "archiveCounter" (len $paginator.Pages) }}
+      </span>
+    </div>
+  {{ end }}
+
+  {{- range $index, $element := $paginator.Pages.ByParam "order" -}}
+    <div class="archive-post">      
+
+      {{ if eq $displayData "date" }}
+        <span class="archive-post-time">
+          {{ $element.Date.Format "01-02" }}
+        </span>
+      {{else if eq $displayData "order" }}
+        <span class="archive-post-time">
+          {{ $element.Params.order }}
+        </span>
+      {{ end }}
+
+      <span class="archive-post-title">
+        <a href="{{ $element.RelPermalink }}" class="archive-post-link">
+          {{ .Title }}
+        </a>
+      </span>
+
+    </div>
+    {{- end -}}
+</section>

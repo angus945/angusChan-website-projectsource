@@ -1,0 +1,11 @@
+
+{{ $pages := .pages }}
+
+
+
+{{ range $pages }}
+    {{ partial "p_readmoreblock" (dict "Page" . "defaultCategory" "all") }}
+{{ end }}
+
+
+

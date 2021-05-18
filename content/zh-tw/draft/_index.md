@@ -1,0 +1,3 @@
+---
+sectionTypes: [content, spanList]
+---

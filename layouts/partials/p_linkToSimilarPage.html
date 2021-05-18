@@ -1,0 +1,29 @@
+
+<hr>
+
+{{ $linkpageType := .Page.Param "similarpagelink" }}
+
+{{ if eq $linkpageType "byorder" }}
+  {{ $pages := .Page.Parent.Pages.ByParam "order" }}
+  {{ $currentNum := .Page.Params.order | int}}
+  <nav class="pagination">
+    
+    {{ $prevPage :=  (index $pages (add $currentNum -1)) }}
+    {{ $prevPage := cond (eq $prevPage nil) .Page.Parent $prevPage }}
+    <a class="prev" href="{{ $prevPage.URL }}">
+      <i class="iconfont icon-left"></i>
+      <span class="prev-text">{{ $prevPage.Title }}</span>
+    </a>
+    
+    {{ $nextPage :=  (index $pages (add $currentNum +1)) }}
+    {{ if $nextPage }}
+      <a class="next" href="{{ $nextPage.URL }}">
+        <span class="next-text"> {{ $nextPage.Title }} </span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    {{ end }}
+  </nav>
+{{ end }}
+
+
+

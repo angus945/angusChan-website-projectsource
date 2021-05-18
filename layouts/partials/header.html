@@ -1,0 +1,21 @@
+<div class="logo-wrapper" style="user-select: none;">
+  <a href="{{ "/" | relLangURL }}" class="logo">
+    {{- if .Site.Params.logoTitle -}}
+      {{ .Site.Params.logoTitle }}
+    {{- else -}}
+      {{ .Site.Title }}
+    {{- end -}}
+  </a>
+</div>
+
+<nav class="site-navbar" style="user-select: none;">
+  <ul id="menu" class="menu">
+    {{ $urlLanguage := .Site.Language.Lang | string }}
+    {{ range .Site.Menus.main -}}
+    <li class="menu-item">
+      <a class="menu-item-link" href="/{{$urlLanguage}}{{ .URL | safeURL }}">{{ .Name }}</a>
+    </li>
+    {{- end }}
+  </ul>
+</nav>
+

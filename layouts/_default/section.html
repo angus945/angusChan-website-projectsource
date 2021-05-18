@@ -1,0 +1,28 @@
+
+{{- define "content" }}
+
+{{ $sectionType := .Page.Params.sectionTypes }}
+{{ $sectionCategory := .Page.Params.category }}
+
+  <article class="post">  
+    <h1> {{ .Title }} </h1>
+    {{- partial "tableOfContent" . -}}
+
+    {{ if in $sectionType "content" }}
+      <div id="post-content" class="post-content ">
+        {{ partial "p_replaceLinkNewTab" (dict "content" .Content) }} 
+      </div>
+    {{ end }}
+      
+    {{ if in $sectionType "spanList" }}
+      {{- $pages := (.Paginate .Data.Pages .Site.Params.archivePaginate).Pages }}
+      
+      {{ partial "p_listOutPagesWithTurnpageList" (dict "pages" $pages "amount" 7 ) }}
+
+    {{ end }}
+
+  <footer class="post-footer"></footer>
+
+   
+  </article>
+{{- end }}

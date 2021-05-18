@@ -1,0 +1,9 @@
+
+{{- $categoriesArray := slice}}
+{{ range $name, $taxonomy := .Site.Taxonomies.category}} 
+  {{ with $.Site.GetPage (printf "/category/%s" $name) }}
+    {{ $categoriesArray = $categoriesArray | append $name }}
+  {{ end }}
+{{ end }}
+
+{{ return $categoriesArray}}

@@ -1,0 +1,22 @@
+
+{{ $pages := .pages }}
+{{ $start := .start }}
+{{ $count := .count }}
+
+{{ $length := len $pages}}
+{{ $first := add $start $count }}
+
+{{ if gt $first $length }}
+    {{ $count = sub $count (sub $first $length) }}
+{{ end }}
+
+{{ return last $count (first $first $pages ) }}
+
+
+
+
+
+
+
+
+

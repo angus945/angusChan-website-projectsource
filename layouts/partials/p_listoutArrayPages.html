@@ -1,0 +1,26 @@
+{{ $pages := .pages }}
+{{ $header := .header }}
+
+
+<section>
+
+<h3> {{ $header }} </h3>
+
+{{ if ne ($pages | len) 0 }}
+        {{- range $element := $pages -}}
+        <div class="archive-post">
+
+            <span class="archive-post-time">
+                {{ $element.Date.Format "01-02" }}
+            </span>
+
+            <span class="archive-post-title">
+                <a href="{{ $element.RelPermalink }}" class="archive-post-link">
+                    {{ .Title }}
+                </a>
+            </span>
+        </div>
+        {{- end -}}
+    {{ end }}
+    
+</section>

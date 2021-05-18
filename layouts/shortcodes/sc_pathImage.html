@@ -1,0 +1,27 @@
+
+
+{{ $folder := (.Page.URL) }}
+
+{{ $image := (.Get 0)}}
+{{ $width := (.Get 1)}}
+
+<style>
+    .image-center
+    {
+        margin: auto;
+        text-align: center;
+    }
+</style>
+
+{{ $folder := replace $folder (print "/" $.Site.Language ) "" }}
+
+{{ if true }}
+<div class="image-center" style="width: {{$width}};" >
+    <img src="{{ $folder }}{{$image}}" alt="image display error, please report [{{$folder}}{{$image}}]">
+</div>
+    
+{{ end }}
+
+
+
+

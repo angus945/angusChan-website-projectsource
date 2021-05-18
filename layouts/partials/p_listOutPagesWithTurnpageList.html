@@ -1,0 +1,169 @@
+<style>
+    .pagination
+    {
+        user-select: none;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .index-container
+    {
+        margin: auto;
+        width: 50%;
+        padding: 3px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        max-width: 300px;
+    }
+    .index-button
+    {
+        cursor: pointer;
+    }
+    .index-button:hover
+    {
+        border-bottom: 1px solid #c05b4d;
+    }
+    .index-button.current
+    {
+        color: #c05b4d;
+        border-bottom: 1px solid #c05b4d;
+    }
+</style>
+<head>
+    <script src=" /js/getParameterByName.js"></script>
+    <script src=" /js/insertUrlParam.js"></script>
+</head>
+
+{{ $allPages := .pages }}
+{{ $amount := .amount }}
+
+{{ $length := len $allPages }}
+{{ $turnMax := div $length $amount }}
+{{ $turnMax := cond (eq (mod $length $amount ) 0) ($turnMax) (add $turnMax 1) }}
+
+{{ range $i, $sequence := (seq $turnMax) }}
+    {{ $start := mul $i $amount }}
+    {{ $snippetPages := partial "p_pagesSnippet" (dict "pages" $allPages "start" $start "count" $amount ) }}       
+
+    <div class="turnPage">
+        {{ range $index, $page := $snippetPages }}
+            {{ partial "p_readmoreblock" (dict "Page" $page) }}
+        {{ end }}
+    </div>
+{{ end }}
+
+
+
+<div class="pagination">
+    <a id="prev" class="prev" onclick="turnPageHandler(-1)">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text"> prev </span>
+    </a>
+    <div class="index-container">
+        <a class="index-button"> index </a>
+        <a class="index-button"> index </a>
+        <a class="index-button"> index </a>
+        <a class="index-button"> index </a>
+        <a class="index-button"> index </a>
+        <a class="index-button"> index </a>
+        <a class="index-button"> index </a>
+    </div>
+    <a id="next" class="next" onclick="turnPageHandler(+1)">
+        <span class="next-text"> next </span>
+        <i class="iconfont icon-right"></i>
+    </a>
+</div>
+
+
+<script type="text/javascript">
+
+    var [current, pagesAmount] = TurnPageDefault();
+    TurnIndexButtonInit();
+    TurnPagesUpdate();
+    
+    function TurnIndexButtonInit()
+    {
+        var indexButtons = document.getElementsByClassName("index-button");
+        var buttonCenter = Math.floor(indexButtons.length / 2);
+        for(var i = 0; i < indexButtons.length; i++)
+        {
+            var button = indexButtons[i];
+            var indexDir = i - buttonCenter;
+            if(indexDir != 0) setTurnIndexButtonEvent(button, indexDir);
+        }      
+    }
+    
+    //function
+    function TurnPagesUpdate()
+    {
+        TurnPagesDisplay();
+        TurnButtonDisplay();
+        TurnIndexButtonDisplay();
+
+        window.scrollTo(0, 0);
+    }
+    function TurnPageDefault()
+    {
+        var turn = parseInt(getParameterByName('turn'));
+        var current = hasParameter('turn') ? turn : 0;
+        
+        var pagesAmount = parseInt("{{$turnMax}}");
+
+        return [current, pagesAmount]
+    }
+    function TurnPagesDisplay()
+    {
+        var turnPages = document.getElementsByClassName("turnPage");
+        for (i = 0; i < turnPages.length; i++) 
+        {
+            turnPages[i].style.display = "none";
+        }
+        turnPages[current].style.display = "block";
+    }
+    function TurnButtonDisplay()
+    {
+        document.getElementById("prev").style.visibility = "hidden";
+        document.getElementById("next").style.visibility = "hidden";
+
+        if(pagesAmount > 1)
+        {
+            if(current > 0) document.getElementById("prev").style.visibility = "visible";
+            if(current < pagesAmount - 1) document.getElementById("next").style.visibility = "visible";
+        }        
+    }
+    function TurnIndexButtonDisplay()
+    {
+        var indexButtons = document.getElementsByClassName("index-button");
+                
+        var buttonCenter = Math.floor(indexButtons.length / 2);
+        for(var i = 0; i < indexButtons.length; i++)
+        {
+            var button = indexButtons[i];
+            var butIndex = current - buttonCenter + i;
+
+            button.style.visibility = (butIndex < 0 || butIndex >= pagesAmount) ? "hidden" : "visible";
+            button.className = (butIndex == current) ? "index-button current" : "index-button"; 
+
+            indexButtons[i].innerHTML = butIndex;
+        }        
+    }
+
+    
+    //event
+    function turnPageHandler(turnTo)
+    {
+        current += turnTo;
+
+        insertUrlParam("turn", current);
+    }
+    function setTurnIndexButtonEvent(button, buttonDir)
+    {
+        button.addEventListener("click", function()
+        {
+            turnPageHandler(buttonDir);
+        });
+    }
+    
+</script>
+

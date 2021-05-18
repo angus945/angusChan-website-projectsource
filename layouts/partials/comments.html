@@ -1,0 +1,7 @@
+
+  {{ if .Params.comment }}
+    <div class="comments">
+        <h2>Comments</h2>
+        {{ partial "disqus" . }}
+    </div>
+  {{- end }}

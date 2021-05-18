@@ -1,0 +1,83 @@
+<!-- TODO Image Preview -->
+
+
+<style>
+    .block
+    {
+        position: relative;
+        min-height: 160px;
+        margin: 0px 0px 10px 0px;
+        border-bottom: 1px solid;
+        border-bottom-color:hsla(0, 0%, 73%, 0.589);
+    }
+
+    .feature-image
+    {
+        width: 140px;
+        float:  right;
+        
+        margin: 5px 5px 5px 5px;
+    }
+    @media screen and (max-width: 600px)
+    {   
+        .feature-image
+        {
+            display: none;
+        }
+    }
+
+    .header-warp
+    {
+        overflow-x: auto;
+    }
+
+    .pagetag
+    {
+        color: #8a8a8a
+    }
+
+    .read-more
+    {
+        position: absolute;
+        bottom: 5px;
+        font-style: 50px;
+    }
+</style>
+
+{{ $defaultCategory := .defaultCategory }}
+{{ $language := .Page.Site.Language.Lang | string}}
+{{ $wordcount := (.Page.Content | countwords) }}
+
+<div class="block">
+    <img class="feature-image" src="{{ .Page.Params.featured_image }}">
+
+    <header class="post-header header-warp">
+        <h1 class="post-title"><a class="post-link" href="{{ .Page.URL }}"> {{ .Page.Title }} </a></h1>
+        <div class="post-meta">
+            <span class="post-time"> 
+                {{ .Page.Date }}            
+                
+                / {{ T "wordCount" $wordcount }} 
+            </span>
+            <div> 
+                <a class="pagetag" href="/{{$language}}/tags" > tags: </a>
+                {{ range $tag := .Page.Params.tags }}
+                    {{ $tagPageURL := (printf "/tags/%s" $tag) }}
+                    <a class="pagetag" href="/{{$language}}{{ $tagPageURL }}?tab={{$defaultCategory}}" >
+                        {{ $tag }}
+                    </a>
+                {{end}}
+            </div>
+        </div>
+    </header>
+    
+    <div class="post-content" style="padding-bottom: 25px;">
+        <div class="post-summary">
+            {{ .Page.Description }}
+        </div>
+    </div>
+
+    <div class="post-content read-more">
+        <a class="read-more-link" style="font-size: 20px" href="{{ .Page.URL }}"> Read more... </a>
+    </div>
+</div>
