@@ -5,7 +5,7 @@ lastmod: 2021-05-11T20:27:14+08:00
 draft: false
 keywords: []
 description: "從頭學習前端和使用 Hugo 建立網站的過程"
-tags: [hugo, website]
+tags: [hugo, website, devlog]
 category: "blog"
 author: "angus chan"
 featured_image: "/sendbox/loli.png"
