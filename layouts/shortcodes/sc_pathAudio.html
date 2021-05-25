@@ -1,0 +1,17 @@
+
+{{ $folder := (.Page.URL) }}
+{{ $folder := replace $folder (print "/" $.Site.Language ) "" }}
+
+{{ $audio := .Get 0 }}
+{{ $volume := .Get 1 | default 0.8 }}
+
+<audio controls id="audio_{{$audio}}">
+    <source src="{{$folder}}{{$audio}}">
+    Your browser does not support the audio tag.
+</audio> 
+
+
+<script>
+    var audio = document.getElementById("audio_{{$audio}}");
+    audio.volume = "{{$volume}}"
+</script>

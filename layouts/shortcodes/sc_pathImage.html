@@ -1,6 +1,7 @@
 
 
 {{ $folder := (.Page.URL) }}
+{{ $folder := replace $folder (print "/" $.Site.Language ) "" }}
 
 {{ $image := (.Get 0)}}
 {{ $width := (.Get 1)}}
@@ -10,10 +11,10 @@
     {
         margin: auto;
         text-align: center;
+        padding-bottom: 10px;
     }
 </style>
 
-{{ $folder := replace $folder (print "/" $.Site.Language ) "" }}
 
 {{ if true }}
 <div class="image-center" style="width: {{$width}};" >
