@@ -68,8 +68,10 @@ Even._initToc = function ()
   {
     const minScrollTop = $toc.offset().top - SPACING;
     const maxScrollTop = $footer.offset().top - $toc.height() - SPACING;
+    console.log(maxScrollTop);
 
-    const tocState = {
+    const tocState = 
+    {
       start: {
         'position': 'absolute',
         'top': minScrollTop,
@@ -83,27 +85,27 @@ Even._initToc = function ()
         'top': maxScrollTop,
       },
     };
-
-    window.onscroll = function()
-    {
-      console.log(0);
-    }
     
-    $(window).scroll(function ()
+    tocScroll();
+    $(window).scroll(tocScroll);
+
+    function tocScroll ()
     {
       const scrollTop = $(window).scrollTop();
 
       if (scrollTop < minScrollTop - SPACING)
       {
         $toc.css(tocState.start);
-      } else if (scrollTop > maxScrollTop)
+      } 
+      else if (scrollTop > maxScrollTop + SPACING)
       {
         $toc.css(tocState.end);
-      } else
+      } 
+      else
       {
         $toc.css(tocState.process);
       }
-    });
+    }
   }
 
   const HEADERFIX = 30;
@@ -131,7 +133,13 @@ Even._initToc = function ()
     return -1;
   };
 
+  scrollHeightLight();
   $(window).scroll(function ()
+  {
+    scrollHeightLight();
+  });
+
+  function scrollHeightLight()
   {
     const scrollTop = $(window).scrollTop();
     const activeTocIndex = searchActiveTocIndex(headerLinksOffsetForSearch, scrollTop);
@@ -149,7 +157,8 @@ Even._initToc = function ()
         ancestor = ancestor.parentNode.parentNode;
       }
     }
-  });
+  }
+  
 };
 
 Even.fancybox = function ()
@@ -225,7 +234,8 @@ Even.toc = function ()
     {
       // toc = true, but there are no headings
       tocContainer.parentNode.removeChild(tocContainer);
-    } else
+    } 
+    else
     {
       this._refactorToc(toc);
       this._linkToc();
