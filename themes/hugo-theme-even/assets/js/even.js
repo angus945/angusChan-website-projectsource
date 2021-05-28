@@ -62,13 +62,13 @@ Even._initToc = function ()
 {
   const SPACING = 20;
   const $toc = $('.post-toc');
+  const $header = $('.post-header')
   const $footer = $('.post-footer');
 
   if ($toc.length)
   {
-    const minScrollTop = $toc.offset().top - SPACING;
+    const minScrollTop = $header.offset().top - SPACING;
     const maxScrollTop = $footer.offset().top - $toc.height() - SPACING;
-    console.log(maxScrollTop);
 
     const tocState = 
     {
@@ -92,7 +92,6 @@ Even._initToc = function ()
     function tocScroll ()
     {
       const scrollTop = $(window).scrollTop();
-
       if (scrollTop < minScrollTop - SPACING)
       {
         $toc.css(tocState.start);

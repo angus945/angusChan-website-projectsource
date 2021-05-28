@@ -1,9 +1,13 @@
-window.addEventListener('load', function()
+$(document).ready(function()
 {
   Even.backToTop();
   Even.mobileNavbar();
   Even.toc();
   Even.fancybox();
+});
+window.addEventListener('load', function()
+{
+  Even._initToc();
 })
 
 Even.responsiveTable();
