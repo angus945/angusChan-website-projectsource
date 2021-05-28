@@ -222,19 +222,11 @@ if (scrollTop < minScrollTop - SPACING)
 
 為了不讓網站像只有我一個人自嗨，所以能和其他人交流的首要選項就是添加留言板 !
 
-我使用的是 [Disqus](https://disqus.com/) 提供的留言板，Hugo 中只需要設置 ID 後調用內建模板```_internal/disqus.html```就能使用了
+~~我使用的是 Disqus 提供的留言板，Hugo 中只需要設置...~~ NOPE Disqus 會強制塞一個比留言板本身還要大的廣告 ==
 
-但因為某些未知原因我的留言系統效果不完整，所以又找了資料重新設置整個 disqus partial
+所以我改用 [CommentBox](https://commentbox.io/) 當網站的留言版了，它裝起來方便而且版面也乾淨許多，留言時也可以方便的登入
 
 {{< sc_pathImage comment.jpg >}}
-
-為了不用登入就能留言，我到 Disqus 那裏設置了允許訪客留言，訪客只需要輸入名稱和 email 就可以留言，不過未登錄的留言好像要經過審核才會顯示，不確定審核會花多少時間，所以還是盡量登入留言吧 :P
-
-{{< sc_pathImage guest.jpg >}}
-
-參考資料
-
-[Internal Templates](https://gohugo.io/templates/internal/)
 
 
 ### 流量追蹤 
