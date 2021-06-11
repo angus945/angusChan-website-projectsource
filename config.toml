@@ -219,6 +219,9 @@ copyright = ""            # default: author.name ↓        # 默认为下面配
     # n-gitlab = "http://localhost:1313"
     # o-bilibili = "http://localhost:1313"
 
+[params.likerCoin]
+  likerID = "chanangus"
+
 # See https://gohugo.io/about/hugo-and-gdpr/
 [privacy]
   [privacy.googleAnalytics]

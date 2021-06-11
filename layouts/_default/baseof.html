@@ -32,6 +32,7 @@
         <div class="content-wrapper">
           <div id="content" class="content">
             {{ block "content" . }}{{ end }}
+            {{ partial "likecoin" . }}
           </div>
           <div class="comments">
             {{ partial "comments" . }}

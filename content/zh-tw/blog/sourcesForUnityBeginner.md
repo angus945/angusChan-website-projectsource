@@ -4,7 +4,7 @@ date: 2021-06-09T19:52:10+08:00
 lastmod: 2021-06-09T19:52:10+08:00
 draft: true
 keywords: []
-description: "整理給 Unity 初學者的起步資源，付費和免費都有"
+description: "整理給 Unity 初學者的起步資源"
 tags: [beginner, learning, tutorial, unity, gameDevelopment]
 category: ""
 author: "angus chan"
@@ -43,9 +43,9 @@ sequenceDiagrams:
 
 ---
 
-自學 Unity 了兩年多，過程中也累積了不少學習資源，雖然過去有整理過不少資完，但都很雜亂反而會讓初學者不知道怎麼起步，所以這次我又重新整理了一系列適合初學者的學習資源，希望們幫上有需要的人
+自學 Unity 了兩年多，過程中也累積了不少學習資源，雖然過去有整理過幾次，但都很雜亂反而會讓初學者不知道怎麼起步，所以這次我又重新整理了一系列適合初學者的學習資源，希望們幫上有需要的人
 
-這篇是給入門者的"起步"資源，所以我有篩選過內容，而且過濾標準偏嚴格一點，盡量以逐步的完整專案或者系列教學的播放清單為主
+這篇是給入門者的"起步"資源，所以我有篩選過內容，而且過濾標準偏嚴格一點，盡量以逐步且完整專案或者系列教學的播放清單為主
 
 如果有什麼適合初學者的資源也歡迎分享 :D
 
@@ -71,7 +71,7 @@ sequenceDiagrams:
 
 自學 Unity 我首推 [Udemy](https://www.udemy.com/) 平台的付費教學，打折後一部大概 300 ~ 400NT
 
-品質高而且價格不貴，可以先看介紹評估有沒有興趣，一個月的退款保證(但我沒退過就是了)，擁有的，也看的到其他購買學生的評價
+品質高而且價格不貴，可以先看介紹評估有沒有興趣，一個月的退款保證(但我沒退過就是了)，也看的到其他購買學生的評價
 
 這裡提供幾個我買過覺得適合初學者的系列，以及推薦的課程講師
 
@@ -204,7 +204,7 @@ Unity 的動畫系統和 3D 人物動畫
 
 這裡只是提供一些起步資源，如果想要學習一定要自己學會怎麼找資料，遇到問題要多去 Google，然後記得用英文查!!
 
-剛開始會遇到的問題，基本上 google 前幾個就是解答了
+剛開始會遇到的問題，基本上 google 出來前幾個就是解答了
 
 OnCollisionEnter 沒效?  
 [Unity OnCollisionEnter not working](https://www.google.com/search?client=firefox-b-d&q=Unity+OnCollisionEnter+not+working)
