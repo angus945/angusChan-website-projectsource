@@ -18,7 +18,7 @@ important: 0
 # You can also close(false) or open(true) something for this content.
 # P.S. comment can only be closed
 comment: true
-likecoin: true
+likecoin: false
 toc: false
 autoCollapseToc: false
 postMetaInFooter: false

@@ -43,6 +43,8 @@ sequenceDiagrams:
 
 ---
 
+
+
 ~~~~~
 為甚麼要寫筆記
 
@@ -63,8 +65,35 @@ sequenceDiagrams:
     如何舉例
 ~~~~~
 
-## 為什麼要寫筆記
-大腦無法在同時間記住所有事情，筆記可以幫助我們記錄下繁瑣的訊息、加以彙整
+----
+
+> 第一種
+抄寫的行為只會讓你接收到文字本身而不是文字背後的意義
+
+
+至於畫重點的更不用說
+
+
+> 第二種類型的筆記
+
+想像成你在對人解說一件事情
+就算很口語也不會怎樣
+
+
+> 第三種類型
+feynman learning
+
+
+
+----
+
+
+ 為什麼要寫筆記
+首先大腦無法在同時間記住所有事情，筆記可以用來記錄下繁瑣的訊息
+
+並且筆記
+
+加以彙整
 
 
 
@@ -196,4 +225,11 @@ hugo new file.md 建立文件
 https://www.playpcesor.com/2016/08/tell-your-note-2.html
 https://www.playpcesor.com/2016/11/4.html
 https://www.playpcesor.com/2016/09/help-you-write-something.html
+
+
+
+
+
+
+
 <!--more-->
