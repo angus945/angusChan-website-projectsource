@@ -58,7 +58,7 @@ sequenceDiagrams:
 
 運用在圖像渲染中可以不靠一張貼圖就 "計算出" 複雜的形狀甚至是分形，也因此 SDF 算法是深受 program artists 喜愛的數學工具
 
-{{< sc_pathImage tutorial_example_B.gif "80%">}}
+{{< pathImage tutorial_example_B.gif "80%">}}
 
 教學中會從頭解說距離場的數學原理，如何使用距離場繪製圖形和動畫，最終帶各位製作出一個完整的 2D 距離場動畫
 
@@ -91,7 +91,7 @@ sequenceDiagrams:
 
 ### 教學頁面
 
-{{< sc_sectionPageList displayData="none" >}}
+{{< sectionPageList displayData="none" >}}
 
 ### 參考資料
 

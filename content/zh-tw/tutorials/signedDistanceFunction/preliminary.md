@@ -70,7 +70,7 @@ fixed4 frag (v2f i) : SV_Target
 
 結果如下，當距離小於半徑時畫黑色，反之白色
 
-{{< sc_pathImage preliminary_0.jpg "50%" >}}
+{{< pathImage preliminary_0.jpg "50%" >}}
 
 ### 測驗題目
 
@@ -81,7 +81,7 @@ float inSquare(float2 uv, float2 size);
 fixed4 col = inSquare(uv, float2(1, 1.5));
 ```
 
-{{< sc_pathImage preliminary_1.jpg "50%" >}}
+{{< pathImage preliminary_1.jpg "50%" >}}
 
 初步理解就到這裡，接下來會帶你們了解距離場的真正意義
 

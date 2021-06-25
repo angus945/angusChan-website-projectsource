@@ -49,7 +49,7 @@ sequenceDiagrams:
 
 
 ### 網站標籤
-{{< sc_listOutAllTags "all" >}}
+{{< listOutAllTags "all" >}}
 
 
 

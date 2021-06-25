@@ -58,7 +58,7 @@ fixed4 col = length(uv);
 
 出現了一個由深到淺的圓型，從空間的中心開始長度為 0，越往外的長度越長，直到超出 1 變成完整的白色，最基本的距提場函數完成了，它描述了"任意點到空間中心的距離"
 
-{{< sc_pathImage distance_1.jpg "50%" >}}
+{{< pathImage distance_1.jpg "50%" >}}
 
 雖然看起來是圓型，但這不是圓型的距離場 - 而是一個 "點" 的，因為它沒有半徑，那我們要如何算出和圓型表面的距離 ? 答案是用減的
 
@@ -73,13 +73,13 @@ float SDF_circle(float2 uv, float radius)
 fixed4 col = SDF_circle(uv, 5);
 ```
 
-{{< sc_pathImage distance_2.jpg "50%" >}}
+{{< pathImage distance_2.jpg "50%" >}}
 
 為什麼有效呢，請聽我娓娓道來
 
 以半徑 5 為例，原本在空間中距離為 5 的地方，它的距離值被減去 5 於是變成了 0 ，也就是圓型的表面，而在圓內部的距離會小於 0，圓外部則大於 0
 
-{{< sc_pathImage distance_3.jpg "50%" >}}
+{{< pathImage distance_3.jpg "50%" >}}
 
 讓我們回到一開始，距離場是能夠 "描述空間中任意位置對於虛擬形狀最接近表面的距離" 的函數，當你們消化完上面的東時，就能夠理解這段描述的意思了
 
@@ -89,7 +89,7 @@ fixed4 col = SDF_circle(uv, 5);
 fixed4 col = ceil(SDF_circle(uv, 5));
 ```
 
-{{< sc_pathImage distance_4.jpg "50%" >}}
+{{< pathImage distance_4.jpg "50%" >}}
 
 恭喜，你的第一個距離場函數完成了
 

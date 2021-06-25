@@ -47,6 +47,6 @@ sequenceDiagrams:
 In the furture, I well update some tutorial,note and blog on this site :D
 
 ### Tags
-{{< sc_listOutAllTags "all" >}}
+{{< listOutAllTags "all" >}}
 
 

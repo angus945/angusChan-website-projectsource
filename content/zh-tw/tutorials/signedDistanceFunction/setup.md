@@ -66,13 +66,13 @@ sequenceDiagrams:
 
 首先在場景建立一個 Quad 作為渲染目標，以及設置一顆材質球和 Image Shader，並隨便放一張 Texture 確保 Material 能夠渲染
 
-{{< sc_pathImage setup_0.jpg >}}
+{{< pathImage setup_0.jpg >}}
 
 選 quad 的原因是因為它的大小固定 1 unit，不像 sprite 會受到 texture 影響，但事實上這個著色器也能夠用在 SpriteRenderer，沒有硬性規定要使用哪種
 
 把 camera 的 size 改為 0.5，讓圖能夠剛好填滿 game view
 
-{{< sc_pathImage setup_1.jpg >}}
+{{< pathImage setup_1.jpg >}}
 
 也可以直接在 scene view 看效果，這項設置的目的主要是我要錄影的關係，然後要注意 game View 中只有在 paly mode 時才看的到時間相關的著色器變量效果 
 
@@ -92,7 +92,7 @@ fixed4 frag (v2f i) : SV_Target
 }
 ```
 
-{{< sc_pathImage setup_2.jpg "50%" >}}
+{{< pathImage setup_2.jpg "50%" >}}
 
 ### 標準化空間
 
@@ -114,7 +114,7 @@ fixed4 frag (v2f i) : SV_Target
 }
 ```
 
-{{< sc_pathImage setup_3.jpg "50%" >}}
+{{< pathImage setup_3.jpg "50%" >}}
 
 教學內容偏長，極度不建議把全部東西都寫在同一個腳本裡，可以自己視情況使用新的腳本，只要記得完成初始設置以及複製使用到的距離場函數就好
 

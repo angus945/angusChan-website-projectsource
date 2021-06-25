@@ -1,19 +1,21 @@
 ---
-title: "Signed Distance Function"
-date: 2021-04-27T21:53:27+08:00
-lastmod: 2021-04-27T21:53:27+08:00
+title: "Colors"
+date: 2021-06-25T11:18:11+08:00
+lastmod: 2021-06-25T11:18:11+08:00
 draft: true
 keywords: []
-description: "signed distance function tutorial"
-tags: [shader]
-category: tutorial
-author: ""
-sectionTypes: content
-featured_image: /tutorials/signeddistancefunction/tutorial_example_B.gif
+description: ""
+tags: []
+category: ""
+author: "angus chan"
+featured_image: ""
+listable: true
+important: 0
 
 # You can also close(false) or open(true) something for this content.
 # P.S. comment can only be closed
 comment: true
+likecoin: false
 toc: true
 autoCollapseToc: false
 postMetaInFooter: false
@@ -43,6 +45,6 @@ sequenceDiagrams:
 ---
 
 
+{{< color/orange "Orange" >}}
 
-{{< pathImage tutorial_example_B.gif "80%">}}
-
+<!--more-->

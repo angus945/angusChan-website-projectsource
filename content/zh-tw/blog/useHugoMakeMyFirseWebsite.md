@@ -69,7 +69,7 @@ Hugo 有不少的社群製作的[主題](https://themes.gohugo.io/)能夠使用�
 
 花了一些時間找到理想的主題，也就是你們現在看到的這個，版面乾淨簡潔而且內文格式和 Notion 蠻相似的，然後又有畫面自適應功能所以就決定是他了 - [Even](https://themes.gohugo.io/hugo-theme-even/)
 
-{{< sc_pathImage theme.jpg >}}
+{{< pathImage theme.jpg >}}
 
 ## 修修改改
 
@@ -77,9 +77,9 @@ Hugo 有不少的社群製作的[主題](https://themes.gohugo.io/)能夠使用�
 
 雖然這個主題已經有不少功能，但有些地方還是要自己做才能達成目的，把寫好的文章放進去看看，摸一摸主題裡提供的模板之後就可以開始修修改改了
 
-{{< sc_colorContent "green">}}
+{{< color/greenLine >}}
   備註 : 這篇文章不是教學，只是製作網站的過程分享，如果對文章中某個部分有興趣的話可以留言告訴我，有空可以在寫教學
-{{< /sc_colorContent >}}
+{{< /color/greenLine >}}
 
 ### 教學主頁
 
@@ -91,7 +91,7 @@ Hugo 有不少的社群製作的[主題](https://themes.gohugo.io/)能夠使用�
 
 但我希望搭配文字內容列出頁面，所以我也將原本模板中的列出功能移至獨立的 shortcode 中，好讓我在 markdown 文件中自由選擇列表放置的位置
 
-{{< sc_pathImage listoutPages.jpg >}}
+{{< pathImage listoutPages.jpg >}}
 
 ### 上一章 下一章
 
@@ -101,7 +101,7 @@ Hugo 有不少的社群製作的[主題](https://themes.gohugo.io/)能夠使用�
 
 因為基本頁面中不會有資料夾其他頁面的資訊，所以我得讓它先取得父層後在取得這個資料夾裏的所有頁面，並且用索引值找出上下章
 
-{{< sc_pathImage nextPage.jpg >}}
+{{< pathImage nextPage.jpg >}}
 
 ### 圖片顯示
 
@@ -109,9 +109,9 @@ Hugo 有不少的社群製作的[主題](https://themes.gohugo.io/)能夠使用�
 
 由於個人習慣，我的資料夾結構和檔案名稱都比較複雜，所以輸入絕對路徑還是不夠方便，為了省去一長串路徑我也寫了一個 shortcode 來自動找圖片的路徑，透過文檔的路徑來存取在 static 資料家中相同相對路徑的圖片
 
-這樣一來我只需要輸入圖片的名稱就能顯示圖片了 ```sc_pathImage displayImage.jpg```
+這樣一來我只需要輸入圖片的名稱就能顯示圖片了 ```pathImage displayImage.jpg```
 
-{{< sc_pathImage displayImage.jpg >}}
+{{< pathImage displayImage.jpg >}}
 
 ### 閱讀更多 
 
@@ -121,11 +121,11 @@ Hugo 有不少的社群製作的[主題](https://themes.gohugo.io/)能夠使用�
 
 主題中本來就有提供相關的 css 使用了，所以我直接參考主題網站裏提供的 [Demo](https://themes.gohugo.io/theme/hugo-theme-even/) 來做出期望的列表樣式，並且添加覽圖在區塊的右側
 
-{{< sc_pathImage readmore.jpg >}}
+{{< pathImage readmore.jpg >}}
 
 然後我也讓顯示標題下面列出標籤用來簡單分類文章
 
-{{< sc_pathImage tags.jpg >}}
+{{< pathImage tags.jpg >}}
 
 ### 翻頁列表
 
@@ -135,7 +135,7 @@ Hugo 有不少的社群製作的[主題](https://themes.gohugo.io/)能夠使用�
 
 使用迴圈將不同範圍中的頁面包進 Html 容器中，再透過 javascript 判斷 URL paramater 的當前的頁面來切換容器顯示
 
-{{< sc_pathImage turnpageList.gif >}}
+{{< pathImage turnpageList.gif >}}
 
 這麼做有個問題就是，每次翻頁瀏覽器都會把完整的列表載入一次，再重新設置 display 一部分，不過就先到此為止吧，等文章量大到載入變慢再來找解決方法 :P
 
@@ -146,11 +146,11 @@ Hugo 本身就有很方便的標籤系統，他能夠自動產生符合列出文
 
 為了防止這點，我在標籤頁面裡加了 tabview 來對列出的文章進行過濾，這是我網站裡花最多時間研究的部份了，因為使用的主題裡完全沒有相似的功能，所以得找 javascript 資料來讀
 
-{{< sc_pathImage tagTabview1.gif >}}
+{{< pathImage tagTabview1.gif >}}
 
 最後在使用主題裡的 css 修改出一個適合 tabview 的版本
 
-{{< sc_pathImage tagTabview2.jpg >}}
+{{< pathImage tagTabview2.jpg >}}
 
 參考資料
 
@@ -181,7 +181,7 @@ body::-webkit-scrollbar
 
 雖然這個主題本身就有提供內容導覽的模板，但因為我的修修改改不小心弄壞他了，所以也花不少時間才找出被弄壞的地方
 
-{{< sc_pathImage tableOfContent.png >}}
+{{< pathImage tableOfContent.png >}}
 
 修的時候也注意到主題作者 javascript 裡的計算有些錯誤，在判斷距離的時候少減了一次間隔導致畫面捲動時看起來不順暢，修正後就大功告成了
 
@@ -197,19 +197,19 @@ if (scrollTop < minScrollTop - SPACING)
 
 自我介紹在網站中也是不可或缺的部分，我的關於頁面有兩個部分 - 自我介紹和網站介紹，原本寫在同一個文件中但發現用串列的放介紹不太合適，所以就拿之前的 tabview 過來修出顯示內容的功能
 
-{{< sc_pathImage about.gif >}}
+{{< pathImage about.gif >}}
 
 ### 語言設置
 
 多語言 - 這也是我建立網站的主要目的之一，Hugo因為網址和資料夾結構相同的特性，設置多語言不是件難事，只需要將不同語言的文章用不同資料夾分開即可，Hugo 會幫忙完成複雜的工作
 
-{{< sc_pathImage languages1.jpg >}}
+{{< pathImage languages1.jpg >}}
 
 在訪客第一次進入網站主頁面的時候，我使用 javascript 取得訪客時瀏覽器使用的語言重新導向到對應的網頁
 
 以及做出一個語言選擇器，點擊展開後就可以切換語言，並用 localstorage 來儲存語言設置
 
-{{< sc_pathImage languages2.jpg >}}
+{{< pathImage languages2.jpg >}}
 
 ### 網站託管
 
@@ -226,7 +226,7 @@ if (scrollTop < minScrollTop - SPACING)
 
 所以我改用 [CommentBox](https://commentbox.io/) 當網站的留言版了，它裝起來方便而且版面也乾淨許多，留言時也可以方便的登入
 
-{{< sc_pathImage comment.jpg >}}
+{{< pathImage comment.jpg >}}
 
 
 ### 流量追蹤 
@@ -236,7 +236,7 @@ if (scrollTop < minScrollTop - SPACING)
 這個主題裡也有完成流量追蹤的功能，只不過 Google Analytics 更新到第 4 版了，主題裡的功能似乎過舊所以就重新找了資料修正...雖然我也不確定現在這樣有沒有正確運作 
 
 噢看來他有效，我一直忘記要放進 html 的 ```<head></head>``` 裡了
-{{< sc_pathImage googleAnaltics.jpg >}}
+{{< pathImage googleAnaltics.jpg >}}
 
 但是不斷的編輯網頁造成有九成的流量都是我自己，所以要設定流量過濾
 
@@ -245,7 +245,7 @@ if (scrollTop < minScrollTop - SPACING)
 
 因為版本問題無法設置過濾，找半天才發現好像是版本的問題，舊版本的過濾器沒辦法用所以要到 "資源 > 資料設定 > 資料篩選器" 那裏設定才行
 
-{{< sc_pathImage analtics_filte1.jpg >}}
+{{< pathImage analtics_filte1.jpg >}}
 
 總之現在流量追蹤也能正常運作了
 
@@ -262,7 +262,7 @@ if (scrollTop < minScrollTop - SPACING)
 
 但其實網站剛做出來我對主頁面還沒想法，所以就先打招呼之後列出幾個文章給訪客看
 
-{{< sc_pathImage home.jpg >}}
+{{< pathImage home.jpg >}}
 
 簡單也有簡單的好 ~
 

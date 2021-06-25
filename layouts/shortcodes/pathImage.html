@@ -5,6 +5,7 @@
 
 {{ $image := (.Get 0)}}
 {{ $width := (.Get 1)}}
+{{ $comment := (.Get 2)}}
 
 <style>
     .image-center
@@ -19,6 +20,9 @@
 {{ if true }}
 <div class="image-center" style="width: {{$width}};" >
     <img src="{{ $folder }}{{$image}}" alt="image display error, please report [{{$folder}}{{$image}}]">
+    <p style="opacity: 0.5">
+        {{$comment}}
+    </p>
 </div>
     
 {{ end }}
