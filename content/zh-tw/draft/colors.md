@@ -45,6 +45,6 @@ sequenceDiagrams:
 ---
 
 
-{{< color/orange "Orange" >}}
+{{< text/orange "Orange" >}}
 
 <!--more-->
