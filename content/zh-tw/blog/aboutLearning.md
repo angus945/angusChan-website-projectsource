@@ -1,14 +1,14 @@
 ---
-title: "關於學習"
+title: "(關於學習)"
 # date: 2021-05-15T17
 lastmod: 2021-05-15T17:01:40+08:00
 draft: true
 keywords: []
-description: ""
-tags: []
-category: ""
+description: "自學了三年多，分享一下對自己過去以及自學時累積的感想，以及對學習的看法"
+tags: [learning]
+category: "blog"
 author: "angus chan"
-featured_image: "/blog/aboutlearning/rocket.jpg"
+featured_image: "/blog/aboutlearning/featured.jpg"
 listable: true
 important: 0
 
