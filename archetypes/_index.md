@@ -12,7 +12,7 @@ sectionCategory: ""
 featured_image: ""
 sectionTypes: []
 listable: true
-important: 0
+important: 10
 
 
 # You can also close(false) or open(true) something for this content.

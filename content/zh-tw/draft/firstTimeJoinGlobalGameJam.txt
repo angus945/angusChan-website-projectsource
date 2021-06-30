@@ -10,7 +10,7 @@ category: ""
 author: "angus chan"
 featured_image: ""
 listable: true
-important: 0
+important: 10
 
 # You can also close(false) or open(true) something for this content.
 # P.S. comment can only be closed

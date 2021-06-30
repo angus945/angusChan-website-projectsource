@@ -2,7 +2,7 @@
 title: "Signed Distance Function"
 date: 2021-04-27T21:53:27+08:00
 lastmod: 2021-04-27T21:53:27+08:00
-draft: false
+draft: true
 keywords: []
 description: "signed distance function tutorial"
 tags: [shader]
