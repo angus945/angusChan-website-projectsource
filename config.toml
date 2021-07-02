@@ -5,8 +5,8 @@
 # https://github.com/olOwOlo/hugo-theme-even
 
 baseURL = "https://angus945.github.io/"
-languageCode = "en"
-defaultContentLanguage = "en"                             # en / zh-cn / ... (This field determines which i18n file to use)
+languageCode = "zh-tw"
+defaultContentLanguage = "zh-tw"                             # en / zh-cn / ... (This field determines which i18n file to use)
 title = "AngusChan-website"
 preserveTaxonomyNames = true
 enableRobotsTXT = true
