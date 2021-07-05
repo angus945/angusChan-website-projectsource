@@ -1,0 +1,216 @@
+---
+title: "New"
+date: 2021-07-04T19:48:18+08:00
+lastmod: 2021-07-04T19:48:18+08:00
+draft: true
+keywords: []
+description: ""
+tags: []
+category: ""
+author: "angus chan"
+featured_image: ""
+listable: true
+important: 10
+
+# You can also close(false) or open(true) something for this content.
+# P.S. comment can only be closed
+comment: true
+likecoin: false
+toc: true
+autoCollapseToc: false
+postMetaInFooter: false
+hiddenFromHomePage: false
+# You can also define another contentCopyright. e.g. contentCopyright: "This is another copyright."
+contentCopyright: false
+reward: false
+mathjax: false
+mathjaxEnableSingleDollar: false
+mathjaxEnableAutoNumber: false
+
+# You unlisted posts you might want not want the header or footer to show
+hideHeaderAndFooter: false
+
+# You can enable or disable out-of-date content warning for individual post.
+# Comment this out to use the global config.
+#enableOutdatedInfoWarning: false
+
+flowchartDiagrams:
+  enable: false
+  options: ""
+
+sequenceDiagrams: 
+  enable: false
+  options: ""
+
+---
+教育 video game in education、Educational video game
+
+==
+前言
+說到教育類遊戲
+
+為什麼遊戲能吸引人
+遊戲化
+
+我們能從遊戲設計中學到什麼
+  遊戲中的教學
+
+遊戲和教育
+  淺移默化
+  寓教於樂 
+
+實行的難處
+==
+
+---
+說到遊戲
+你第一時間想到的是什麼，
+
+---
+讓我們先來談談遊戲
+
+-
+為什麼遊戲能吸引人
+目標清晰
+    遊戲能提供明確的目標
+
+成果明確(成就感)
+    在遊戲中能夠明確的感受到自己朝著目標前進
+
+獎勵機制
+    透過遊戲中的獎勵，來刺激大腦釋放多巴胺
+
+循序漸進
+    遊戲的難度被精心設計，
+    (圖)
+
+如果能將這些特性運用在學習上和其他領域上呢 ?
+事實上有一種專門的名詞就是用來表示的
+-
+遊戲化
+指在任何一種非遊戲的領域中，在用遊戲設計的元素和機制，以幫助當事人解決問題
+
+---
+我們能從遊戲設計中學到什麼
+
+遊戲中至關重要的一項機制 "教學"
+讓我們看看遊戲中的教學，為了讓玩家 "學習" 如何玩遊戲，遊戲設計師們做了什麼工作
+以及它反映出現實教育中遇到的問題
+
+-
+首先是拆分
+以前的教學方式
+當玩家剛進入遊戲時，首先會接觸到的是所謂的 "教學關卡"，我們透過教學關卡教導玩家在完過程所需的一切，當真正開始遊玩時玩家能透過這些知識
+
+{{< pathImage "tutorial" >}}
+
+對於沒有接觸過遊戲開發領域的人們來說，看起來很正常 ?
+學習所需的一切，等需要的時候拿出來運用
+
+但事實上這種作法會造成一種問題，
+玩家 "需要的能力" 會隨著遊戲進行，也就是關卡難度上升而增長
+所以當遊戲一開始就向你傾倒一堆教學時，這些通常超出了玩家所需範圍，也導致學習意願下降
+{{< pathImage "tutorial_investment" >}}
+
+回顧一下現實中的教育，從國中到高中，學校就像工廠一樣傾倒大量的資訊給我們，
+並期望我們能夠記住這一切，並在需要的時候回想起來
+
+而遊戲設計師如何解決這項問題呢? 
+我們將教學內容進行拆分，在玩家的遊玩過程中
+{{< pathImage "tutorial_investment" >}}
+
+這種做法可以將訊息傳遞的時機，等到玩家真正需要時再向其展示
+
+inverted pyramid of decision making
+
+事實上不是如此嗎
+當我們嘗試解決一項問題時，才是學習的最好時機
+
+-
+引導式教學
+
+遊戲中的教學也犯過這種錯誤，
+透過引導你的動作來完成某樣事情，點擊這裡、點擊UI、按一下這個按鍵、拖動這項元素，嗯...你在做事! 你真聰明! 但這樣真的有效嗎?
+事實上這種學習方法被稱作 "動覺學習 kinaesthetic learning"，或許再動作類遊戲中很適合，但是在思考、策略遊戲中就不太有效了
+> As for as the game is concerned; I have advanced. But as for as my brain is concerned; I've learned nothing. Asher Vollmer - Designer, Threes
+
+對比現實中的學習
+這兩者就是運動類和思考類知識
+
+現代教育中還有一個很大的問題就是，學校常常告訴我們什麼是 "正確" 的，要我們將其全部記下
+但是思考類知識需要的是 "思考"
+
+盲目地遵循指示並不是學習的有效方式，
+
+讓我們回到遊戲，開發著們是怎麼面對這項難題的
+以遊戲 Threes 為例，這是一款簡單的益智遊戲，透過滑動組合出數字
+他可以簡單地告訴玩家要如何滑動，向左滑動兩次，向上滑動兩次
+{{< pathImage "tutorial_threes_A" >}}
+但是他說，將數字推到牆壁來重新排列，使用牆壁來使兩個數字相加
+{{< pathImage "tutorial_threes_B" >}}
+
+對玩家來說，他們指是在玩遊戲，而沒意識到自己正在學習
+
+
+
+---
+
+遊戲與學習
+
+
+==
+---
+學習和有趣並不相斥
+
+
+---
+上課不是件好玩的事
+
+
+我在文章中看到一句很棒的句子
+> We learn best when we’re fully engaged - when it doesn’t feel like we’re learning, but simply enjoying ourselves
+--
+
+貓會透過遊玩訓練狩獵技巧
+
+---
+小學時
+小學時相較有趣
+
+
+中學
+
+
+
+---
+就連失敗也是遊戲中遊戲的一部分
+
+使用挫折感相當大的遊戲類型 RogueLike 為例
+
+永久死亡
+隨機生成
+
+即使每次死亡都得從頭開始，但至少你還有從頭的機會，而現實可沒有
+
+---
+
+
+
+---
+教育中的視頻遊戲：遊戲如何提高思維能力 https://plarium.com/en/blog/video-games-help-education/
+
+(TED) Gaming can make a better world | Jane McGonigal https://www.youtube.com/watch?v=dE1DuBesGYM
+superstruct
+
+wiki https://en.wikipedia.org/wiki/Educational_video_game 
+
+
+遊戲化 https://en.wikipedia.org/wiki/Gamification (https://zh.wikipedia.org/wiki/%E9%81%8A%E6%88%B2%E5%8C%96)
+Gamification - How the Principles of Play Apply to Real Life - Extra Credits (https://www.youtube.com/watch?v=1dLK9MW-9sY)
+Gamification to improve our world: Yu-kai Chou at TEDxLausanne https://www.youtube.com/watch?v=v5Qjuegtiyc
+
+https://www.kpbs.org/news/2014/jul/31/gaming-education-video-games-have-educational-valu/
+
+game tutorial
+Can We Make Better Tutorials for Complex Games? (https://www.youtube.com/watch?v=-GV814cWiAw)
+Half-Life 2's Invisible Tutorial (https://www.youtube.com/watch?v=MMggqenxuZc)
