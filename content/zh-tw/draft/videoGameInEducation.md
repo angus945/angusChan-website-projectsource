@@ -67,9 +67,9 @@ Game base learning 以及 Gamification 一詞越來越常出現在先進的教�
 
 首先先來觀察
 
-以及遊戲中的差異
+相似事物在遊戲中的差異，以及遊戲設計師們怎麼解決類似問題
 
-### 目標不明確
+### 目標不明確 +
 
 首先第一個問題就是學生沒有學習的目標，或許某些人會想，學習知識本身不就是目標嗎?
 
@@ -78,6 +78,8 @@ Game base learning 以及 Gamification 一詞越來越常出現在先進的教�
 **_遊戲是如何訂立目標的_**
 
 說到在遊戲中給玩家目標，首先想到的就是任務，開發著們透過所謂的任務系統來引導玩家，無論是必定要完成的主線劇情任務，或者是視情況達選擇的支線任務，他們的目的都是為了給玩家目標
+
+如果對遊戲設計理論不熟悉的人們可能覺得理所當然，但是開發著們意識到了問題
 
 **_為什麼不該為玩家訂立目標_**
 
@@ -88,6 +90,8 @@ Game base learning 以及 Gamification 一詞越來越常出現在先進的教�
 如果一個遊戲是關於實驗、探索和創造，我們反而不應該為玩家訂立目標，因為過於明確的目標可能限制玩家的創造和想像力，即使是完成了任務以後影響依然存在
 
 動機偏移 Overjustification 一詞就是用來表示這種狀況
+
+假如你的世界中藏有大量寶藏，而你在遊戲開始時給了一張有所有寶藏位置的地圖，那麼玩家會直接到寶藏地點取得寶藏，然後...沒有然後了，玩家關閉遊戲，他只有去了這些地方
 
 **_競爭目標_**
 
@@ -108,14 +112,33 @@ Game base learning 以及 Gamification 一詞越來越常出現在先進的教�
 尤其是競爭目標
 
 <!-- https://www.youtube.com/watch?v=1ypOUn6rThM -->
+<!-- http://www.chrishecker.com/Achievements_Considered_Harmful%3F -->
 
-### 成就感不足
+### 成就感不足 +
 
 在過去的文章中，就有提到過成就感的重要性，而在制式教育中學生無法獲得這項東西
 
-<!-- https://www.youtube.com/watch?v=hbzGO_Qonu0 -->
+住:目標和成就感直接關聯，
 
-<!-- 成就感直接影響到了是否有動力持續前行 -->
+**_遊戲中的回報_**
+
+過於明確的目標和回報可能導致 - 動機偏移
+
+**_意外的回報_**
+
+在上個章節中有說到，但事實上有一種獎勵方式 - 驚喜
+
+注意這個回報必須是低價值的，否則還是會造成動機偏移
+
+設計師們在世界中藏了寶藏，但沒有告知玩家
+
+而玩家在某次發現了隱藏的寶藏後，這會激勵玩家積極的探索世界的各個角落
+
+> When they create their games, [Nintendo's designers] don't tell you how to play their game in order to achieve some kind of mythical reward. There are things you can do in the game that will result in some sort of reward or unexpected surpirise. In my mind, that really encourages the scense of exploration rather than the sense of 'If I do that, i'm going to get some sort of artificial point or scorce.' Bill Trinen, Nintendo
+
+**_一句稱讚_**
+
+孩子們只是需要一句稱讚
 
 ### 失敗被汙名化 +
 
@@ -124,6 +147,8 @@ Game base learning 以及 Gamification 一詞越來越常出現在先進的教�
 考試這件事情本質上是好的，他的目的是為了驗證自己的所學，不過他的潛在意義卻變調了，成績被和學生的價值綁訂在一起
 
 住: 當然是指不同的測驗內容，如果重新幾次都相通那意義也不大
+
+<!-- 學校是個高壓的環境 https://www.youtube.com/watch?v=ZZvRw71Slew 10:00 -->
 
 **_Trial and Error_**
 
@@ -324,46 +349,122 @@ SpaceX 數次的火箭發射失敗目的，是為了後續載人火箭的成功
 
 ## 遊戲化
 
-遊戲化 Gamification 一詞並不是近年來才出現的，事實上在十年前就有人關注以及嘗試融合至教育中
-
 上學不是件有趣的事，相信大多制式教育中的學生都這麼認為，但學習應該要更有趣才對，讓學生們樂在其中才能最大化教育的意義，我們應該重視這件事情
 
 > We learn best when we’re fully engaged - when it doesn’t feel like we’re learning, but simply enjoying ourselves
 
+遊戲化 Gamification 一詞並不是近年來才出現的，事實上在十年前就有人關注以及嘗試融合至教育中，
+
 ### 遊戲化課堂
 
-<!-- 貓會透過遊玩訓練狩獵技巧 學習或許辛苦，但不必是痛苦的 -->
+現實中有些機構嘗試透過遊戲化的教育來讓學生學習，這裡就提供一些案例給各位參考
 
-Institute of Play
+**_Institute of Play_**
 
-Codecademy
+非營利組織
+<!-- 結束營運 -->
 
-Duolingo
+**_Codecademy_**
+
+使用遊戲化來教程式
+
+**_Duolingo_**
+
+使用遊戲化來教人學習語言
+
+**_模擬訓練_**
+
+遊戲可能夠被用來進行模擬訓練，從汽車駕駛到外科手術
 
 ### 實行的難點
 
-**_觀念革新_**
+**_人不會輕易接受改變_**
 
 第一就是過時的觀念，人的思維並不是願意輕易接受改變的
 
-> I never get "My students had an A in your class, but I have a problem with the philosophy is you class"
+<!-- > I never get "My students had an A in your class, but I have a problem with the philosophy is you class" -->
 
-**_汙名化的遊戲_**
+**_遊戲一詞被汙名化_**
+
+遊戲一詞在某些保守觀念中還是拜抱有負面看法
 
 **_成本過高_**
 
-### 整個社會都可以參與
+無論是遊戲軟體，又或者是硬體
 
----
+**_會受改革影響到的損失者_**
 
-Game Base Learning 並不是 "容易"
-並不是 Game Base Learning 就一定比原本的方式還好，遊戲也有優劣的，
+當然得，改革本身就會對所有處在環境中的人造成影響，可能導致受影響者不積極甚至阻止改革
+
+### 整個社會
+
+遊戲化當然不只被運用在教育上，整個社會都、整個世界能被遊戲改變
+
+**_Opower_**
+
+試圖讓人們降低水電費的公司，他們看到改變人們行為的最好方式就是 - 展示他們的鄰居是怎麼做的，就像第一部分中說到的競爭目標
+
+所有人都認不希望自己的水電費高於平均值，以改變他們的行為
+
+最終他們在一年內節省了 2.5 億美元的水電費
+
+**_Eterna_**
+
+一個建立RND結構的遊戲
+
+人們發現新的結構
+
+最後，世界上的普通人們發現數以千計科學家們未見過的 RNA 結構
+
+### 寓教於樂
+
+除了將教育遊戲化，許多遊戲也試著將遊戲教育化，讓遊戲不只是娛樂，已達成寓教於樂的目的
+
+**_Infinifactory_**
+
+解決謎題的方法是找出解答 Discover The Solution
+
+解決問題的方法是創造解答 Inventing A Solution
+
+因此這種類型的遊戲比起解出 "謎題"，應該說是解決 "問題"
+
+**_SpaceChem_**
+
+編碼知識
+
+被幾所英國的學校使用
+
+**_Kerbal Space Program_**
+
+讓玩家在遊戲中建造火箭， 工程學知識
+
+<!-- https://www.kerbalspaceprogram.com/game/kerbal-space-program/ -->
+
+**_SimCity_**
+
+模擬城市教孩子們關於城市規劃、資源管理之類的事情，甚至還有 "汙染挑戰" 向玩家展示歌學與環境的複雜關係
+
+**_Minecraft_**
+
+以及當然的，Minecraft 的紅石系統一直都是很好的教材
+
+使用紅石電路做出邏輯閘，做出計算機、或是圖形繪製的電腦，演奏器
 
 ---
 
 ## 結語
 
 ### 參考資料
+
+[Achievements Considered Harmful?](http://www.chrishecker.com/Achievements_Considered_Harmful)
+
+[Trial and error](https://en.wikipedia.org/wiki/Trial_and_error)
+
+[Can We Make Better Tutorials for Complex Games?](https://www.youtube.com/watch?v=-GV814cWiAw)
+
+<!-- gamification -->
+
+[The Future of Creativity and Innovation is Gamification: Gabe Zichermann at TEDxVilnius](https://www.youtube.com/watch?v=ZZvRw71Slew)
 
 [Video Games in Education: How Gaming Can Sharpen the Mind](https://plarium.com/en/blog/video-games-help-education/)
 
@@ -375,13 +476,11 @@ Game Base Learning 並不是 "容易"
 
 [Educational video game](https://en.wikipedia.org/wiki/Educational_video_game)
 
-[Trial and error](https://en.wikipedia.org/wiki/Trial_and_error)
+[New educational video game used in schools](https://www.gamasutra.com/view/pressreleases/154246/New_educational_video_game_used_in_schools.php)
 
-<!-- game tutorial -->
+<!-- 寓教於樂 -->
 
-[Can We Make Better Tutorials for Complex Games?](https://www.youtube.com/watch?v=-GV814cWiAw)
-
-[Half-Life 2's Invisible Tutorial](https://www.youtube.com/watch?v=MMggqenxuZc)
+[Puzzle Solving... or Problem Solving?](https://www.youtube.com/watch?v=w1_zmx-wU0U)
 
 <!-- https://www.kpbs.org/news/2014/jul/31/gaming-education-video-games-have-educational-valu/ -->
 
