@@ -221,6 +221,9 @@ copyright = ""            # default: author.name ↓        # 默认为下面配
 
 [params.likerCoin]
   likerID = "chanangus"
+[params.DNS]
+  dns = "google-site-verification"
+  ID = "bDGYZG1U4Y1MZoDILkYAImkYhKfKkTxSABaK0OzcFa4"
 
 # See https://gohugo.io/about/hugo-and-gdpr/
 [privacy]
