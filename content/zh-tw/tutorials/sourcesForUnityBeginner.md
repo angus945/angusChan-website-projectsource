@@ -182,6 +182,8 @@ Unity 的動畫系統和 3D 人物動畫
 
 **_How to make a 2D Game_** - [link](https://www.youtube.com/playlist?list=PLPV2KyIb3jR6TFcFuzI2bB7TMNIIBpKMQ)  
 
+各種 2D 遊戲會做的東西
+
 關鍵字 [Unity 2D game tutorial](https://www.google.com/search?client=firefox-b-d&q=Unity+2D+game+tutorial)
 
 {{< pathImage "Howtomakea2DGame.jpg" >}}
@@ -267,7 +269,7 @@ OnCollisionEnter 沒效?
 [Unity OnCollisionEnter not working](https://www.google.com/search?client=firefox-b-d&q=Unity+OnCollisionEnter+not+working)
 
 物件沒有在遊戲畫面顯示?  
-[Unity gameObject not showing in game screen](https://www.google.com/search?newwindow=1&client=firefox-b-d&sxsrf=ALeKk02xsCOmxpaJpuuGWT7A7iCY4OFxPw:1623242216270&q=Unity+gameObject+not+showing+in+game+screen&spell=1&sa=X&ved=2ahUKEwik_by9yIrxAhV4yIsBHUN4AsEQBSgAegQIARA3&biw=1511&bih=894)
+[Unity gameObject not showing in game screen](https://www.google.com/search?client=firefox-b-d&q=Unity+gameObject+not+showing+in+game+screen)
 
 Error Log 看不懂?  
 複製貼上 google (但還是要學著看log拉)  
