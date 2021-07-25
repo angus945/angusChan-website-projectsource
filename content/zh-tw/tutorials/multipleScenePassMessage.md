@@ -130,6 +130,7 @@ public static AsyncOperation UnloadSceneAsync(string sceneName);
 
 ```csharp
 using UnityEngine.SceneManagement;
+
 public class CustomSceneManager : MonoBehaviour
 {
     static CustomSceneManager instance;
