@@ -1,27 +1,23 @@
 
 {{ $paginator := .Page }}
-{{ $displayAmount := (.Get "displayAmount")}}
-{{ $displayData := (.Get "displayData")}}
-{{/*  TODO Fixed 命名錯誤  */}}
+{{ $displayType := .Get 0 }}
 
 <section id="archive" class="archive"> 
 
-  {{ if $displayAmount }}
-    <div class="archive-title">
-      <span class="archive-post-counter">
-        {{ T "archiveCounter" (len $paginator.Pages) }}
-      </span>
-    </div>
-  {{ end }}
+  <div class="archive-title">
+    <span class="archive-post-counter">
+      {{ T "archiveCounter" (len $paginator.Pages) }}
+    </span>
+  </div>
 
   {{- range $index, $element := $paginator.Pages.ByParam "order" -}}
     <div class="archive-post">      
 
-      {{ if eq $displayData "date" }}
+      {{ if eq $displayType "date" }}
         <span class="archive-post-time">
           {{ $element.Date.Format "01-02" }}
         </span>
-      {{else if eq $displayData "order" }}
+      {{else if eq $displayType "order" }}
         <span class="archive-post-time">
           {{ $element.Params.order }}
         </span>
