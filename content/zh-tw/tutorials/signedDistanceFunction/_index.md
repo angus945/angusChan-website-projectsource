@@ -1,15 +1,14 @@
 ---
-title: "Signed Distance Function"
-date: 2021-04-27T21:53:27+08:00
-lastmod: 2021-04-27T21:53:27+08:00
-draft: true
+title: "距離場的數學原理以及圖形繪製方法"
+date: 2021-07-27
+draft: false
 keywords: []
-description: "signed distance function tutorial"
-tags: [shader]
+description: "從頭解說距離場的數學原理，並教妳們如何使用距離場繪製圖形"
+tags: [shader, SDF, math]
 category: tutorial
 author: ""
 sectionTypes: content
-featured_image: /tutorials/signeddistancefunction/tutorial_example_B.gif
+featured_image: /tutorials/signeddistancefunction/featured.gif
 listable: true
 important: 1
 
@@ -44,36 +43,30 @@ sequenceDiagrams:
 
 ---
 
-## 距離場教學 - 數學原理以及運用方式
+## Signed Distance Function
 
-### 前言
+### 序章
 
-為了能支撐住畫面渲染的效能消耗，GPU中多個核心可以平行運算數個像素的顏色
+為了能支撐住畫面渲染的效能消耗，GPU 中通常會有多個核心，用來同時間平行運算數個像素的顏色。也因為並行的關係，正常情況下每個像素的運算是被孤立的，像素不能和其他像素溝通，只能夠知道自己所需的訊息，例如 : 位置。
 
-這也代表每個像素的運算是被孤立的，像素不能和其他像素溝通，只能夠知道自己所需的訊息，例如 : 位置
+在這種限制之下，也使得一種特別的運算方式得以實現 - 距離場 Signed Distance Function
 
-在這種限制之下也使得一種特別的運算方式得以實現 - 距離場 Signed Distance Function
+這是一種能夠描述空間中任意位置對於虛擬形狀最接近表面的距離的函數，看似單純但距離場的組合特性以及空間操作性為它帶來無限的可能。運用在圖像渲染中可以不靠一張貼圖就 "計算出" 複雜的形狀，甚至是分形。也因此 SDF 算法是深受 programming artists 喜愛的數學工具，尤其在 shadertoy 上能看到各種令人驚豔的藝術創作。
 
-一種能夠描述空間中任意位置對於虛擬形狀最接近表面的距離的函數，看似單純但距離場的組合特性以及空間操作性為它帶來無限的可能
+這個教學會從頭解說距離場的數學原理，如何使用距離場繪製圖形和動畫，並最終帶各位製作出一個完整的 2D 距離場動畫。
 
-運用在圖像渲染中可以不靠一張貼圖就 "計算出" 複雜的形狀甚至是分形，也因此 SDF 算法是深受 program artists 喜愛的數學工具
-
-{{< pathImage tutorial_example_B.gif "80%">}}
-
-教學中會從頭解說距離場的數學原理，如何使用距離場繪製圖形和動畫，最終帶各位製作出一個完整的 2D 距離場動畫
+{{< pathImage "example.gif" "80%" >}}
 
 ### 基礎知識
 
-閱讀這篇教學會需要基本的著色器以及線性代數知識，才能夠有效運用，裡面會省略基本的著色器數值特性，以及線代的數學算式
+閱讀這篇教學會需要基本的著色器以及線性代數知識，才能夠有效運用，裡面會省略基本的著色器數值特性，以及線代的數學算式。但就算不懂這些基礎也沒關西，可以只讀解說邏輯的部分，它仍然很有趣。
 
-但就算不懂這些基礎也沒關西，可以只讀解說邏輯的部分，它仍然很有趣
+**_著色器的部分需要了解的有_**
 
-**著色器的部分需要了解的有** 
-
-- 著色器的變量計算特性以及函數功能
+- 著色器的變數計算特性以及函數功能
 - 向量空間與色彩空間的轉換特性
 
-**線性代數需要了解的部分有**
+**_線性代數需要了解的部分有_**
 
 - 線性代數的圖形意義
 - 線性代數的向量空間邏輯
@@ -85,20 +78,56 @@ sequenceDiagrams:
 
 根據教學進度，中間會穿插一些測驗題，會附上結果的圖，但不會有程式碼，請加油 :P
 
-### 備註
+### 錯誤備註
 
-教學中函數命名的大小寫沒有固定是作者的問題，你們可以依照自己習慣的規則就好
+由於作者本人學藝不精，對著色器的知識不夠齊全，教學中有些部分自作聰明將判斷式改為 lerp step 等函數運算，但事實上這對效能的幫助不大，甚至還會造成負優化，所以在過程中看到這部分的修改時可以忽略沒關係 (如果我沒刪乾淨)
 
-### 教學頁面
+[Shader中if和for的效率问题以及使用策略](https://zhuanlan.zhihu.com/p/33260382)
 
-{{< sectionPageList displayData="none" >}}
+### 教學頁面 (更新中)
 
-### 參考資料
+基本設置
 
+初步理解
 
-[Shader Tutorials by Ronja](https://www.ronja-tutorials.com/)
+距離計算
 
-[The Book of Shaders](https://thebookofshaders.com/)
+距離上色
 
-[Soft maximum for convex optimization](http://www.johndcook.com/blog/2010/01/13/soft-maximum/)
+距離判斷
 
+更多形狀
+
+位移旋轉
+
+形狀組合
+
+空間操作
+
+進階形狀
+
+組合範例
+
+動畫方法
+
+動畫範例
+
+動畫緩動
+
+動畫時間
+
+反鋸齒修
+
+進階繪圖
+
+進階上色
+
+分形繪製
+
+最終範例
+
+結語
+
+### 特別感謝
+
+派大星教授加博士先生
