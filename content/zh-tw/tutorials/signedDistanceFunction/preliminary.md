@@ -1,11 +1,11 @@
 ---
-title: "Preliminary"
+title: "第一章 初步理解"
 date: 2021-04-27T21:34:48+08:00
 lastmod: 2021-04-27T21:34:48+08:00
-draft: true
+draft: false
 keywords: []
 description: ""
-tags: [shader]
+tags: [SDF]
 category: tutorial
 author: ""
 order: 1
@@ -43,15 +43,13 @@ sequenceDiagrams:
 
 ---
 
-# Preliminary
-
 標準化空間，大小為 1
 
-## 初步理解
+## 對距離場原理的初步理解
 
-在第一次接觸距離場時，可以先理解成 "一個判斷空間中任意點在不在形狀內" 的函數
+在第一次接觸距離場時，可以先理解成一個 "判斷空間中任意位置在不在虛擬形狀內" 的函數。
 
-我們從一個圓形開始，點和中心的距離如果小於圓的半徑代表在圓內，很好理解吧
+我們從一個圓形開始，點和中心的距離如果小於圓的半徑代表在圓內，很好理解吧。
 
 ```csharp
 float inCircle(float2 uv, float radius)
@@ -72,7 +70,7 @@ fixed4 frag (v2f i) : SV_Target
 
 {{< pathImage preliminary_0.jpg "50%" >}}
 
-### 測驗題目
+### 小題目
 
 請試著用相同的方法，寫出一個判斷任意點在不在矩形內部的函數
 
@@ -84,4 +82,3 @@ fixed4 col = inSquare(uv, float2(1, 1.5));
 {{< pathImage preliminary_1.jpg "50%" >}}
 
 初步理解就到這裡，接下來會帶你們了解距離場的真正意義
-
