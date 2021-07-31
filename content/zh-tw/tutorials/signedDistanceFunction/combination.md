@@ -151,7 +151,7 @@ float combina_cull(float a, float cull)
 
 ### 過度
 
-距離場是個回傳一為數值函數，所以也可以透過差值讓兩個距離場產生過度。
+距離場是個回傳距離數值的函數，所以也可以透過差值讓兩個距離場產生過度。
 
 ```csharp
 float combina_transition(float a, float b, float w)

@@ -162,4 +162,4 @@ float distance = SDF_Rect(uv, float2(2, 3), float2(3, 6), 50);
 
 提示 : 合成矩陣的特性，不同空間操作的順序
 
-{{< pathImage "quset.jpg" "50%" >}}
+{{< pathImage "quest.jpg" "50%" >}}
