@@ -259,16 +259,16 @@ float distance = SDF_Regular(uv, 3, 5);
 
 將建立一個 x 為半徑的向量投影到法線上，並乘上原本的半徑，完成正確的表面距離計算。
 
-```csharp
+```csharp {hl_lines=["6-9"]}
 float SDF_Regular(float2 uv, float radius, float edgeAmount)
 {
     float2 edgeNormal;
     uv = radial(uv, edgeAmount, edgeNormal);
 
-    **float projRadius = dot(float2(1, 0), edgeNormal * radius);
+    float projRadius = dot(float2(1, 0), edgeNormal * radius);
     float edgeDistance = dot(uv, edgeNormal) - projRadius;
 
-    return edgeDistance;**
+    return edgeDistance;
 }
 ```
 
