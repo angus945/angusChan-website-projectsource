@@ -80,9 +80,9 @@ return 1 - halo;
 
 接下來我們要將這段光暈的強度減弱，為了做出非線性的弱化需要使用 pow 函數。
 
-```csharp
+```csharp {hl_lines=[2]}
 float halo = max(distance, 1 - ceil(distance)); 
-**halo = pow(halo, 0.1);**
+halo = pow(halo, 0.1);
 return 1 - halo;
 ```
 
@@ -90,14 +90,14 @@ return 1 - halo;
 
 最後只需要將他添加回原本的距離場上，進行上色就完成了。
 
-```csharp
+```csharp {hl_lines=["3-6"]}
 float halo = max(distance, 1 - ceil(distance)); 
 halo = pow(halo, 0.1);
 
-**distance = ceil(distance);**
-**distance = min(distance, halo);**
-**fixed4 color = colorDistance(distance);**
-**return color;**
+distance = ceil(distance);
+distance = min(distance, halo);
+fixed4 color = colorDistance(distance);
+return color;
 ```
 
 {{< pathImage "halo_3.jpg" "50%" >}}
