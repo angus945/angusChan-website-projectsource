@@ -82,7 +82,7 @@ sequenceDiagrams:
 
 [Shader中if和for的效率问题以及使用策略](https://zhuanlan.zhihu.com/p/33260382)
 
-### 教學頁面 (更新中)
+### 教學頁面
 
 {{< sectionPageList >}}
 
