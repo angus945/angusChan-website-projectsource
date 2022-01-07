@@ -569,27 +569,124 @@ void UpdateVisual()
 
 如果還想要拆分的更細，也能分成三等份，將視覺、邏輯、數據進行拆分，不過文章這裡就點到為止。
 
-### 沒有物件導向 -
+### 資料結構零散 +
 
-棋子、棋盤、玩家都是物件
-
-透過物件導向可以讓架構更加乾淨
-
-首先，可透過 struct 將多種數據進行打包
-例如座標，原先我們使用兩個 int 當作座標的 x, y 軸數值。
-
-向量
+有時我們在定義數據時，會遇到需要多的變數來表打一種資訊，而在這個腳本中的案例就是網格的座標。我使用了兩個 int 儲存點擊位置的 x 軸與 y 軸資訊。
 
 ```cs
+//修正過後的程式，原始腳本第 23 行的 int b, c
+int clickX, clickY; 
+```
+
+雖然這是兩個變數，但他們實際上是有直接關聯的，應該被視為一體才對。為此，我們可以透過 struct 將零碎的資訊打包，把這它們打包為一個資料結構 —「向量」。
+
+```cs
+//修正過後的程式，將兩個 int 打包為一個向量結構 
 public struct Vector
 {
-    int x, y;
-    public Vector operator +(Vector a, Vector b)
+    float x, y;
+}
+```
+
+如此一來，我們就能更簡潔的表達出這是「一個」向量空間中的二維數值。
+
+```cs
+Vector BoardSize;
+Vector TilePosition;
+Vector ClickPosition;
+Vector ChessPosition;
+```
+
+除此之外，打包成一個資料結構也允許我們更方便的定義進階行為，例如長度計算或向量之間的加減法。
+
+```cs
+//修正過後的程式，這篇不是教數學的，所以我就省略具體運算內容了
+// operator 為 C# 中的運算符多載，允許透過運算符調用函式
+public struct Vector
+{
+    float x, y;
+
+    public Vector operator +(Vector a, Vector b) { }
+    public Vector operator -(Vector a, Vector b) { }
+    public Vector operator *(Vector a, float mul) { }
+    public Vector operator /(Vector a, float div) { }
+
+    public static Vector Normalize(Vector vector) { }
+    public static float Distance(Vector origin, Vector destination) { }
+
+    public static Vector Dot(Vector lhs, Vector rhs) { }
+}
+```
+
+如此一來我們也能更方便的調用函式運算，而不需要每次都重複編寫算式。
+
+```cs
+//範例：計算與目的地的方向與距離
+Vector direction = Vector.Normalize(target - current);
+float distance = Vector.Distance(current, target);
+```
+
+透過物件導向將零碎的資料整合為一個整體，省去過多的零碎變數，讓架構更乾淨並同時提高可讀性。
+
+### 類別內容混雜 -
+
+目前為止，我們都是將所有內容寫在同個腳本，或者說類別 (class) 當中，感覺起來就像所有東西都被鑲在一起那樣。雖然這是「一個西洋棋遊戲」沒錯，但無論西洋棋、象棋或是其他遊戲，它們都是由複數的「物件」與「規則」交互作用所構成的。
+
+物件包括棋盤、棋子與玩家，而規則限制了棋子的移動方式，玩家之間的操作以及輸贏判定。這也是現實中物體的運作原理，每個獨立的物體都有自己的行為邏輯，物體之間的行為互動構成規則，規則再與規則結合出複雜的系統。而這也是物件導向程式設計的核心，以現實世界的運作原理為參考，進行程式設計的方法。
+
+因此我們可以透過物件導向的觀念，將整個腳本的內容拆分為複數物件。首先便是棋子，
+
+將移動的判定寫進物件的函式中
+
+```cs
+//修改後的程式碼 BaseChess.cs
+public class Chess
+{
+    int chessType;
+    public bool ChessMovement(Vector destination)
     {
-        return new Vector(a.x - b.x, a.y - b.y);
+        switch(chessType)
+        {
+            case 0:
+                //return isMovement vaild;
+            //case 1, case 2, case 3, ...
+        }
     }
 }
 ```
+
+接著建立棋盤物件，並將原本用於表示棋網格的二維陣列移入當中。
+
+```cs
+public class ChessBoard
+{
+    Chess[,] chessBoard;
+ 
+}
+```
+
+規則
+或者說管理整個遊戲的系統
+
+```cs
+public class ChessGame
+{
+
+}
+```
+
+<!-- 註：這裡省略的前幾章說到的視覺部份，ChessBoradVisual.cs -->
+
+將整個內容混雜的類別，拆分成幾種不同物件，
+
+將所有
+
+使架構更加乾淨的同時
+物件的關聯
+讓他們更像現實中的物體
+透過物件導向可以讓架構更加乾淨
+
+將混雜在一起的內容拆分為一個個的獨立物件，或把零碎的片段打包成一種資訊類型。
 
 也可以透過繼承方法來
 
@@ -627,6 +724,9 @@ public class ChessBoard
 將架構整理的更整齊
 
 拆分的更細
+
+不是只有物件導向，但物件導向還是相較容易學的
+
 
 <!-- 關鍵字：Object Oriented Programming -->
 
@@ -814,6 +914,8 @@ class Chess
 {{< text/greenLine >}}
 Data Driven Programming 有時也會查到 Data Oriented Design，但兩者是無關的。
 {{</ text/greenLine >}}
+
+DLL, XML
 
 
 ## 其他建議和
