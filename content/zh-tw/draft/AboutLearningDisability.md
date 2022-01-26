@@ -1,7 +1,7 @@
 ---
-title: "第一次參加 GGJ"
-date: 2021-05-28T20:55:02+08:00
-lastmod: 2021-05-28T20:55:02+08:00
+title: "記憶和學習，聊聊我的「學習障礙」"
+date: 2022-01-20T20:00:28+08:00
+lastmod: 2022-01-20T20:00:28+08:00
 draft: true
 keywords: []
 description: ""
@@ -15,6 +15,7 @@ important: 10
 # You can also close(false) or open(true) something for this content.
 # P.S. comment can only be closed
 comment: true
+likecoin: false
 toc: true
 autoCollapseToc: false
 postMetaInFooter: false
@@ -44,4 +45,3 @@ sequenceDiagrams:
 ---
 
 <!--more-->
-https://home.gamer.com.tw/creationDetail.php?sn=5058261

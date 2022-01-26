@@ -49,6 +49,8 @@ sequenceDiagrams:
 心情還是在超級複雜的情況，來聊些有趣的東西吧。前陣子和朋友聊到西洋棋遊戲設計的事情，我就想到之前做過一個有趣的東西，一個用 windows from 的西洋棋遊戲，那是在我剛學程式時做的玩意。
 {{< pathImage "ChessGame.jpg" "80%" >}}
 
+<!-- 還在高職資訊科時 -->
+
 一個普通的西洋棋遊戲，需要在本機由兩個人輪流控制來對弈，遊戲沒有 AI 也沒有連線，為什麼要特別把他拿出來說呢？因為這個腳本裡有七萬行 code
 {{< pathImage "thousandLineOfcodes.jpg" "80%" >}}
 
@@ -60,12 +62,17 @@ sequenceDiagrams:
 
 1. 在文章的程式區塊中，我會透夠註解來表示哪些是原始內容，哪些是修正過後的。而範例中的程式以是 C# 為主，有些部份會是 fake code，僅用於展示範例和觀念。
 
-2. 這篇文章的定位比較像是學習路徑指南而非教學，因此每段落的內容可能不會過於深入。但你們可以透過不同段落的內容大致判斷自己的能力階段，並作為更進一步學習的基準。
+2. 文章內容主要是針對「遊戲開發」的程式，其他領域可能不完全適用，但也可以提供不同的思考方向。
+
+3. 這篇文章的定位比較像是「學習路徑指南」而非教學，因此每段落的內容可能不會過於深入。但你們可以透過不同段落的內容大致判斷自己的能力階段，並作為更進一步學習的基準。
+
 
 <!-- 3. 部分程式碼可能令人產生不適感 -->
 
 {{< pathLink "完整腳本點我 Form1.cs" "Form1.cs" >}}
 <!-- 
+如果覺得某一張節的內容不懂霍地一次聽
+
 ### 名詞備註
 
 + 程式腳本 Script
@@ -632,113 +639,95 @@ float distance = Vector.Distance(current, target);
 
 目前為止，我們都是將所有內容寫在同個腳本，或者說類別 (class) 當中，感覺起來就像所有東西都被鑲在一起那樣。雖然這是「一個西洋棋遊戲」沒錯，但無論西洋棋、象棋或是其他遊戲，它們都是由複數的「物件」與「規則」交互作用所構成的。
 
-物件包括棋盤、棋子與玩家，而規則限制了棋子的移動方式，玩家之間的操作以及輸贏判定。這也是現實中物體的運作原理，每個獨立的物體都有自己的行為邏輯，物體之間的行為互動構成規則，規則再與規則結合出複雜的系統。而這也是物件導向程式設計的核心，以現實世界的運作原理為參考，進行程式設計的方法。
+物件包括棋盤、棋子與玩家，而規則限制了棋子的移動方式，玩家之間的操作以及輸贏判定。這也是現實中物體的運作原理，每個獨立的物體都有自己的行為邏輯，物體之間的行為互動構成規則，規則再與規則結合出複雜的系統。
 
-因此我們可以透過物件導向的觀念，將整個腳本的內容拆分為複數物件。首先便是棋子，
-
-將移動的判定寫進物件的函式中
+將整個腳本的內容拆分為複數物件，以現實世界的運作原理為參考，進行程式設計的方法，也就是所謂的物件導向。
+首先便是棋子，建立一個新的類別 Chess，並使用變數除存棋子類型與所屬陣營。
 
 ```cs
 //修改後的程式碼 BaseChess.cs
 public class Chess
 {
-    int chessType;
-    public bool ChessMovement(Vector destination)
+    int type;
+    int faction;
+    public Class(int type, int faction)
     {
-        switch(chessType)
-        {
-            case 0:
-                //return isMovement vaild;
-            //case 1, case 2, case 3, ...
-        }
+        this.type = type;
+        this.faction = faction;
     }
 }
 ```
 
-接著建立棋盤物件，並將原本用於表示棋網格的二維陣列移入當中。
+再將原先腳本中的移動規則移至 Chess 類別中，將移動方法打包成一個函式，根據自身的棋子類型判斷移動是否被允許。
 
 ```cs
-public class ChessBoard
+public bool ChessMovement(Vector destination)
 {
-    Chess[,] chessBoard;
- 
+    switch(chessType)
+    {
+        case 0:
+            //return isMovement vaild;
+        //case 1, case 2, case 3, ...
+    }
 }
 ```
 
-規則
-或者說管理整個遊戲的系統
+棋子完成了，接下來把它們放到棋盤上。建立一個棋盤的類別 ChessBorad，讓它使用二維陣列儲存棋子。根據輸入的大小建立棋盤網格，並提供方法讓外部訪問棋盤資訊。
+
+```cs
+//修正後的程式 ChessBoard.cs
+public class ChessBoard
+{
+    Vector size;
+    Chess[,] chessBoard;
+    public ChessBoard(Vector size)
+    {
+        this.size = size;
+        chessBoard = new Chess[size.x, size.y];
+    }
+    public Chess GetChess(Vector position) { }
+    public void MoveChess() { } 
+}
+```
+
+棋子與其盤都有了，最後剩下的便是規則，或者說管理整個遊戲的系統。
+管理玩家回合
+判定輸贏
 
 ```cs
 public class ChessGame
 {
+    int currentTurn;
+    ChessBoard board;
 
+    //這裡假設 main 會在一開始執行
+    public void main()
+    {
+
+    }
 }
 ```
 
 <!-- 註：這裡省略的前幾章說到的視覺部份，ChessBoradVisual.cs -->
 
-將整個內容混雜的類別，拆分成幾種不同物件，
+透過物件導向觀念，我們將內容混雜的類別，拆分成幾種不同物件。
 
-將所有
+除了使整體架構更加乾淨，我們也能更輕鬆的區分不同程式碼間的關聯
 
-使架構更加乾淨的同時
-物件的關聯
-讓他們更像現實中的物體
-透過物件導向可以讓架構更加乾淨
+不過這只是物件導向的最最基礎而已，除此之外還有多型、繼承、抽象、界面、泛型等進階應用，如果真的要深入的話好幾篇文章都說不完的，因此避免離題這裡就點到為止。
 
-將混雜在一起的內容拆分為一個個的獨立物件，或把零碎的片段打包成一種資訊類型。
-
-也可以透過繼承方法來
-
-每種棋子都是獨立物件，不再需要使用判斷式
-
-如此一來也能將每種棋子的行為分離
-
-```cs
-public abstract class BaseChess
-{
-    Vector position;
-    public abstract bool ChessMovement(Vector movement);
-}
-public abstract class KingChess
-{
-    public override bool ChessMovement(Vector movement)
-    {
-        //return is movement vaild
-        //如果移動位置是棋子的周圍八格，回傳 true
-    }
-}
-```
-
-```cs
-public class ChessBoard
-{
-    Vector boardSize;
-    BaseChess[,] chessGrid;
-    
-}
-
-```
-能夠
-
-將架構整理的更整齊
-
-拆分的更細
-
-不是只有物件導向，但物件導向還是相較容易學的
-
+當然進階的程式架構方法也不只有物件導向，但它之所以能成為最被廣泛使用的程式設計方法就是因為與現實邏輯的相近性。（望向隔壁的資料導向）
 
 <!-- 關鍵字：Object Oriented Programming -->
 
 ### 多餘手動作業 -
 
 寫程式很大的目的就是要降低重複作業
+雖然製作遊戲時有時會遇到需要配置場景的情況
 
-這裡的場景指的是棋盤，我那時用的是 button 當作棋盤的格子
+但我們還是能透過程式降低非必要的手動作業。
 
-但我沒有用程式生成這些按鈕，而是在編輯界面一個個排好之後，
-
-硬編碼手動指定網格對定的按鈕
+這裡的場景指的是棋盤，我那時用的是 button 當作棋盤的格子，但我沒有用程式生成這些按鈕，而是在編輯界面一個個排好之後，硬編碼手動指定網格對定的按鈕。
 
 ```cs
 //原始腳本第 28～45
@@ -764,27 +753,99 @@ private void Form1_Load(object sender, EventArgs e)
 
 ```
 
+西洋棋盤的網格配置是固定的，因此只需要根據想要的大小與間距就能輕易的計算出元素位置，能省去手動排版的作工。
+
 ```cs
 //修正過後的大略樣子
-private void Form1_Load(object sender, EventArgs e)
+class ChessBoardVisual
 {
-    int tileSize;
-    for (int x = 0; x < boradSize; x++)
+    UIButton[] boardButtons;
+
+    void CreateVisualElements()
     {
-        for (int y = 0; y < boradSize; y++)
+        for (int x = 0; x < boradSize.x; x++)
         {
-            Button tile = new Button(tileSize * x, tileSize * y, tileSize, tileSize);        
-            
-            tiles[x, y] = tile;
-        }
+            for (int y = 0; y < boradSize.y; y++)
+            {
+                Vector buttonPos = new Vector(x, y);
+                boardButtons[x, y] = new UIButton(buttonPos, buttonSize, gridThickness);
+            }
+        }        
     }
 }
-void ButtonClick() { }
 ```
 
-### 沒有事件監聽
 
-我在每次操作的時候都會掃過整張圖，來檢查黑白棋的國王是否還活著
+### 程式雙向耦合 -
+
+就以視覺和邏輯的連接點舉例
+
+在原本（修正內容）的程式中
+
+我們應該會在讓棋盤 ChessBoard 在操作結束後讓視覺的部份 ChessBoardVisual 更新畫面
+
+
+
+```cs
+public class ChessBoard
+{
+    //...codes
+    ChessBoardVisual boardVisual;
+    
+    public void MoveChess() 
+    { 
+        //move chess...
+
+        boardVisual.UpdateVisual();
+    }
+}
+public class ChessBoardVisual
+{
+    public void UpdateVisual() { }
+}
+```
+ChessBoard <---> ChessBoardVisual
+ChessBoardVisual 對 ChessBoard 的隱性耦合
+ChessBoard 對 ChessBoardVisual 的直接耦合
+
+但只要透過事件監聽，就能夠將連接變為單向
+
+```cs
+public class ChessBoard
+{
+    public Action onBoardUpdateEvent;
+    
+    public void MoveChess() 
+    { 
+        //move chess...
+
+        onBoardUpdateEvent.Invoke();
+    }
+}
+public class ChessBoardVisual
+{
+    void Initial(ChessBoard board)
+    {
+
+    }
+    public void UpdateVisual() { }
+}
+```
+
+差異為何呢？
+
+假設是雙向連接，當我今天將 ChessBoardVisual 移除時，ChessBoard 就會受到影響
+
+如果連接變為單向的
+我直接將 ChessBoardVisual 移除，程式還是可以運作
+因為事件註冊是由 ChessBoardVisual 執行的，ChessBoard 並不知道有誰「關心」這件事
+
+
+實際上還可能有幾層過度來保持可維護性
+
++ 觀察者模式
+
+<!-- 我在每次操作的時候都會掃過整張圖，來檢查黑白棋的國王是否還活著
 
 更好的作法是在棋子上添加事件監聽，當棋子死亡後觸發事件
 
@@ -798,8 +859,9 @@ public abstract class BaseChess
 
 沒提到設計模式，
 除了事件監聽（觀察者模式 Oberserver Pattern）以外
-以西洋棋的內容來說不太需要用到什麼模式
+以西洋棋的內容來說不太需要用到什麼模式 -->
 
+頭等函式語言
 
 <!-- 
 或甚至透過頭等函式與匿名方法，能夠
@@ -826,123 +888,164 @@ ButtonForeach(0, 1, 8, 2, (button) => button.BackColor = Color.Gainsboro);
 -->
 
 
-### 沒有資料驅動 -
+### 沒有資料驅動 +
 
-資料驅動，或者說數據驅動
+<!-- TODO Rename -->
+資料驅動，或者說數據驅動，也是一種廣泛使用在遊戲開發中的進階程式設計方法，其核心思想在於「將數據賦予意義」，讓簡單的數據片段代表某種「命令」，並透過這些片段組合出複雜的「行為」。
 
-而在這個腳本中，我顯然沒達到這點。每種棋子的行為都我直接寫死在程式中。
+為什麼要使用資料驅動？在開發遊戲時，我們不能夠指望所有行為設計師（或企劃）都擁有完整的程式設計能力，若每次改動設計時都需要由工程師修改專案的原始碼，並且重新編譯、建構執行檔後再讓測試人員進行測試，團隊的工作週期都被繁瑣的修改作業佔據。如果遊戲是基於資料驅動原則建構而成的，那設計師只要尋找行為定義文件，打開並修改某些字串或數值，就能將某支怪物設計的更具攻擊性，或是刪減過於強大的裝備效果，一切都都在設計師的掌控之下，工程師也不必為了零碎的修改煩心。
 
-```cs
-//原始腳本第 118 至 535 行
-private void button1_Click_1(object sender, EventArgs e)
-{
-    //...
-    if (but[b, c].Text == chess[0]) { }
-    else if (but[b, c].Text == chess[1]) { }
-    else if (but[b, c].Text == chess[2]) { }
-    else if (but[b, c].Text == chess[3]) { }
-    else if (but[b, c].Text == chess[4]) { }
-    else if (but[b, c].Text == chess[5]) { }
-    //...
-}
-```
+除此之外，即是不是為了分工考量，資料驅動本身帶來的開發效益也相當可觀，除了提供開發者龐大的設計擴展性，也能允許玩家以更低的門檻進行「模組開發」。
 
-將行為使用硬編碼寫死的優點只有前期開發快速，隨之而來的便是幾乎鎖死的擴展性和設計彈性。
-
-還有分工的考量在
-
-設計人員不見得會編寫程式，如果每次遊戲設計師想增減或修改棋子，都必須
-
-會嚴重拖累
-
-不需要動到程式碼
-
-數據驅動是相當重要的，棋子的行為具有高相似度
-
-每種棋子的行為都遵循著西洋棋盤的移動規則，
-
-我們只需要將規則寫進程式
-
-而行為則可以透過更簡單的方式定義
+而在這個專案中，我將所有行為都直接使用程式寫死，顯然不符合資料驅動的原則，文章這裡示範幾種將遊戲修改為資料驅動的簡單方法。首先便是棋子的資料結構，透過 json 這種輕量文字文件的儲存所需資料即可，包括棋子的編號、名稱、圖像以及移動方法。
 
 ```json
 chessData_king.json
 {
+    id: 0,
     name: "king",
     image: "chessGame/chessImages/kingImage.jpg",
-    movement: ["up", "upRight", "right", "downRight", "down", "downLeft", "left", "upLeft"]
+    movements: ["up", "upRight", "right", "downRight", "down", "downLeft", "left", "upLeft"]
 }
 ```
 
-並解析
+接著只要編寫將文件導入專案，提取出裡面的文字資料進行解析，並包裝成遊戲程式需要使用的格式即可，也就是棋子物件。
 
 ```cs
 class Chess
 {
+    int id;
     string name;
-    Image image;
-    Movement[] movements;
+    string image;
+    string[] movements;
 
     public Chess(string sourcesData)
     {
+        id = AnalyzeID(sourcesData);
         name = AnalyzeName(sourcesData);
         image = AnalyzeImage(sourcesData);
         movements = AnalyzeMovement(sourcesData);
     }
 }
-
 ```
 
-棋子
-也不需要繁複的繼承和複寫
-現在棋子物件就只是一種通用容器，根據輸入的資訊不同它就會變不同的棋子
+json 的轉換有許多資料能夠查詢了，文章這裡就先省略，只著重在如何將片段的命令對應到實際程式上：`movements: ["up", ...]`。命令與程式的對應方法大致上有兩種 - 直譯和編譯，沒錯就是你們想的那個直譯和編譯。
 
-資料驅動能提供相當大的設計彈性，只
-更進一步甚至能夠允許玩家製作模組，只需要將編輯權限開放給玩家即可，
+直譯的話，可以直接透過透過判斷式在運行時將命令進行比對，並對應到實際程式上，編寫出的節過大致如下：
+
+```cs
+public bool MovementInterpreter(Vector destination, string[] movements)
+{
+    for(int i = 0; i < movements.length; i++)
+    {
+        switch(movement)
+        {
+            case "up":
+                if(CheckMoveUp(destination)) return true;
+
+            case "down":
+                if(CheckMoveDown(destination)) return true;
+
+            //case right, case left, ...
+        }
+    }
+
+    return false;
+}
+
+bool CheckMoveUp(Vector destination) { }
+bool CheckMoveDown(Vector destination) { }
+//other movement check
+```
+
+編譯則是在某個適當時機（通常是初始化時），將原本的命令轉換為更具效能優勢資料結構，省去解析資料時本身的開銷。要達成編譯效果有兩種作法，第一就是如同真正的電腦一樣，定義一種接近機器語言的低階語言（位元組碼），並在遊戲系統中製作一台虛擬機器運行它。但我更傾向利用頭等函數語言的特性，將整個命令打包為能直接使用的「函式變數」儲存，在開發上會輕鬆許多。
+
+```cs
+delegate bool MovementHandler(Vector destination);
+public MovementHandler[] CompileToHandler(Vector destination, string[] movements)
+{
+    List<MovementHandler> handlers = new List<MovementHandler>();
+    for(int i = 0; i < movements.length; i++)
+    {
+        switch(movement)
+        {
+            case "up":
+                handlers.Add(CheckMoveUp);
+                break;
+
+            case "down":
+                handlers.Add(CheckMoveDown);
+                break;
+
+            //case right, case left, ...
+        }
+    }
+
+    return handlers.ToArray();
+}
+bool CheckMoveUp(Vector destination) { }
+bool CheckMoveDown(Vector destination) { }
+```
+
+資料驅動也有千千百百種作法，輕能允許開發者更方便的修改各項參數與公式，重則能允許對道具效果、人物行為甚至是整個遊戲機規則進行修改。同樣的，文章也只作為學習的方向指點，這裡提供一些補充資料，更進一步的內容請自行研究。
 
 
-如果你想搞資料驅動的話，建議從 Lua 開始。
-許多允許模組創作的遊戲便是能編寫 lua 腳本的
++ **資料結構數據化**  
+    透過類型物件模式 (Type Object Pattern)，改變建構與儲存遊戲資訊的方法，透過更輕量的資料結構提昇修改便利性。並利用原型模式 (Prototype Pattern) 重用數據，減低不必要的修改作業。 
 
-除非你想搞到很底層的東西，或是想再遊戲中直接提供編輯器，才有需要自己搞
++ **定義與解析資料**  
+    可以參考編譯器中的語法解析原理 (Lexical analysis)。正規表達式 (Regular expression) 是個可靠的幫手，強大的字串辨識算法能省去許多繁瑣作業。令牌化 (Tokenization) 能龐大的文字資訊拆分為易於解析的片段。
 
-可擴展性
-與設計彈性
++ **單一命令建構行為**  
+    賦予簡單的資訊片段對應的命令，堆疊操作、數值計算、法術施放！將創造一種新的語言，讓我們能透過簡單的命令建構起複雜的行為，提供極為強大的編輯彈性，參考位元組碼模式 (Bytecode Pattern)。
 
-關鍵字：Data Driven Programming、Lua
-
-{{< text/greenLine >}}
-Data Driven Programming 有時也會查到 Data Oriented Design，但兩者是無關的。
-{{</ text/greenLine >}}
-
-DLL, XML
+除此之外，有一種語言叫做 Lua，是常被用於遊戲數據、公式與邏輯定義的輕量級腳本語言，也是一種接觸資料導向的好方向（雖然我自己也還沒學 :P）
 
 
-## 其他建議和
+<!-- DLL, XML -->
 
 
-### 減少註解 -
+## 個人建議
 
-這部份的觀點可能因人而異，不過我個人是反對做註解的。
+上面部份
 
+而這個章節就只是一些由個人學習經驗產生的想法而已，是不適用於其他人就是另一回事了。
+希望能提供不同的視角
 
+### 盡量減少註解 -
 
-第一可以訓練可讀性
-當失去的註解這個手段，你唯一能依靠的就是
+有些人可能說要盡量多寫註解，看看程式碼時才會比較輕鬆，也不會格一段時間就看不懂自己的程式了
+也不會說一覺起來就發現昨天的程式都看不懂了。
+對於這點，我個人是持反對意見的，以長期來說避免註釋
+，我認為盡可能避免註解 才是長期
+原因有兩點
 
+<u> **降低對註解的依賴，能提高對命名的重視度** </u>
 
-除非你是寫 Editor Tool，或是你們程式分工有什麼對外接口讓其他程式調用，那種地方註解就是有必要的
+在【難辨識的命名】那章中，我們有提到
 
-我一直以來都是用這種方法訓練可讀性和程式架構的
-剛開始可能很痛苦，睡一覺起來就看不懂昨天寫的程式了
+雖然能夠過註解來
 
-不過長時間訓練下來的話
-除了
-而且你在讀別人的程式碼也能更快了解架構
+```cs
+int a;
+int b;
+// a = dog
+// b = cat
+```
 
-因此我自己寫程式時，會做註解的狀況只有幾項
-+ 分隔區塊
-    最主要需要註解的情況，一個腳本裡面有不同類型的 function 要進行分隔
+能夠訓練命名能力
+
+<u> **避免註解解釋，能提高對程式架構的敏感度** </u>
+<!-- Rename -->
+
+接續上一點，當你「只能」透過命名來表達函數、類別的內容時，你也會發現一些程式功能無法被命名涵蓋。如果透過註解的話就能簡單的補充，但這段「不該存在此處」的程式碼也將被保留下來。
+
+倘若現在失去了註解的手段，處裡這些內容的最好辦法就是進行程式碼「拆分」，將多餘的內容拆分至不同函式或腳本當中，並用適合他的命名來描述內容。這個過程也能訓練自己對程式架構的敏感度與重構能力。
+
+現在我在寫程式時，會做註解的狀況只有幾種而已。
+
++ 分隔區塊  
+    是我最主要會做註解的情況，一個腳本裡面有不同類型的函式要進行分隔，而註解在文字編輯器中會有不同的顏色提示，能夠方便我做視覺上的區分。
     ```cs
     //Initial
     void Initialize() { }
@@ -956,45 +1059,71 @@ DLL, XML
     void UpdateUI() { }
     ```
 
-+ 待做清單
-
-    透過編輯器的搜索功能能夠快速定位，通常是 ctrl + f
++ 待做事項  
+    也就是所謂的 TODO，有些功能只是先建立而已，打算其他部份忙完再回來實做，為了避免忘記可以透過註解做標籤紀錄。之後只要透過搜尋文字的功能，就能快速定位回待做事項的位置上。
     ```cs
     void SomeMethod()
     {
-        //TODO some thing to do
+        //TODO do something
+        //透過編輯器的搜索功能搜尋 "TODO"，搜索快捷鍵通常是 ctrl + f
     }
     ```
 
-+ 真的需要註解
-    比較少發生的情況
++ 真的需要  
+    真的需要註解的情況，也是比較少發生的情況。通常是在搞通用函式庫，或是程式協做有特定接口要和別人對接的情況...再不然就是真的想不到怎麼命名 :P
     ```cs
     /// <summary>
-    ///
+    /// 編寫函式的功能概括，會顯示在編輯器的函式提示匡中
     /// </summary>
     void SomeMethod()
     {
 
     }
+    ```
 
--
+因此個人建議
 
-### 不要害怕重構
+我從初學遊戲開發開始都有意在避免寫註寫，透過這種手段訓練自己的可讀性和程式架構能力。剛開始是真的很吃力沒錯，睡一覺起來就看不懂昨天寫的程式了，但長時間累積下來，程式架構能力真的長進不少，現在不要說一天或一個月，我有把握自己寫的程式碼一年後還看得懂。
 
+### 嘗試不同作法
+<!-- 
+重構程式能訓練自己的能力
+
+或甚至是將一個系統砍掉重寫
+
+隨著能力的提昇，每次砍掉或重構一個系統
+
+造成的影響都會越來越小
+
+只需要將幾行程式註解掉，系統就能與核心程式分離
+
+我自己是對重構程式蠻樂在其中的，
+感覺就像把樂高拆掉重拼那樣
 也可能我比較異類拉
 
-我對重構程式蠻樂在其中的
+但是這個過程也幫助我累積許多觀念與能力
+以我的第一個長期專案【山鴉行動】來說，
 
-感覺就像把樂高拆掉重拼那樣
+幾乎整個遊戲的所有程式都被我重構、砍掉重寫過
 
-### 無意義的簡短
-
-簡化和減短是不同的東西
-
-### 無意義的優化
+題外話，單例模式真的一種很可怕的東西，山鴉裡面的玩家腳本是我唯一一個想砍砍不動的東西，多虧單例讓它和全世界都黏在一起。 -->
 
 
 ## 結語
 
+### 缺失的內容
 
+有一部分是
+
+但很可能更多部份是
+
+很遺憾的是在我學到東西以前，我是不知道自己缺乏什麼的
+
+這篇文章是以我自身的學習經歷
+
+這篇文章沒寫到的內容
+
+
+
+### 感謝閱讀
 
