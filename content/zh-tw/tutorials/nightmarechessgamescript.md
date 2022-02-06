@@ -4,8 +4,8 @@ date: ---
 lastmod: ---
 draft: true
 keywords: []
-description: ""
-tags: []
+description: "從初學時做出的作品，反思學習路徑"
+tags: ["程式"]
 category: ""
 author: "angus chan"
 featured_image: ""
@@ -14,7 +14,7 @@ important: 10
 
 # You can also close(false) or open(true) something for this content.
 # P.S. comment can only be closed
-comment: true
+comment: false
 toc: true
 autoCollapseToc: false
 postMetaInFooter: false
@@ -44,55 +44,39 @@ sequenceDiagrams:
 ---
 
 
-## 前言
+## 前言 +
 
-心情還是在超級複雜的情況，來聊些有趣的東西吧。前陣子和朋友聊到西洋棋遊戲設計的事情，我就想到之前做過一個有趣的東西，一個用 windows from 的西洋棋遊戲，那是在我剛學程式時做的玩意。
+自學遊戲開發以來...
+
+和人聊天的時候突然想到
+
+某個初學程式時做的...
+
+<!-- 個人最開始接觸程式時，是在四年前就讀高職資訊科的時候， -->
+
+我透過 windows from 的按鈕元素表示棋盤格，並利用中文字與按鈕的顏色來表示棋子和棋子所屬的陣營。遊戲內容沒什麼特別的，一個常規的古典西洋棋，需要在本機由兩個人輪流控制來對弈，沒有 AI 也沒有連線對戰的功能。
+
 {{< pathImage "ChessGame.jpg" "80%" >}}
 
-<!-- 還在高職資訊科時 -->
+在我挑戰這個專案時（至少以那時的能力來說是挑戰），我的程式能力僅在變數、判斷式、迴圈的程度。別說類別和物件導向，當時我是個連「函式」概念都不懂的入門者，只是個無情的解題機器。但是刻在靈魂中的志向，使我嘗試挑戰製作出一個遊戲。於是我使用僅有的程式知識，硬是刻出了這個西洋棋遊戲，導致這個專案的唯一腳本中有長達七萬行的程式碼。
 
-一個普通的西洋棋遊戲，需要在本機由兩個人輪流控制來對弈，遊戲沒有 AI 也沒有連線，為什麼要特別把他拿出來說呢？因為這個腳本裡有七萬行 code
 {{< pathImage "thousandLineOfcodes.jpg" "80%" >}}
 
-沒有 AI 也沒有連線，為什麼有那麼多行程式？...就像標題說的，那時我連 function 和 class 的觀念都沒有，所以全部內容都是靠 hard code 雕出來的。
+雖然粗暴，不過以結果來說他也是有效的。但隨著程式能力增長，除了單純的「達成目的」以外，我也開始思考如何寫出「更好」的程式。這個專案提供了很好的切入點，從現在的角度回來看，它就像一個完美的負面教材，於是我決定透過這篇文章，點出程式中能能夠改進的部份。
 
-總之，這個腳本踩了「幾乎所有」程式或遊戲程式設計中的地雷，是堪稱完美的負面教材。有那麼好的教材不用也可惜，這篇文章就讓我把裡面踩到的地雷一個一個點出來，由簡入深。
+### 注意事項 +
 
-### 注意事項
+1. 在文章的程式區塊中，我會透夠註解來表示哪些是原始內容，哪些是修正過後的。而範例中的程式以是 C# 為主，但僅用於展示範例和觀念，無法真正運作。
 
-1. 在文章的程式區塊中，我會透夠註解來表示哪些是原始內容，哪些是修正過後的。而範例中的程式以是 C# 為主，有些部份會是 fake code，僅用於展示範例和觀念。
+2. 文章內容主要是針對「遊戲開發」的程式，程式的其他領域可能不完全適用，但也可以提供不同的思考方向。當然，也歡迎各位提供不同領域的思考方向。
 
-2. 文章內容主要是針對「遊戲開發」的程式，其他領域可能不完全適用，但也可以提供不同的思考方向。
-
-3. 這篇文章的定位比較像是「學習路徑指南」而非教學，因此每段落的內容可能不會過於深入。但你們可以透過不同段落的內容大致判斷自己的能力階段，並作為更進一步學習的基準。
-
-
-<!-- 3. 部分程式碼可能令人產生不適感 -->
-
-{{< pathLink "完整腳本點我 Form1.cs" "Form1.cs" >}}
-<!-- 
-如果覺得某一張節的內容不懂霍地一次聽
-
-### 名詞備註
-
-+ 程式腳本 Script
-    通常我們會稱呼編寫程式碼的那個文字文件為 Script，文中 
-    
-+ 三元運算子
-
-層層推翻的
-上一層的修正範例可能又會在下一層被推翻
-    
-可讀性、可維護性、可擴展性
-    
--->
-
-
-
+3. 這篇文章的定位比較像是「學習路徑指南」而非教學，因此每段落的內容可能不會過於深入。但可以透過不同段落的內容大致判斷自己的能力階段，並作為更進一步學習的基準。
 
 ## 由簡入深
 
-讓我們開始吧～
+進入正題～
+
+{{< pathLink "完整腳本連結 Form1.cs" "Form1.cs" >}}
 
 ### 難辨識的命名 +
 
@@ -160,7 +144,11 @@ for (int x = 0; x < length; x++)
 
 如果你不知道如何判斷名稱命的好壞，就根據自己能不能「一眼看出用途」當作基準，如果不行，或理解出的意思有偏差，就代表需要 Rename。不用擔心名稱過長，可以透過駝峰命名法來提高辨識度。
 
+{{< pathImage "camelCase.png" >}}
+
 訓練出命名能力後，不只你的程式可讀性會更高，你在看到其他新函式的時候透過名稱推估出大略功能，因為你知道那些命名都是有意義的。不同語言使用的規則可能略有差異，更多資料可以透過命名規則或是 Coding Style 找到。
+
+<!-- https://docs.microsoft.com/zh-tw/dotnet/standard/design-guidelines/naming-guidelines -->
 
 關鍵字：Coding Styles, Naming Rules, Camel-Case
 
@@ -576,6 +564,8 @@ void UpdateVisual()
 
 如果還想要拆分的更細，也能分成三等份，將視覺、邏輯、數據進行拆分，不過文章這裡就點到為止。
 
+<!-- MVC -->
+
 ### 資料結構零散 +
 
 有時我們在定義數據時，會遇到需要多的變數來表打一種資訊，而在這個腳本中的案例就是網格的座標。我使用了兩個 int 儲存點擊位置的 x 軸與 y 軸資訊。
@@ -635,17 +625,16 @@ float distance = Vector.Distance(current, target);
 
 透過物件導向將零碎的資料整合為一個整體，省去過多的零碎變數，讓架構更乾淨並同時提高可讀性。
 
-### 類別內容混雜 -
+### 類別內容混雜 +
 
-目前為止，我們都是將所有內容寫在同個腳本，或者說類別 (class) 當中，感覺起來就像所有東西都被鑲在一起那樣。雖然這是「一個西洋棋遊戲」沒錯，但無論西洋棋、象棋或是其他遊戲，它們都是由複數的「物件」與「規則」交互作用所構成的。
+　　目前為止，我們都是將所有內容寫在同個腳本，或者說類別 (class) 當中，感覺起來就像所有東西都被鑲在一起那樣。雖然這是「一個西洋棋遊戲」沒錯，但無論西洋棋、象棋或是其他遊戲，它們都是由複數的「物件」與「規則」交互作用所構成的。
 
-物件包括棋盤、棋子與玩家，而規則限制了棋子的移動方式，玩家之間的操作以及輸贏判定。這也是現實中物體的運作原理，每個獨立的物體都有自己的行為邏輯，物體之間的行為互動構成規則，規則再與規則結合出複雜的系統。
+物件包括棋盤、棋子與玩家，而規則限制了棋子的移動方式，玩家之間的操作以及輸贏判定。這也是現實中物體的運作原理，每個獨立的物體都有自己的行為邏輯，物體之間的行為互動構成規則，規則再與規則結合出複雜的系統。將整個腳本的內容拆分為複數物件，以現實世界的運作原理為參考，進行程式設計的方法，也就是所謂的物件導向。
 
-將整個腳本的內容拆分為複數物件，以現實世界的運作原理為參考，進行程式設計的方法，也就是所謂的物件導向。
-首先便是棋子，建立一個新的類別 Chess，並使用變數除存棋子類型與所屬陣營。
+首先建立一個 Chess 的棋子類別，並在其中建立棋子屬性所需的變數，包括棋子類型和其所屬整營。
 
 ```cs
-//修改後的程式碼 BaseChess.cs
+//修改後的程式碼 Chess.cs
 public class Chess
 {
     int type;
@@ -658,9 +647,10 @@ public class Chess
 }
 ```
 
-再將原先腳本中的移動規則移至 Chess 類別中，將移動方法打包成一個函式，根據自身的棋子類型判斷移動是否被允許。
+再來便是物件的「行為」，也就是棋子的移動方式。移動方式的實作方法有許多種，這邊就假設棋子會透過類型判斷移動方向是否被允許。建立一個判斷移動的函式，透過棋子的屬性「類型」和輸入的預期移動，判斷是否符合棋子行為，透過外部系統（如棋盤）調用來進行判斷。
 
 ```cs
+//在 class Chess 當中
 public bool ChessMovement(Vector destination)
 {
     switch(chessType)
@@ -672,53 +662,96 @@ public bool ChessMovement(Vector destination)
 }
 ```
 
-棋子完成了，接下來把它們放到棋盤上。建立一個棋盤的類別 ChessBorad，讓它使用二維陣列儲存棋子。根據輸入的大小建立棋盤網格，並提供方法讓外部訪問棋盤資訊。
+完成了戰士之後，需要一個戰場讓他們廝殺，也就是「棋盤」。建立棋盤類別 ChessBorad，儲存棋盤需要的屬性（例如大小或放在棋盤上的棋子），透過建構函式傳入棋盤大小。
 
 ```cs
 //修正後的程式 ChessBoard.cs
 public class ChessBoard
 {
-    Vector size;
-    Chess[,] chessBoard;
+    public Vector size;
+    public Chess[,] chessBoard;
     public ChessBoard(Vector size)
     {
         this.size = size;
         chessBoard = new Chess[size.x, size.y];
     }
-    public Chess GetChess(Vector position) { }
-    public void MoveChess() { } 
 }
 ```
 
-棋子與其盤都有了，最後剩下的便是規則，或者說管理整個遊戲的系統。
-管理玩家回合
-判定輸贏
+同樣的，棋盤物件也具有一些行為，例如放置棋子到棋盤上、選取一個棋子並移動它。
 
 ```cs
+//在 class ChessBoard 當中
+public void PlaceCess(Chess chess, Vector place)
+{
+    chessBoard[place.x, place.y] = chess;
+}
+public void SelectChess(Vector position) { }
+public void MoveChess(Vector destination) { } 
+```
+
+上面的兩個物件「棋子」和「棋盤」是比較具體的物件，能夠輕易的透過現實的邏輯分隔開來，但在編寫程式時，有時也會遇到比較抽象但必要的存在，像是「世界」或者說是「世界的規則」。
+
+在西洋棋當中，世界便是「西洋棋遊戲」的規則本身。讓由兩個玩家輪流行動，控制棋子的行為；檢測國王是否存活，判定這場戰爭的最終結果。建立一個類別 ChessGame，儲存回合狀態與棋盤資訊，以及（範例中假定的）其他系統。
+
+```cs
+//修正後的程式 ChessGame.cs
 public class ChessGame
 {
     int currentTurn;
     ChessBoard board;
+    TurnManager turnManager;
+    InputSystem inputSystem;
 
-    //這裡假設 main 會在一開始執行
-    public void main()
-    {
-
-    }
+    BoardVisual visual;
 }
 ```
 
-<!-- 註：這裡省略的前幾章說到的視覺部份，ChessBoradVisual.cs -->
+現實中的西洋棋，遊戲流程的控管會交由玩家本身進行，但在程式中我們除了基本規則以外，也必須主動控管遊戲的進程，從遊戲開始的初始化、切換回合、檢測玩家輸入、檢測遊戲勝負，以及顯示遊戲結果。
 
-透過物件導向觀念，我們將內容混雜的類別，拆分成幾種不同物件。
+```cs
+//在 class ChessGame 當中，這裡假設 main 會在一開始執行
+public void main()
+{
+    GameInitial();
+    
+    while(!isGameEnd)
+    {
+        SwitchTurn();
+        PlayerInput();
+        CheckWinner();
+    }
 
-除了使整體架構更加乾淨，我們也能更輕鬆的區分不同程式碼間的關聯
+    EndGame();
+}
+void GameInitial()
+{
+    board.Initial();
+    turnManager.Initial();
+    inputSystem.Initial();
 
-不過這只是物件導向的最最基礎而已，除此之外還有多型、繼承、抽象、界面、泛型等進階應用，如果真的要深入的話好幾篇文章都說不完的，因此避免離題這裡就點到為止。
+    visual.Initial();
+}
+void SwitchTurn() { }
+void PlayerInput() { }
+bool CheckWinner() { }
+void EndGame() { }
+```
 
-當然進階的程式架構方法也不只有物件導向，但它之所以能成為最被廣泛使用的程式設計方法就是因為與現實邏輯的相近性。（望向隔壁的資料導向）
+透過物件導向進行工作拆分，使用更有架構的方式控管各項功能，我們也能更輕鬆的區分不同程式碼間的關聯。不過這只是物件導向的最最基礎而已，除此之外還有多型、繼承、抽象、界面、泛型等進階應用，真的要深入的話好幾篇文章都說不完的，因此這裡就提供一些深入方向提供參考。
 
-<!-- 關鍵字：Object Oriented Programming -->
+<!-- TODO 修正內容 -->
++ 物件導向 Object Oriented Programming  
+    從這兩個章節開始正式踏入物件導向的領域，能夠幫助你建構更加複雜的世界。物件導向是較為主流的程式設計方法，因此隨便 Google 都有一海票資料。當然進階的程式架構方法也不只有物件導向，但它之所以能成為最被廣泛使用的程式設計方法就是因為與現實邏輯的相近性（望向隔壁的資料導向）。
+
++ 設計模式 Design Patterns  
+    當開始踏入物件導向時，設計模式一詞也會進入你的視野。由前人的經驗整合和出的智慧，如何架構程式、降低耦合度、提升擴展性與優化效能。或許程式的編寫沒有對錯，但還是有好壞之分的，如果想將程式寫的「更好」，勢必得花時間遊覽這個知識寶庫。
+    
++ 繼承和多型 Inheritance    
+    繼承類別 (Inheritance) 來重用程式碼，透過多型 (Polymorphism) 特性封裝具體內容，利用抽象 (abstruct) 與虛擬 (virtual) 函式定義框架，並使用覆寫 (override) 進行具體實作。更進一步的應用可以參考設計模式「子類別沙盒」 (Subclass Sandbox)。
+
++ 泛型介面與條件約束 Generic  
+    利用泛型類別 `Class<T>` 建立通用系統，透過介面 (interface) 定義型別內容，並使用條件約束 (where) 明確型別類型。熟悉泛型的運用能夠幫助各位開發更加通用的系統，建立出自己的程式工具箱。
 
 ### 多餘手動作業 -
 
@@ -775,75 +808,93 @@ class ChessBoardVisual
 }
 ```
 
+當然有些情況需要手動編排設計
 
-### 程式雙向耦合 -
+但若只是重複作業，交給程式能省下許多時間
 
-就以視覺和邏輯的連接點舉例
-
-在原本（修正內容）的程式中
-
-我們應該會在讓棋盤 ChessBoard 在操作結束後讓視覺的部份 ChessBoardVisual 更新畫面
+有物件導向觀念後會更容易
 
 
+### 程式雙向耦合 +
 
-```cs
-public class ChessBoard
-{
-    //...codes
-    ChessBoardVisual boardVisual;
-    
-    public void MoveChess() 
-    { 
-        //move chess...
+當回合結束時，整個遊戲中有許多不同系統需要做它該做的事。
 
-        boardVisual.UpdateVisual();
-    }
-}
-public class ChessBoardVisual
-{
-    public void UpdateVisual() { }
-}
-```
-ChessBoard <---> ChessBoardVisual
-ChessBoardVisual 對 ChessBoard 的隱性耦合
-ChessBoard 對 ChessBoardVisual 的直接耦合
+1. 棋盤需要將當前的棋子分佈保存，確保遊戲被中斷後能夠正常恢復狀態。
+2. 改變 UI 的提示，告知玩家回合發生變換，接下來要由誰操作。
+3. 改變使用者能選取的棋子，假設接下來是黑棋的回合，那便要把白棋鎖住，並解鎖黑其選取。
+4. 讓音效播放器發出有趣的回合切換提示音。
 
-但只要透過事件監聽，就能夠將連接變為單向
+假設我們有個「回合系統」的類別，它負責管理遊戲中玩家雙方的回合狀態。在原本的作法中，我們可能會讓回合系統在切換回合的同時，呼叫上述的系統執行任務。
 
 ```cs
-public class ChessBoard
+class TurnManager
 {
-    public Action onBoardUpdateEvent;
-    
-    public void MoveChess() 
-    { 
-        //move chess...
+    //玩家只有兩位，因此這裡透過 bool 變數儲存回合狀態
+    bool currentTurn;
 
-        onBoardUpdateEvent.Invoke();
-    }
-}
-public class ChessBoardVisual
-{
-    void Initial(ChessBoard board)
+    ChessBoard chessBorad;
+    UIManager uiManager;
+    ChessSelector chessSelector;
+    SoundEffectPlayer soundEffectPlayer;
+    
+    public void ChangeTurn()
     {
+        currentTurn = !currentTurn;
 
+        chessBorad.SaveState();
+        uiManager.ChangeUI(currentTurn)
+        chessSelector.ChangeTargets(currentTurn)
+        soundEffectPlayer.TurnChangeSound();
     }
-    public void UpdateVisual() { }
 }
 ```
 
-差異為何呢？
+雖然這樣能有效達成目的，但也帶來了幾項問題，除了用來切換回合的函式內出現了多餘的工作，回合系統也需要另外的變數來儲存這些系統的引用。回合系統與許多系統發生雙向耦合，首先是需要由回合系統調用的概念耦合，以及回合系統調用函式的直接耦合，因此每當每當我們想增減某項工作時，都會影響到雙方系統，導致程式難以維護。
 
-假設是雙向連接，當我今天將 ChessBoardVisual 移除時，ChessBoard 就會受到影響
+<!-- 而且函式必須要為 public -->
+<!-- TODO 示意圖 -->
+<!-- TODO 描述修正 -->
 
-如果連接變為單向的
-我直接將 ChessBoardVisual 移除，程式還是可以運作
-因為事件註冊是由 ChessBoardVisual 執行的，ChessBoard 並不知道有誰「關心」這件事
+要解決這個問題，我們可以透過「事件監聽」的方法來將耦合變為單向，不讓系統直接調用函式，而是用某種手段「儲存」那些想被調用的函式，如此一來就能避免直接編寫調用來的彈性。如果你是用的是頭等函式語言（如 C#），可以直接透過 System.Action 或是 delegate 建立函式變數，來達成事件註冊的功能。如果是允許指標操作的語言（如 C++）則可以利用函式指標的陣列來達成目的，將要註冊函式的指標傳入陣列，事件觸發時一個個調用即可。
+<!-- TODO 描述修正 -->
+（註：我沒有真的寫過 C++，如果有描述有誤麻煩各位指正）
 
+文章這裡就以 C# 的 System.Action 變數來達成效果，讓回合系統提供一個會在回合切換時觸發的事件，並由其他系統在初始化時進行註冊。
 
-實際上還可能有幾層過度來保持可維護性
+```cs
+class TurnManager
+{
+    bool currentTurn;
+    public Action<bool> OnTurnChangeEvent;
+    
+    public void ChangeTurn()
+    {
+        currentTurn = !currentTurn;
 
-+ 觀察者模式
+        OnTurnChangeEvent?.Invoke(currentTurn);
+    }
+}
+```
+
+```cs
+class ChessBorad
+{
+    void Init()
+    {
+        OnTurnChangeEvent += SaveState;
+    }
+    void SaveState() { }
+}
+```
+
+這樣修改與原本的差別在哪呢？第一便是程式連接變為單向，其他系統對回合系統的概念連接，以及註冊函式的時的直接連接。回合系統現在不需要顧慮其他系統，它只要在該觸發事件的時候觸發即可。
+
+當我們想增減某項工作時，也不需要接觸到回合系統的程式碼，只要自己在初始化時進行註冊即可。訊息發出者並不在乎有誰聽到，它該做也唯一會做的就是發出通知，讓聽到通知的人自己去做該做的事，透過這種方法能有效避免程式耦合。
+
+掌握這項技巧，對程式的架構能力會更上一層，文章同樣也點到為止，這裡提供進一步的資料提供深入。
+
++ 觀察者模式 Observer Pattern  
+    事件監聽的應用
 
 <!-- 我在每次操作的時候都會掃過整張圖，來檢查黑白棋的國王是否還活著
 
@@ -861,36 +912,9 @@ public abstract class BaseChess
 除了事件監聽（觀察者模式 Oberserver Pattern）以外
 以西洋棋的內容來說不太需要用到什麼模式 -->
 
-頭等函式語言
-
-<!-- 
-或甚至透過頭等函式與匿名方法，能夠
-```cs
-void ButtonForeach(int xStart, int yStart, int length, int grow, Action<Button> handler)
-{
-    for (int x = xStart; x < length; x += grow)
-    {
-        for (int y = yStart; y < length; y += grow)
-        {
-            handler.Invoke(buttons[j, i]);
-        }
-    }
-}
-ButtonForeach(0, 0, 8, 1, (button) => button.ForceColor = Color.White);
-ButtonForeach(0, 0, 8, 1, (button) => button.Enabled = false);
-ButtonForeach(0, 0, 8, 2, (button) => button.BackColor = Color.DimGray);
-ButtonForeach(1, 1, 8, 2, (button) => button.BackColor = Color.DimGray);
-ButtonForeach(1, 0, 8, 2, (button) => button.BackColor = Color.Gainsboro);
-ButtonForeach(0, 1, 8, 2, (button) => button.BackColor = Color.Gainsboro);
-```
-（註：這裡的範例不太好，因為情況沒複雜到需要這樣做，有點多此一舉，我只是要展示有這種作法而已）
-（再註：這部份有點跳級，如果你還沒學到頭等函式或事件監聽的可以忽略） 
--->
-
-
 ### 沒有資料驅動 +
-
 <!-- TODO Rename -->
+
 資料驅動，或者說數據驅動，也是一種廣泛使用在遊戲開發中的進階程式設計方法，其核心思想在於「將數據賦予意義」，讓簡單的數據片段代表某種「命令」，並透過這些片段組合出複雜的「行為」。
 
 為什麼要使用資料驅動？在開發遊戲時，我們不能夠指望所有行為設計師（或企劃）都擁有完整的程式設計能力，若每次改動設計時都需要由工程師修改專案的原始碼，並且重新編譯、建構執行檔後再讓測試人員進行測試，團隊的工作週期都被繁瑣的修改作業佔據。如果遊戲是基於資料驅動原則建構而成的，那設計師只要尋找行為定義文件，打開並修改某些字串或數值，就能將某支怪物設計的更具攻擊性，或是刪減過於強大的裝備效果，一切都都在設計師的掌控之下，工程師也不必為了零碎的修改煩心。
@@ -1005,19 +1029,14 @@ bool CheckMoveDown(Vector destination) { }
 <!-- DLL, XML -->
 
 
-## 個人建議
+## 個人建議 +
 
-上面部份
-
-而這個章節就只是一些由個人學習經驗產生的想法而已，是不適用於其他人就是另一回事了。
-希望能提供不同的視角
+上面部份是根據我自學過程分析出的一些重要節點，而這個章節就只是一些由個人經驗產生的想法而已，並不一定適用於其他人。但還是分享給各位，希望能提供不同的視角。
 
 ### 盡量減少註解 -
 
-有些人可能說要盡量多寫註解，看看程式碼時才會比較輕鬆，也不會格一段時間就看不懂自己的程式了
-也不會說一覺起來就發現昨天的程式都看不懂了。
-對於這點，我個人是持反對意見的，以長期來說避免註釋
-，我認為盡可能避免註解 才是長期
+有些人可能說要盡量多寫註解，看看程式碼時才會比較輕鬆，也能避免一覺起來就發現昨天的程式都看不懂了。但是對於這點，我個人是持反對意見的，我認為以長期的學習來說，盡可能避免註解
+
 原因有兩點
 
 <u> **降低對註解的依賴，能提高對命名的重視度** </u>
@@ -1086,6 +1105,9 @@ int b;
 我從初學遊戲開發開始都有意在避免寫註寫，透過這種手段訓練自己的可讀性和程式架構能力。剛開始是真的很吃力沒錯，睡一覺起來就看不懂昨天寫的程式了，但長時間累積下來，程式架構能力真的長進不少，現在不要說一天或一個月，我有把握自己寫的程式碼一年後還看得懂。
 
 ### 嘗試不同作法
+
+
+
 <!-- 
 重構程式能訓練自己的能力
 
@@ -1111,6 +1133,21 @@ int b;
 
 ## 結語
 
+### 補充內容
+
+如何查詢資料
+
+文章中已經提供大量的關鍵字了
+
+Google: C# Inheritance
+
+<!-- https://home.gamer.com.tw/creationDetail.php?sn=5217944 -->
+
+http://gameprogrammingpatterns.com/
+
+http://gpps.billy-chan.com/
+
+
 ### 缺失的內容
 
 有一部分是
@@ -1123,7 +1160,8 @@ int b;
 
 這篇文章沒寫到的內容
 
-
-
 ### 感謝閱讀
+
+個人網站的留言功能暫時未完成
+請至巴哈小屋留言
 
