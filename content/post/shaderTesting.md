@@ -1,6 +1,6 @@
 +++
-title = "Shader Testing"
-date = 2017-04-01T00:00:00+08:00
+title = "重新施工中~~~~"
+date = 2022-03-14T00:00:00+08:00
 description = "shader"
 tags = [
     "test",
@@ -9,21 +9,40 @@ tags = [
 showToc = false
 +++
 
-
+測試各種新玩具
 
 <!--more-->
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
-{{< fragCanvas size="300 300" >}}
-    uniform vec2 u_resolution;
-    uniform vec2 u_mouse;
-    uniform float u_time;
+{{< fragCanvas size="300 300" frag="/static/shader/sandboxShader.glsl" >}}
+<!-- {{< fragCanvas size="300 300" frag="/static/shader/sandboxShader.glsl" >}} -->
 
-    void main() {
-        vec2 st = gl_FragCoord.xy / u_resolution.xy;
-        gl_FragColor=vec4(st.x, st.y,0.0,1.0);
-    }
-{{< /fragCanvas >}}
+line
 
-<!--more-->
+line
 
+line
+
+line
+
+line
+
+line
+
+line
+
+line
+
+line
+
+line
+
+line
+
+line
+
+line
+
+line
+
+line

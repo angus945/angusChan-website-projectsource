@@ -5,6 +5,7 @@ description = "In-post APlayer testpage of Hugo theme Fuji"
 tags = ["test", "aplayer"]
 aplayer = true
 showLicense = false
+draft = true
 +++
 
 {{< aplayer urls="/aplayer/berlin.mp3" names="Berlin" artists="Crowander" covers="/aplayer/crowander.jpg" >}}

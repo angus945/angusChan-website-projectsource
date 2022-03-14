@@ -1,16 +1,10 @@
 
 
-{{/*  {{ $vert := `
-    void main() 
-    {
-        gl_Position = vec4(position, 1.0);
-    }
-    ` | string }}  */}}
 {{ $size := .Get "size" | string }}
 
-{{ $vert := os.ReadFile "static/commonShaders/baseVert.vert" | string }}
+{{ $vert := os.ReadFile "static/shader/baseVert.vert" | string }}
 
-{{ $frag := $.Inner | string }}    
+{{ $frag := os.ReadFile (.Get "frag") | string }}
 
 {{ partial "shader/glslCanvas" (dict "size" $size "vert" $vert "frag" $frag) }}
 

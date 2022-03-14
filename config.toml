@@ -1,5 +1,5 @@
-baseURL = "https://github.dsrkafuu.net/hugo-theme-fuji/"
-title = "Hugo Theme Fuji"
+baseURL = "https://angus945.github.io/"
+title = "AngusChan-blog"
 
 theme = "fuji"
 hasCJKLanguage = true

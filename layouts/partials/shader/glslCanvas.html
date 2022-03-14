@@ -1,111 +1,107 @@
 
 {{/*  {{ partial "glslCanvas" (dict "size" "vert" "frag") }}  */}}
 
-{{/*  Render Properties  */}}
 {{ $size := split .size " " }}
 {{ $width := index $size 0 }}
 {{ $height := index $size 1 }}
 
-{{ $vert :=  .vert }}
-{{ $frag :=  .frag }}
+{{ $vert := .vert }}
+{{ $frag := .frag }}
 
-HALL
+<head>
+    <link rel="stylesheet" type="text/css" href="/shader/container.css">
+</head>
 
-{{ $size }}
+<!-- Copyright 2015 Patricio Gonzalez Vivo (https://patriciogonzalezvivo.com) -->
+<div id="container"></div>
 
-<!-- Copyright 2015 Patricio Gonzalez Vivo (http://patriciogonzalezvivo.com) -->
-    <div id="container"></div>
-    <script src="http://threejs.org/build/three.min.js"></script>
+<script src="https://threejs.org/build/three.min.js"></script>
 
-    <style>
-        .shader-container
-        {
-            max-width: fit-content;
-            margin-left: auto;
-            margin-right: auto;
-        }
-    </style>    
+<script>
+    
+    function clamp(num, min, max)
+    {
+        return Math.min(Math.max(num, min), max);
+    }
 
-    <script id="vertexShader" type="x-shader/x-vertex">
-        {{ $vert }}
-    </script>
+    var container, rect;
+    var camera, scene, renderer, clock;
+    var uniforms;
+    var mouse = {x:0, y:0};
 
-    <script id="fragmentShader" type="x-shader/x-fragment">
-        {{ $frag }}
-    </script>
+    init();
+    animate();
 
-    <script>
-        var container;
-        var camera, scene, renderer, clock;
-        var uniforms;
-        var mouse = {x:0, y:0};
+    function init() {
+        container = document.getElementById( 'container' );
 
-        document.onmousemove = getMouseXY;
+        camera = new THREE.Camera();
+        camera.position.z = 1;
 
-        init();
-        animate();
+        scene = new THREE.Scene();
+        clock = new THREE.Clock();
 
-        function getMouseXY(e) {
-            mouse.x = e.pageX;
-            mouse.y = e.pageY;
-        }
+        var geometry = new THREE.PlaneBufferGeometry( 2, 2 );
 
-        function init() {
-            container = document.getElementById( 'container' );
+        uniforms = {
+            u_time: { type: "f", value: 1.0 },
+            u_mouse: { type: "v2", value: new THREE.Vector2() },
+            u_resolution: { type: "v2", value: new THREE.Vector2() }
+        };
 
-            camera = new THREE.Camera();
-            camera.position.z = 1;
+        var material = new THREE.ShaderMaterial( {
+            uniforms: uniforms,
+            vertexShader: '{{ $vert }}',
+            fragmentShader: '{{ $frag }}'
+        } );
 
-            scene = new THREE.Scene();
-            clock = new THREE.Clock();
+        var mesh = new THREE.Mesh( geometry, material );
+        scene.add( mesh );
 
-            var geometry = new THREE.PlaneBufferGeometry( 2, 2 );
+        renderer = new THREE.WebGLRenderer();
+        renderer.setPixelRatio( window.devicePixelRatio );
 
-            uniforms = {
-                u_time: { type: "f", value: 1.0 },
-                u_mouse: { type: "v2", value: new THREE.Vector2() },
-                u_resolution: { type: "v2", value: new THREE.Vector2() }
-            };
+        container.appendChild( renderer.domElement );
+        container.classList.add('shader-container');
 
-            var material = new THREE.ShaderMaterial( {
-                uniforms: uniforms,
-                vertexShader: document.getElementById( 'vertexShader' ).textContent,
-                fragmentShader: document.getElementById( 'fragmentShader' ).textContent
-            } );
+        onWindowResize();
+        window.addEventListener( 'resize', onWindowResize, false );
+        //window.addEventListener( 'scroll', updateMouse, false );
+        window.addEventListener( 'mousemove', updateMouse, false );
+    }
 
-            var mesh = new THREE.Mesh( geometry, material );
-            scene.add( mesh );
+    function onWindowResize( event ) {
+        var maxWidth = container.parentElement.clientWidth;
+        var canvasWidth = '{{$width}}';
+        var canvasHeight = '{{$height}}';
+        var ratio = Math.min(maxWidth, canvasWidth) / canvasWidth;
+        renderer.setSize(canvasWidth * ratio, canvasHeight * ratio);   
 
-            renderer = new THREE.WebGLRenderer();
-            renderer.setPixelRatio( window.devicePixelRatio );
+        uniforms.u_resolution.value.x = renderer.domElement.width;
+        uniforms.u_resolution.value.y = renderer.domElement.height;
 
-            container.appendChild( renderer.domElement );
-            container.classList.add('shader-container');
+        rect = container.getBoundingClientRect();
+    }
 
-            onWindowResize();
-            window.addEventListener( 'resize', onWindowResize, false );
-        }
+    function updateMouse( event )
+    {
+        mouse.x = event.clientX - rect.left;
+        mouse.y = rect.height - (event.clientY - rect.top)  - window.scrollY;
 
-        function onWindowResize( event ) {
-            var maxWidth = container.parentElement.clientWidth;
-            var canvasWidth = '{{$width}}';
-            var canvasHeight = '{{$height}}';
-            var ratio = Math.min(maxWidth, canvasWidth) / canvasWidth;
-            renderer.setSize(canvasWidth * ratio, canvasHeight * ratio);   
+        mouse.x = clamp(mouse.x, 0, rect.width);
+        mouse.y = clamp(mouse.y, 0, rect.height);
+        
+        uniforms.u_mouse.value.x = mouse.x;
+        uniforms.u_mouse.value.y = mouse.y;
+    }
 
-            uniforms.u_resolution.value.x = renderer.domElement.width;
-            uniforms.u_resolution.value.y = renderer.domElement.height;
-            uniforms.u_mouse.value.x = mouse.x;
-            uniforms.u_mouse.value.y = mouse.y;
-        }
+    function animate() {
+        requestAnimationFrame( animate );
+        render();
+    }
 
-        function animate() {
-            requestAnimationFrame( animate );
-            render();
-        }
-
-        function render() {
-            uniforms.u_time.value += clock.getDelta();
-            renderer.render( scene, camera );
-        }
-    </script>
+    function render() {
+        uniforms.u_time.value += clock.getDelta();
+        renderer.render( scene, camera );
+    }
+</script>
