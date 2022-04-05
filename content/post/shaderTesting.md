@@ -14,10 +14,11 @@ showToc = false
 <!--more-->
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
-{{< fragCanvas size="300 300" frag="/static/shader/sandboxShader.glsl" >}}
-<!-- {{< fragCanvas size="300 300" frag="/static/shader/sandboxShader.glsl" >}} -->
+{{< fragCanvas id="0" size="300 300" frag="/static/shader/sandboxShader.glsl" >}}
 
 line
+
+{{< fragCanvas id="1" size="300 300" frag="/static/shader/sandboxShader.glsl" >}}
 
 line
 

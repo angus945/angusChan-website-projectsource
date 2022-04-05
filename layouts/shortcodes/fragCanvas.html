@@ -1,10 +1,12 @@
 
 
+{{ $id := .Get "id" | string }}
+
 {{ $size := .Get "size" | string }}
 
 {{ $vert := os.ReadFile "static/shader/baseVert.vert" | string }}
 
 {{ $frag := os.ReadFile (.Get "frag") | string }}
 
-{{ partial "shader/glslCanvas" (dict "size" $size "vert" $vert "frag" $frag) }}
+{{ partial "shader/glslCanvas" (dict "id" $id "size" $size "vert" $vert "frag" $frag) }}
 
