@@ -1,0 +1,9 @@
+{
+    "glsl-canvas.textures": {
+        
+    },
+    "glsl-canvas.uniforms": {
+
+        "u_seed" : 48.763
+    }
+}

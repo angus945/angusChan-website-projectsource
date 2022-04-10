@@ -31,17 +31,17 @@ home = ["HTML", "RSS", "SearchIndex"]
 post = "/:section/:filename/" # Custom post links, e.g. "/:year/:month/:title/"
 
 [params]
-author = "DSRKafuU"                # You can also set author in post front matter individually
-subTitle = "A minimal Hugo theme."
-defaultTheme = "auto"              # default theme when first visit (auto|dark|light)
+author = "AngusChan"                # You can also set author in post front matter individually
+subTitle = "subTitle"
+defaultTheme = "dark"              # default theme when first visit (auto|dark|light)
 
 # Source URL of the website, will appear in the footer
-sourceURL = "https://github.com/dsrkafuu/hugo-theme-fuji"
+sourceURL = "https://github.com/angus945/angus945.github.io"
 
 # Use CloudFlare Workers to accelerate the Google Analytics
 # If you are using this please comment the googleAnalytics above
 # Check https://github.com/SukkaW/cloudflare-workers-async-google-analytics for more details
-# googleAnalyticsTid = "UA-000000000-0"
+googleAnalyticsTid = "G-LTVT6WYDT4"
 # googleAnalyticsRoute = "https://*.*.workers.dev/"
 
 # Google AdSense
@@ -60,12 +60,12 @@ showLicense = true
 showToc = true
 
 # Copyright
-copyrightStartYear = "2020"
+copyrightStartYear = "2021"
 
 # Open Graph & Twitter Card variables
 # You can also set description and images in post front matter individually
-description = "A minimal Hugo theme with nice theme color."
-og = "/img/og.png"                                          # This will use the image called og.png in static/img folder
+description = "AngusChan's website"
+og = "/siteImage/head.png"                                          # This will use the image called og.png in static/img folder
 
 # Posts shown in homepage
 mainSections = ["post"]
@@ -115,39 +115,39 @@ endLevel = 3
 tag = "tags"
 
 [menu]
-[[menu.nav]]
-name = "Home"
-url = "/"
-weight = 1
-[[menu.nav]]
-name = "Archives"
-url = "/archives/"
-weight = 2
-[[menu.nav]]
-name = "About"
-url = "/about/"
-weight = 3
-[[menu.nav]]
-name = "Search"
-url = "/search/"
-weight = 4
-[[menu.nav]]
-name = "RSS"
-url = "/index.xml"
-weight = 5
+    [[menu.nav]]
+    name = "Home"
+    url = "/"
+    weight = 1
+    [[menu.nav]]
+    name = "Devlog"
+    url = "/devlog/"
+    weight = 2
+    [[menu.nav]]
+    name = "Learn"
+    url = "/learn/"
+    weight = 3
+    [[menu.nav]]
+    name = "Post"
+    url = "/post/"
+    weight = 4
+    [[menu.nav]]
+    name = "About"
+    url = "/about"
+    weight = 5
+    [[menu.nav]]
+    name = "Search"
+    url = "/search/"
+    weight = 6
 
-[[menu.link]]
-name = "GitHub"
-url = "https://github.com/dsrkafuu"
-weight = 1
-[[menu.link]]
-name = "Twitter"
-url = "https://twitter.com/dsrkafuu"
-weight = 2
-[[menu.link]]
-name = "bilibili"
-url = "https://space.bilibili.com/19767474"
-weight = 3
+    [[menu.link]]
+    name = "GitHub"
+    url = "https://github.com/angus945/"
+    weight = 1
+    [[menu.link]]
+    name = "Twitter"
+    url = "https://twitter.com/angus9456"
+    weight = 2
 
 [build]
 noJSConfigInAssets = true

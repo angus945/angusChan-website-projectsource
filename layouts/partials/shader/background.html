@@ -1,0 +1,74 @@
+
+{{ $datas := "" }}
+
+{{ $default_folders := "static/shader/background" | string }}
+{{ $sliceIdentifier := "<slice-identifier>" }}
+
+{{ if isset .Params "background" }}
+    {{ $datas = readFile $.Params.background }}
+{{ else }}
+    {{ range readDir $default_folders }}
+    {{ $path := printf "%s/%s" $default_folders .Name }}
+    {{ $data := readFile $path }}
+    {{ $datas = printf "%s%s%s" $datas $data $sliceIdentifier }}
+    {{ end }}
+{{ end }}
+
+
+<script type="text/javascript">
+    var seed = Math.random();
+    var frag_codes = ("{{ $datas }}").split("{{ $sliceIdentifier }}");
+    var frag_shader_code = randomFragment();
+
+    console.log(frag_shader_code);
+    
+    function randomFragment()
+    {
+        var max = frag_codes.length - 1;
+        var rndIndex = Math.floor(Math.random() * max);
+        var rndFragment = frag_codes[rndIndex];
+    
+        return rndFragment;
+    }
+    
+    var canvas = document.createElement("canvas");
+    canvas.classList.add("shader-background");
+    
+    function updateSize()
+    {
+        var parentWidth = canvas.parentElement.clientWidth;
+        var parentHeight = canvas.parentElement.clientHeight;
+        
+        var windowWidth = window.innerWidth;
+        var windowHeight = window.innerHeight;
+        
+        canvas.width = parentWidth;
+        canvas.height = parentHeight;
+    }
+    function updatePosition()
+    {
+        canvas.style.top = 0;
+    }
+    
+    window.onload = function()
+    {
+        var sandbox = new GlslCanvas(canvas);
+        
+        sandbox.load(frag_shader_code);
+        sandbox.setUniform("u_seed", seed);
+        
+        var main = document.getElementsByTagName("main")[0]; 
+        main.appendChild(canvas);
+        
+        updateSize();
+        updatePosition();
+    }
+    window.onresize = function()
+    {
+        updateSize();
+        updatePosition();
+    }
+
+    
+</script>
+

@@ -1,0 +1,112 @@
+
+{{/*  {{ partial "glslCanvas" (dict "size" "vert" "frag") }}  */}}
+
+{{ $name := (printf "container-%s" $.id) }}
+
+{{ $size := split .size " " }}
+{{ $width := index $size 0 }}
+{{ $height := index $size 1 }}
+
+{{ $vert := .vert }}
+{{ $frag := .frag }}
+
+<head>
+    <link rel="stylesheet" type="text/css" href="/shader/container.css">
+    <script src="https://threejs.org/build/three.min.js"></script>
+
+</head>
+
+<!-- Copyright 2015 Patricio Gonzalez Vivo (https://patriciogonzalezvivo.com) -->
+<div id="{{$name}}"></div>
+
+
+<script>
+    
+    function clamp(num, min, max)
+    {
+        return Math.min(Math.max(num, min), max);
+    }
+
+    var container, rect;
+    var camera, scene, renderer, clock;
+    var uniforms;
+    var mouse = {x:0, y:0};
+
+    init();
+    animate();
+    
+    function init() {
+        container = document.getElementById( '{{$name}}' );
+
+        camera = new THREE.Camera();
+        camera.position.z = 1;
+
+        scene = new THREE.Scene();
+        clock = new THREE.Clock();
+
+        var geometry = new THREE.PlaneBufferGeometry( 2, 2 );
+
+        uniforms = {
+            u_time: { type: "f", value: 1.0 },
+            u_mouse: { type: "v2", value: new THREE.Vector2() },
+            u_resolution: { type: "v2", value: new THREE.Vector2() }
+        };
+
+        var material = new THREE.ShaderMaterial( {
+            uniforms: uniforms,
+            vertexShader: '{{ $vert }}',
+            fragmentShader: '{{ $frag }}'
+        } );
+
+        var mesh = new THREE.Mesh( geometry, material );
+        scene.add( mesh );
+
+        renderer = new THREE.WebGLRenderer();
+        renderer.setPixelRatio( window.devicePixelRatio );
+
+        container.appendChild( renderer.domElement );
+        container.classList.add('shader-container');
+
+        onWindowResize();
+        window.addEventListener( 'resize', onWindowResize, false );
+        //window.addEventListener( 'scroll', updateMouse, false );
+        window.addEventListener( 'mousemove', updateMouse, false );
+    }
+
+    function onWindowResize( event ) {
+        var maxWidth = container.parentElement.clientWidth;
+        var canvasWidth = '{{$width}}';
+        var canvasHeight = '{{$height}}';
+        var ratio = Math.min(maxWidth, canvasWidth) / canvasWidth;
+        renderer.setSize(canvasWidth * ratio, canvasHeight * ratio);   
+
+        uniforms.u_resolution.value.x = renderer.domElement.width;
+        uniforms.u_resolution.value.y = renderer.domElement.height;
+
+        rect = container.getBoundingClientRect();
+    }
+
+    function updateMouse( event )
+    {
+        mouse.x = event.clientX - rect.left;
+        mouse.y = rect.height - (event.clientY - rect.top)  - window.scrollY;
+
+        mouse.x = clamp(mouse.x, 0, rect.width);
+        mouse.y = clamp(mouse.y, 0, rect.height);
+        
+        uniforms.u_mouse.value.x = mouse.x;
+        uniforms.u_mouse.value.y = mouse.y;
+    }
+
+    function animate() {
+        console.log('{{$name}}');
+        //被覆蓋掉了，只有最後一個註冊的才會運作
+        window.requestAnimationFrame( animate );
+        render();
+    }
+
+    function render() {
+        uniforms.u_time.value += clock.getDelta();
+        renderer.render( scene, camera );
+    }
+</script>

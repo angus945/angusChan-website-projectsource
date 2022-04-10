@@ -1,0 +1,11 @@
+
+{{ $size := split .size " " }}
+{{ $width := index $size 0 }}
+{{ $height := index $size 1 }}
+
+{{ $vert := .vert }}
+{{ $frag := .frag }}
+
+<div class="shader-container">
+    <canvas class="glsl-canvas" data-fragment="{{ $frag }}" width="{{ $width }}" height="{{ $height }}"></canvas>
+</div>

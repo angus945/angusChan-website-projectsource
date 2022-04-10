@@ -1,0 +1,28 @@
+
+{{ define "main" }}
+
+{{ partial "loadscss" (dict "scss" "feature-image.scss" ) }}
+
+{{ $paginator := (.Paginate .Data.Pages) }}
+
+{{ .Content }}
+
+{{ range $paginator.Pages }}
+<div class="post">
+    <img class="feature-image" src="{{ .Page.Params.og }}">
+    <h2 class="post-item post-title">
+        <a href="{{ .Permalink }}">{{ .Title }}</a>
+    </h2>
+    <div class="post-item post-meta">
+        {{ partial "post-meta.html" . }}
+    </div>
+    <div class="post-item post-summary markdown-body" style="display: flex">
+        <div> {{ .Summary }} </div>
+    </div>
+    <a href="{{ .Permalink }}"> (...ReadMore) </a>
+</div>
+{{ end }}
+
+{{- partial "pagination.html" (dict "context" . "pagi" $paginator) -}}
+
+{{ end }}
