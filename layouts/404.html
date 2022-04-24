@@ -1,5 +1,8 @@
 {{ define "main" }}
+{{ $page := .Site.GetPage "404.md" }}
+
 <div class="404-not-found" style="font-size: 2rem; padding-top: 1.5rem;">
-    <span>404 NOT FOUND</span>
+    {{ $page.Content }} 
 </div>
+
 {{ end }}

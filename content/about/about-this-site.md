@@ -1,32 +1,27 @@
 ---
-title: "About This WebSite"
+title: "關於這個網站"
 description: "Hugo, the world’s fastest framework for building websites."
 date: 2022-04-09
 showLicense: false
 showToc: false
+
+_build:
+    list: false
+    render: false
 ---
 
-關於這個網站
+## 網站施工中...
 
-<!--more-->
+網站的主要內容為開發日誌、學習筆記，以及個人文章。
 
-### 致謝
+網站的背景是透過 GLSL 實時渲染的，每次重新整理都會有變化歐～
 
-Hugo
+### 特別感謝
 
-Fuji-v2
+感謝 [Hugo](https://gohugo.io/) 網頁生成器以及 [Fuji-v2](https://themes.gohugo.io/themes/hugo-theme-fuji/) 提供的網頁模板。
 
-The Book Of Shaders
+感謝 [Patricio Gonzalez Vivo](https://github.com/patriciogonzalezvivo/glslCanvas) 提供的網頁著色器函式庫。
 
-所有網路資源的提供者以及社群
+感謝提供網路資源的廣大社群，以及陪伴我自學的朋友們。
 
-所有朋友
-
-所有機遇
-
-以及閱讀到這裡的你
-
-
-
-
-
+感謝所有機遇以及閱讀到這裡的你 :D

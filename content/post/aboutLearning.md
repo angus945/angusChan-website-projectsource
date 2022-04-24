@@ -6,43 +6,16 @@ draft: false
 keywords: []
 description: "自學了三年多，分享一下對自己過去以及自學時累積的感想，以及對學習的看法"
 tags: [learning]
-category: "blog"
-author: "angus chan"
-featured_image: "/blog/aboutlearning/featured.jpg"
-listable: true
-important: 0
+og: "/blog/aboutlearning/featured.jpg"
 
-# You can also close(false) or open(true) something for this content.
-# P.S. comment can only be closed
-comment: true
-toc: true
-likecoin: false
-autoCollapseToc: false
-postMetaInFooter: false
-hiddenFromHomePage: false
-# You can also define another contentCopyright. e.g. contentCopyright: "This is another copyright."
-contentCopyright: false
-reward: false
-mathjax: false
-mathjaxEnableSingleDollar: false
-mathjaxEnableAutoNumber: false
-
-# You unlisted posts you might want not want the header or footer to show
-hideHeaderAndFooter: false
-
-# You can enable or disable out-of-date content warning for individual post.
-# Comment this out to use the global config.
-#enableOutdatedInfoWarning: false
-
-flowchartDiagrams:
-  enable: false
-  options: ""
-
-sequenceDiagrams: 
-  enable: false
-  options: ""
+## listout with recommand, new and all pages
+listable: [recommand, new, all]
 
 ---
+https://stackoverflow.com/questions/25535836/how-to-restyle-em-tag-to-be-bold-instead-of-italic
+
+https://stackoverflow.com/questions/35465557/how-to-apply-color-in-markdown
+
 ## 前言
 
 因為不適合台灣的制式教育，於是我在高二時開始了在家自學，持續到現在已經三年了，雖然出了點意外導致還沒讀大學，但學習並不會因此而中斷~
@@ -52,12 +25,11 @@ sequenceDiagrams:
 自身並沒有實際的教育經驗，也沒有讀過什麼學習相關的理論，這篇文章只是對自己過去以及自學時累積的看法和感想而已，如果閱讀完文章後有想分享的看法也歡迎留言討論 :D
 
 ---
-
 ## 什麼是學習
 
 從小，老師和家長就告訴我們要好好學習，卻不曾解釋過什麼是學習以及如何學習，只將這件事視為理所當然，而忽略了 "學習" 本身也是需要學習的。
 
-在開始前，我們得先 {{< text/orange "弄清楚記憶和學習的差別" >}}，因為這兩者為完全不同的能力，所適用的情況也有差異。
+在開始前，我們得先弄清楚 <h> 記憶和學習的差別 </h>，因為這兩者為完全不同的能力，所適用的情況也有差異。
 
 ### 何謂記憶
 
@@ -91,9 +63,9 @@ sequenceDiagrams:
 
 + 費曼學習法 - 最近開始嘗試的學習方式，也是當今最被推崇的學習方法，即以教為學
 
-{{< text/greenLine >}}
+<p> <com>
 其實費曼學習法也算在主動學習的範圍中，但是他完全值得擁有自己的章節，相信你們也會認同的
-{{< /text/greenLine >}}
+</com> </p>
 
 接下來就讓我說說自己對三種類型的看法和理解吧。
 

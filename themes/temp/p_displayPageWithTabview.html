@@ -1,0 +1,34 @@
+<head>
+    <link rel="stylesheet" type="text/css" href="/css/headerTab.css">
+    <script src=" /js/tabHandler.js"></script>
+</head>
+
+{{ $pages := .pages }}
+{{ $targetBlank := .targetBlank | default false}}
+
+<div class="tab-column">  
+    <div class="post-header">
+        {{ range $index, $element := $pages.ByParam "order" }}
+            <a id="tab-{{$index}}" class="post-link tab-underline" onclick="tabHandler(event, '{{$index}}')"> 
+                {{ $element.Page.Title}} 
+            </a>
+        {{ end }}
+    </div>
+</div>
+
+
+
+{{ range $index, $element := $pages.ByParam "order" }}
+    <div id="{{$index}}" class="tab-content post-content" >
+        {{ if $targetBlank }}
+            {{ partial "p_replaceLinkNewTab" (dict "content" $element.Content) }} 
+        {{ else }}
+            {{ $element.Content }}
+        {{ end }}
+    </div>
+{{ end }}
+
+
+<script type="text/javascript">
+    document.getElementById("tab-0").click();
+</script>

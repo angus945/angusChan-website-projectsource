@@ -49,8 +49,10 @@
 {{ partial "analytic-cfga.html" . }}
 
 <!--  customize  -->
+{{ partial "loadscss.html" (dict "scss" "global-scrollbar.scss") }}
 {{ partial "loadscss.html" (dict "scss" "content-style.scss") }}
+{{ partial "loadscss.html" (dict "scss" "content-tag.scss") }}
 
 {{ partial "shader/initial.html" . }}
-{{ partial "shader/background.html" . }}
+{{/*  {{ partial "shader/background.html" . }}  */}}
 

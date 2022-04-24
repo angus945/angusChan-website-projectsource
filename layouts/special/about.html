@@ -1,3 +1,20 @@
 {{ define "main" }}
-    about page
+
+{{ $aboutMe := .Site.GetPage "about/about-me.md" }}
+{{ $aboutSite := .Site.GetPage "about/about-this-site.md" }}
+
+{{ $pages := slice }}
+{{ $pages = $pages | append $aboutMe }}
+{{ $pages = $pages | append $aboutSite }}
+
+    {{ range $pages }}
+    <h2 class="post-item post-title">
+        <a href="{{ .Permalink }}">{{ .Title }}</a>
+    </h2>
+    <div class="post-content markdown-body">
+        {{ .Content }}
+    </div>
+    <hr>
+    {{ end }}
+
 {{ end }}

@@ -5,56 +5,39 @@ description: "shader"
 tags: ["test", "shader"]
 og: "/siteimage/gears.gif"
 
-showToc: true
-shader: true
+listable: [all]
 ---
 
 測試各種新玩具 Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test
 
 <!--more-->
 
-## Header 1
+測試文字上色 <h> 文字文文字文 </h> 文字文
 
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+<h>
+文字文字文字文字文字文字文字文字文字文字文字文字文字文字文字文字文字文字文字文字文字文字文字文字文字文字文字文字文字文字文字文字
+TODO
+</h> 
 
-### Header 1-1
+<!-- 
+{{< shader/fragment size="300 300" frag="static/shader/baseFrag.frag" >}}
 
-{{< fragCanvas size="300 300" frag="/static/shader/sandboxShader.glsl" >}}
+{{< shader/fragment size="300 300" frag="static/shader/sandboxShader.glsl" >}} 
+-->
 
-## Header 2
+{{< shader/inputFragment id="test1" size="300 300" frag="static/shader/sandboxShader.glsl" >}}
+float FLOAT 0 1 0,
+float FLOAT 0 1 0,
+float FLOAT 0 1 0,
+{{< /shader/inputFragment >}}
 
-line
+{{< shader/inputFragment id="test1" size="300 300" frag="static/shader/sandboxShader.glsl" >}}
+float FLOAT 0 1 0,
+float FLOAT 0 1 0,
+float FLOAT 0 1 0,
+{{< /shader/inputFragment >}}
 
-### Header 2-1
 
-{{< fragCanvas  size="300 300" frag="/static/shader/sandboxShader.glsl" >}}
-
-### Header 2-2
-
-line
-
-line
-
-line
-
-line
-
-line
-
-line
-
-line
-
-line
-
-line
-
-line
-
-line
-
-line
-
-line
-
-line
+<!-- {{< shader/inputFragment id="test2" size="300 300" frag="static/shader/sandboxShader.glsl" >}}
+int INT 0 10 5,
+{{< /shader/inputFragment >}}  -->

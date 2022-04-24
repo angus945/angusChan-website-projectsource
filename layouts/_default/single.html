@@ -9,7 +9,12 @@
     </div>
     <!-- post main content -->
     <div class="post-content markdown-body">
-        {{ .Content }}
+        {{ $content := .Content }}
+        {{ $content := replace $content " <h> " "<h>" }}
+        {{ $content := replace $content " </h> " "</h>" }}
+        {{ $content := replace $content " <c> " "<c>" }}
+        {{ $content := replace $content " </c> " "</c>" }}
+        {{ $content | safeHTML }}
     </div>
 </article>
 <!-- post license -->

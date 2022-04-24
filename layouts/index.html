@@ -1,3 +1,7 @@
 {{- define "main" -}}
-    Home Page
+
+{{ $page := .Site.GetPage "home.md" }}
+
+{{ $page.Content }} 
+
 {{- end -}}

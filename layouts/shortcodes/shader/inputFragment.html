@@ -1,0 +1,11 @@
+
+{{ $id := .Get "id" | string }}
+{{ $size := .Get "size" | string }}
+
+{{ $vert := os.ReadFile "static/shader/baseVert.vert" | string }}
+{{ $frag := os.ReadFile (.Get "frag") | string }}
+
+{{ $input := .Inner }}
+
+{{ partial "shader/varCanvas" (dict "id" $id "size" $size "vert" $vert "frag" $frag "input" $input) }}
+

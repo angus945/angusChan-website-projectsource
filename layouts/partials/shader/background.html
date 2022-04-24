@@ -19,9 +19,7 @@
     var seed = Math.random();
     var frag_codes = ("{{ $datas }}").split("{{ $sliceIdentifier }}");
     var frag_shader_code = randomFragment();
-
-    console.log(frag_shader_code);
-    
+  
     function randomFragment()
     {
         var max = frag_codes.length - 1;
@@ -36,14 +34,8 @@
     
     function updateSize()
     {
-        var parentWidth = canvas.parentElement.clientWidth;
-        var parentHeight = canvas.parentElement.clientHeight;
-        
-        var windowWidth = window.innerWidth;
-        var windowHeight = window.innerHeight;
-        
-        canvas.width = parentWidth;
-        canvas.height = parentHeight;
+        canvas.width = canvas.parentElement.clientWidth;
+        canvas.height = canvas.parentElement.clientHeight;
     }
     function updatePosition()
     {

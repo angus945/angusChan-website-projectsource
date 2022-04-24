@@ -1,18 +1,21 @@
 ---
-title: "About Me"
-description: "Hugo, the world’s fastest framework for building websites."
+title: "關於我"
+description: ""
 date: 2022-04-09
 showLicense: false
 showToc: false
+
+_build:
+    list: false
+    render: false
 ---
 
-關於我
+HI
 
-<!--more-->
+自學的遊戲開發者
 
-### 自介
+喜歡創作
 
-自學的遊戲開發者 Unity, C#, HLSL, GLSL
+程式、文字
 
-bababa
-
+bababa ~~~

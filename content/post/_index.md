@@ -1,5 +1,5 @@
 +++
-title = "Archives"
+title = "Post"
 description = ""
 +++
 
