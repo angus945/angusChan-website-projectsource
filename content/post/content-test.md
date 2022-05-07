@@ -3,41 +3,33 @@ title: "重新施工中~~~~"
 date: 2022-04-08
 description: "shader"
 tags: ["test", "shader"]
+
+feature: "/common/gears.gif"
 og: "/siteimage/gears.gif"
 
+resources: "/common/"
+
 listable: [all]
+
 ---
 
 測試各種新玩具 Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test
 
 <!--more-->
 
-測試文字上色 <h> 文字文文字文 </h> 文字文
+{{< resources/image "gears.gif" "50%" "comment" >}}
 
-<h>
-文字文字文字文字文字文字文字文字文字文字文字文字文字文字文字文字文字文字文字文字文字文字文字文字文字文字文字文字文字文字文字文字
-TODO
-</h> 
-
-<!-- 
-{{< shader/fragment size="300 300" frag="static/shader/baseFrag.frag" >}}
-
-{{< shader/fragment size="300 300" frag="static/shader/sandboxShader.glsl" >}} 
--->
-
-{{< shader/inputFragment id="test1" size="300 300" frag="static/shader/sandboxShader.glsl" >}}
-float FLOAT 0 1 0,
-float FLOAT 0 1 0,
-float FLOAT 0 1 0,
-{{< /shader/inputFragment >}}
-
-{{< shader/inputFragment id="test1" size="300 300" frag="static/shader/sandboxShader.glsl" >}}
-float FLOAT 0 1 0,
-float FLOAT 0 1 0,
-float FLOAT 0 1 0,
-{{< /shader/inputFragment >}}
+{{< resources/audio "audio_throw.mp3" >}}
 
 
-<!-- {{< shader/inputFragment id="test2" size="300 300" frag="static/shader/sandboxShader.glsl" >}}
-int INT 0 10 5,
-{{< /shader/inputFragment >}}  -->
+```cs
+void function()
+{
+    int a = 0;
+
+    function();
+
+    abcdefghijk();
+    ABCDEFGHIJK();
+}
+```

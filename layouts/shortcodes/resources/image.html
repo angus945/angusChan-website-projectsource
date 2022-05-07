@@ -1,0 +1,14 @@
+
+{{ $resources := .Page.Params.resources }}
+
+{{ $image := (.Get 0)}}
+{{ $width := (.Get 1)}}
+{{ $comment := (.Get 2)}}
+
+<div class="image" style="width: {{ $width }};" >
+    <img src="{{ $resources }}{{ $image }}" alt="image display error, please report: [{{ $resources }}{{ $image }}]">
+    <p style="opacity: 0.5">
+        {{$comment}}
+    </p>
+</div>
+

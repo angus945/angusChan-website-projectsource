@@ -6,5 +6,7 @@
 
 {{ $frag := os.ReadFile (.Get "frag") | string }}
 
-{{ partial "shader/canvas" (dict "size" $size "vert" $vert "frag" $frag) }}
+{{ $input := trim .Inner "\n" }}
+
+{{ partial "shader/canvas" (dict "size" $size "vert" $vert "frag" $frag "input" $input) }}
 

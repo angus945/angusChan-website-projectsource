@@ -1,7 +1,8 @@
 {{- define "main" -}}
 
-{{ $page := .Site.GetPage "home.md" }}
-
-{{ $page.Content }} 
+<div class="post-content markdown-body">
+    {{ $page := .Site.GetPage "home.md" }}
+    {{ $page.Content }} 
+</div>
 
 {{- end -}}

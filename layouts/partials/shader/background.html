@@ -42,7 +42,7 @@
         canvas.style.top = 0;
     }
     
-    window.onload = function()
+    window.addEventListener('load', function () 
     {
         var sandbox = new GlslCanvas(canvas);
         
@@ -54,7 +54,8 @@
         
         updateSize();
         updatePosition();
-    }
+    });
+    
     window.onresize = function()
     {
         updateSize();

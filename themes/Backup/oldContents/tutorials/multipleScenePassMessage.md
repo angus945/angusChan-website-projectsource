@@ -2,7 +2,7 @@
 title: "運用多場景機制進行資料傳遞"
 date: 2021-07-25T14:29:23+08:00
 lastmod: 2021-07-25T14:29:23+08:00
-draft: true
+draft: false
 keywords: []
 description: ""
 tags: []
