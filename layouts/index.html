@@ -5,4 +5,66 @@
     {{ $page.Content }} 
 </div>
 
+{{ $Pages := where .Site.Pages "Params.listable" "intersect" (slice "recommand") }}
+{{/*  https://gohugo.io/functions/jsonify/  */}}
+
+{{ $datas := "" | string }}
+
+{{ range $index, $element := $Pages }}
+
+    {{ $json := dict "title" .Title "summary" .Summary "url" .Permalink | jsonify }}
+
+    {{ if eq $index 0 }}
+        {{ $datas = printf "%s%s" $datas $json }}
+    {{ else}}
+        {{ $datas = printf "%s,%s" $datas $json }}
+    {{ end }}
+
+<div id="list-{{ $index }}" class="post">
+   
+     {{/*  <img class="feature-image" src="{{ .Page.Params.og }}">   */}}
+     <h2 class="post-item post-title">
+        {{/*  <a href="{{ .Permalink }}">{{ .Title }}</a>  */}}
+    </h2>
+    {{/*  <div class="post-item post-meta">
+        {{ partial "post-meta.html" . }}
+    </div>  */}}
+    <div class="post-item post-summary markdown-body" style="display: flex">
+        {{/*  <div> {{ .Summary }} </div>  */}}
+    </div>
+    {{/*  <a href="{{ .Permalink }}"> (...ReadMore) </a>    */}}
+</div>
+
+{{ end }}
+
+{{ $datas = printf "[%s]" $datas }}
+
+{{/*  {{ $datas }}  */}}
+
+
+<script>
+    const datas = JSON.parse("{{ $datas }}");
+
+
+    
+    for(var i = 0; i < datas.length; i ++)
+    {
+        var data = datas[i];
+
+        var board = document.getElementById("list-" + i);
+        var title = board.getElementsByClassName("post-title")[0];
+        var summary = board.getElementsByClassName("post-summary")[0];
+
+        title.innerHTML = `<a href="${ data.url }" >  ${ data.title }  </a>`;
+        summary.innerHTML = `<div> ${ data.summary } </div> `;
+        console.log(data);
+        // console.log(datas[i]);
+    }
+
+    // 👇️ [{id: 1, name: 'Tom'}, {id: 2, name: 'Alice'}]
+
+    
+    
+</script>
+
 {{- end -}}
