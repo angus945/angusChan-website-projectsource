@@ -1,5 +1,5 @@
 {{/*  
-    {{ partial "shader/canvas" (dict "size" $size "vert" $vert "frag" $frag) }}
+    Input Type Name
 */}}
 
 {{ $size := split .size " " }}
@@ -10,7 +10,7 @@
 {{ $frag := .frag }}
 
 <div class="shader-container">
-    <canvas class="glsl-canvas" data-fragment="{{ $frag }}" width="{{ $width }}" height="{{ $height }}"></canvas>
+    <canvas class="glslCanvas" data-fragment="{{ $frag }}" width="{{ $width }}" height="{{ $height }}"></canvas>
 
     {{ with .input }}
     <input name="u_input0" type="range" min="0" max="1" step="any">

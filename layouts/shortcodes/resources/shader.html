@@ -1,0 +1,10 @@
+{{ $resources := .Page.Params.resources }}
+
+{{ $size := (.Get 0) }}
+{{ $vert := os.ReadFile "static/shader/baseVert.vert" | string }}
+{{ $frag := os.ReadFile (printf "%s%s%s" "static" $resources (.Get 1)) }}
+
+{{ $input := trim .Inner "\n" }}
+
+{{ partial "shader/canvas" (dict "size" $size "vert" $vert "frag" $frag "input" $input) }}
+{{/*  {{ partial "shader/z_threejs_glslCanvas" (dict "size" $size "vert" $vert "frag" $frag "input" $input) }}  */}}

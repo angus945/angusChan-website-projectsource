@@ -1,7 +1,8 @@
 
 {{/*  {{ partial "glslCanvas" (dict "size" "vert" "frag") }}  */}}
 
-{{ $name := (printf "container-%s" $.id) }}
+{{/*  {{ $name := (printf "container-%s" $.id) }}  */}}
+{{ $name := "shadercanvas" }}
 
 {{ $size := split .size " " }}
 {{ $width := index $size 0 }}
@@ -10,10 +11,11 @@
 {{ $vert := .vert }}
 {{ $frag := .frag }}
 
-<head>
-    <link rel="stylesheet" type="text/css" href="/shader/container.css">
-    <script src="https://threejs.org/build/three.min.js"></script>
+{{ $vert }}
+{{ $frag }}
 
+<head>
+    <script src="https://threejs.org/build/three.min.js"></script>
 </head>
 
 <!-- Copyright 2015 Patricio Gonzalez Vivo (https://patriciogonzalezvivo.com) -->
