@@ -3,6 +3,7 @@
 
 {{ $default_folders := "static/shader/background" | string }}
 {{ $sliceIdentifier := "<slice-identifier>" }}
+{{/*  TODO json method  */}}
 
 {{ if isset .Params "background" }}
     {{ $datas = readFile $.Params.background }}

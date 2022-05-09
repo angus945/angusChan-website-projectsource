@@ -1,8 +1,6 @@
 
 {{ define "main" }}
 
-{{ partial "loadscss" (dict "scss" "feature-image.scss" ) }}
-
 {{ $paginator := (.Paginate .Data.Pages) }}
 
 {{ .Content }}

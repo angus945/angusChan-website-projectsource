@@ -14,3 +14,17 @@
     text-align: center;
     padding-bottom: 5px;
 }
+
+.feature-image
+{
+    max-width: 150px; 
+    margin: 5px; 
+    float: right;
+}
+@media screen and (max-width: 600px)
+{   
+    .feature-image
+    {
+        display: none;
+    }
+}

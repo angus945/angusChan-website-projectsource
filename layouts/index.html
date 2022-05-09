@@ -8,11 +8,21 @@
 {{ $Pages := where .Site.Pages "Params.listable" "intersect" (slice "recommand") }}
 {{/*  https://gohugo.io/functions/jsonify/  */}}
 
-{{ $datas := "" | string }}
+{{ $count := index (sort (slice (len $Pages) (.Site.Params.recommand))) 0 }}
 
+{{ $datas := "" | string }}
 {{ range $index, $element := $Pages }}
 
-    {{ $json := dict "title" .Title "summary" .Summary "url" .Permalink | jsonify }}
+    {{ $title := .Title}}
+    {{ $date := .Date.Format "2006-01-02" }}
+    {{ $lastmod := .Params.lastmod.Format "2006-01-02" }}
+    {{ $word := i18n "postMetaWordCount" .WordCount }}
+    {{ $tags := .Params.tags }}
+    {{ $summary := .Summary }}
+    {{ $feature := .Params.feature }}
+    {{ $url := .Permalink }}
+
+    {{ $json := dict "title" $title "date" $date "lastmod" $lastmod "word" $word "tags" $tags "summary" $summary "feature" $feature "url" $url | jsonify }}
 
     {{ if eq $index 0 }}
         {{ $datas = printf "%s%s" $datas $json }}
@@ -20,50 +30,93 @@
         {{ $datas = printf "%s,%s" $datas $json }}
     {{ end }}
 
-<div id="list-{{ $index }}" class="post">
-   
-     {{/*  <img class="feature-image" src="{{ .Page.Params.og }}">   */}}
-     <h2 class="post-item post-title">
-        {{/*  <a href="{{ .Permalink }}">{{ .Title }}</a>  */}}
-    </h2>
-    {{/*  <div class="post-item post-meta">
-        {{ partial "post-meta.html" . }}
-    </div>  */}}
-    <div class="post-item post-summary markdown-body" style="display: flex">
-        {{/*  <div> {{ .Summary }} </div>  */}}
-    </div>
-    {{/*  <a href="{{ .Permalink }}"> (...ReadMore) </a>    */}}
-</div>
-
 {{ end }}
-
 {{ $datas = printf "[%s]" $datas }}
 
-{{/*  {{ $datas }}  */}}
+
+{{ range $index, $num := (seq $count)  }}
+<div id="list-{{ $index }}" class="post">
+   
+    <img class="feature-image"> 
+
+    <h2 class="post-item post-title"> </h2>
+
+    <div class="post-item post-meta">
+        <span>
+            <i class="iconfont icon-today-sharp"></i> 
+        </span>
+        <span>
+            <i class="iconfont icon-sync-circle-sharp"></i>
+        </span>
+        <span>
+            <i class="iconfont icon-file-tray-sharp"></i>
+        </span>
+        <span>
+            <i class="iconfont icon-pricetags-sharp"></i>
+        </span>
+    </div>
+
+    <div class="post-item post-summary markdown-body" style="display: flex"> </div>
+
+    <a class="post-readmore"> (...ReadMore) </a>  
+</div>
+{{ end }}
 
 
 <script>
-    const datas = JSON.parse("{{ $datas }}");
+    const datas = shuffle(JSON.parse("{{ $datas }}"));
 
-
+    const count = "{{ $count }}";
     
-    for(var i = 0; i < datas.length; i ++)
+    window.addEventListener('load', function () {
+        for(var i = 0; i < count; i ++)
+        {
+            var data = datas[i];
+            console.log(data);
+
+            var board = document.getElementById("list-" + i);
+            
+            var title = board.getElementsByClassName("post-title")[0];
+            var date = board.getElementsByClassName("icon-today-sharp")[0];
+            var lastmod = board.getElementsByClassName("icon-sync-circle-sharp")[0];
+            var word = board.getElementsByClassName("icon-file-tray-sharp")[0];
+            var tags = board.getElementsByClassName("icon-pricetags-sharp")[0];
+            var summary = board.getElementsByClassName("post-summary")[0];
+            var feature = board.getElementsByClassName("feature-image")[0];
+            var readmore = board.getElementsByClassName("post-readmore")[0];
+
+            title.innerHTML = `<a href="${ data.url }">  ${ data.title } </a>`;
+            date.innerHTML = `&nbsp; ${ data.date }`;
+            lastmod.innerHTML = `&nbsp; ${ data.lastmod }`;
+            word.innerHTML = `&nbsp; ${ data.word }`;
+            for(var tag = 0; tag < data.tags.length; tag ++)
+            {
+                tags.innerHTML += `<a href="/tags/${ data.tags[tag] }"> ${ data.tags[tag] } </a>`;
+            }
+            summary.innerHTML = `<div> ${ data.summary } </div> `;
+            feature.src = (data.feature) ? data.feature : "" ;
+            readmore.href = data.url;
+        }
+    });
+
+    function shuffle(array) 
     {
-        var data = datas[i];
-
-        var board = document.getElementById("list-" + i);
-        var title = board.getElementsByClassName("post-title")[0];
-        var summary = board.getElementsByClassName("post-summary")[0];
-
-        title.innerHTML = `<a href="${ data.url }" >  ${ data.title }  </a>`;
-        summary.innerHTML = `<div> ${ data.summary } </div> `;
-        console.log(data);
-        // console.log(datas[i]);
-    }
-
-    // 👇️ [{id: 1, name: 'Tom'}, {id: 2, name: 'Alice'}]
-
-    
+        let currentIndex = array.length,  randomIndex;
+      
+        // While there remain elements to shuffle.
+        while (currentIndex != 0) {
+      
+          // Pick a remaining element.
+          randomIndex = Math.floor(Math.random() * currentIndex);
+          currentIndex--;
+      
+          // And swap it with the current element.
+          [array[currentIndex], array[randomIndex]] = [
+            array[randomIndex], array[currentIndex]];
+        }
+      
+        return array;
+      }    
     
 </script>
 

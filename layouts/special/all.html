@@ -1,7 +1,5 @@
 {{ define "main" }}
 
-{{ partial "loadscss" (dict "scss" "feature-image.scss" ) }}
-
 {{/*  https://gohugo.io/functions/where/  */}}
 {{/*  https://discourse.gohugo.io/t/nested-where-function-doesnt-work-with-params-categories/15806  */}}
 {{ $Pages := where .Site.Pages "Params.listable" "intersect" (slice "all") }}

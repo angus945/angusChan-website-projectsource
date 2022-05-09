@@ -35,6 +35,9 @@ author = "AngusChan"                # You can also set author in post front matt
 subTitle = "subTitle"
 defaultTheme = "dark"              # default theme when first visit (auto|dark|light)
 
+# recommand count in home page
+recommand = "3"
+
 # Source URL of the website, will appear in the footer
 sourceURL = "https://github.com/angus945/angus945.github.io"
 
