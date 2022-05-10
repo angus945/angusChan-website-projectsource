@@ -7,45 +7,5 @@
 <script type="text/javascript" src="https://rawgit.com/patriciogonzalezvivo/glslCanvas/master/dist/GlslCanvas.js"></script>
 
 {{/*  Include GLSL Editor */}}
-{{/*  <link type="text/css" rel="stylesheet" href="https://rawgit.com/patriciogonzalezvivo/glslEditor/gh-pages/build/glslEditor.css">  */}}
-{{/*  <script type="application/javascript" src="https://rawgit.com/patriciogonzalezvivo/glslEditor/gh-pages/build/glslEditor.js"></script>  */}}
-
-
-{{/* Canvas Input Setup */}}
-<script type="text/javascript">
-
-    window.addEventListener('load', function () 
-    {
-        var elements = document.getElementsByClassName("shader-container");
-        for(var i = 0; i < elements.length; i ++)
-        {
-            setCanvas(elements[i]);           
-        }
-        function setCanvas(container)
-        {       
-            var canvas = container.getElementsByTagName("canvas")[0];
-            var sandbox = new GlslCanvas(canvas);
-                        
-            var fields = container.getElementsByTagName("input");
-            for(var i = 0; i < fields.length; i ++)
-            {
-                initial(fields[i]);
-                setEvent(fields[i]);
-            }
-        
-            function initial(field)
-            {
-                sandbox.setUniform(field.name, parseFloat(field.value));
-            }
-            function setEvent(field)
-            {
-                field.addEventListener('input', (event) => {
-                    var field = event.target;
-                    console.log(field.value);
-                    sandbox.setUniform(field.name, parseFloat(field.value));
-                });
-            }
-        }
-    });
-    
-</script>
+<link type="text/css" rel="stylesheet" href="https://rawgit.com/patriciogonzalezvivo/glslEditor/gh-pages/build/glslEditor.css">
+<script type="application/javascript" src="https://rawgit.com/patriciogonzalezvivo/glslEditor/gh-pages/build/glslEditor.js"></script>

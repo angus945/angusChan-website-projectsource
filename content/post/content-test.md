@@ -13,17 +13,25 @@ listable: [all, recommand]
 
 ---
 
-測試各種新玩具 Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test
+<!-- 測試各種新玩具 Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test -->
 
 <!--more-->
 
-{{< resources/image "gears.gif" "50%" "comment" >}}
+<!-- {{< resources/image "gears.gif" "50%" "comment" >}} -->
 
-{{< resources/audio "audio_throw.mp3" >}}
+<!-- {{< resources/audio "audio_throw.mp3" >}} -->
 
-{{< resources/shader "300 300" "sandboxShader.glsl" >}}
-a
+{{< resources/shader "shader-0" "300 300" "sandboxShader.glsl" >}}
+vector u_position 0 0 1 1 0 0
 {{</ resources/shader >}}
+
+{{< resources/shader "shader-1" "300 300" "sandboxShader.glsl" >}}
+float u_input0 0 1 0.5,
+float u_input1 0 1 0.5,
+float u_input2 0 1 0.5
+{{</ resources/shader >}}
+
+<!-- {{< shader/frageditor >}} -->
 
 
 ```cs

@@ -1,6 +1,11 @@
 {{/*  
-    Input Type Name
+    float name min max value,
+    int name min max value,
+    vector name min max value,
+    color name r g b a,
 */}}
+
+{{ $id := .id }}
 
 {{ $size := split .size " " }}
 {{ $width := index $size 0 }}
@@ -9,13 +14,145 @@
 {{ $vert := .vert }}
 {{ $frag := .frag }}
 
-<div class="shader-container">
+{{ $datas := "" | string }}
+
+<div id="{{ $id }}" class="shader-container">
     <canvas class="glslCanvas" data-fragment="{{ $frag }}" width="{{ $width }}" height="{{ $height }}"></canvas>
 
-    {{ with .input }}
-    <input name="u_input0" type="range" min="0" max="1" step="any">
-    <input name="u_input1" type="range" min="0" max="1" step="any">
-    <input name="u_input2" type="range" min="0" max="1" step="any">
+{{ range $index, $element := split .input "," }}
+
+    {{ $tokens := split . " " }}
+    {{ $type := index $tokens 0 }}
+    {{ $name := index $tokens 1 }}
+
+    {{ $json := jsonify }}
+    
+    {{ if or (eq $type "float") (eq $type "int") }}
+        {{ $min := index $tokens 2 }}
+        {{ $max := index $tokens 3 }}
+        {{ $default := index $tokens 4 }}
+        {{ $json = dict "type" $type "name" $name "min" $min "max" $max "default" $default | jsonify }}
+        
+    {{ else if eq $type "vector" }}
+        {{ $min := dict "x" (index $tokens 2) "y" (index $tokens 3) }}
+        {{ $max := dict "x" (index $tokens 4) "y" (index $tokens 5) }}
+        {{ $default := dict "x" (index $tokens 6) "y" (index $tokens 7) }}
+
+        {{/*  {{ $min := printf "%s,%s" (index $tokens 2) (index $tokens 3) }}  */}}
+        {{/*  {{ $max := printf "%s,%s" (index $tokens 4) (index $tokens 5) }}  */}}
+        {{/*  {{ $default := printf "%s,%s" (index $tokens 6) (index $tokens 7) }}  */}}
+        {{ $json = dict "type" $type "name" $name "min" $min "max" $max "default" $default | jsonify }}
+
+    {{ else if eq $type "color" }}
+        {{/*  <input type="color" value="rgb(255,0,0)">   */}}
     {{ end }}
 
+    {{ if eq $index 0 }}
+        {{ $datas = printf "%s%s" $datas $json }}
+    {{ else}}
+        {{ $datas = printf "%s,%s" $datas $json }}
+    {{ end }}        
+{{ end }}
+
 </div>
+
+
+{{ $datas = printf "[%s]" $datas }}
+{{ $datas }}
+
+<script type="text/javascript">
+
+    window.addEventListener('load', function () 
+    {
+        var datas = JSON.parse("{{ $datas }}");
+
+        var container = document.getElementById("{{ $id }}");   
+        var canvas = container.getElementsByTagName("canvas")[0];
+        var sandbox;
+
+        // sandbox.setUniform("u_input0", parseFloat(1));
+                    
+        for(var i = 0; i < datas.length; i ++)
+        {
+            var data = datas[i];
+            console.log(data);
+
+            switch(data.type)
+            {
+                case "int":
+                    rangeField(container, data, 1);
+                    break;
+
+                case "float":
+                    rangeField(container, data, "any");
+                    break;
+
+                case "vector":
+                    vectorField(container, data);
+                    break;
+            }
+        }
+        
+        function rangeField(container, data, step)
+        {
+            var field = document.createElement("input");
+            field.type = "range";
+            field.min = parseFloat(data.min);
+            field.max = parseFloat(data.max);
+            field.value = parseFloat(data.default);
+            field.step = step;
+
+            field.addEventListener('input', (event) => {
+                setUniform_1D(data.name, parseFloat(field.value))
+            });
+            
+            container.appendChild(field);
+        }
+        function vectorField(container, data)
+        {            
+            var field = document.createElement("input");
+            field.type = "image";
+            field.src = "/common/gridmap.jpg";
+
+            var minX = parseFloat(data.min.x);
+            var maxX = parseFloat(data.max.x);
+            var minY = parseFloat(data.min.y);
+            var maxY = parseFloat(data.max.y);
+            
+            field.addEventListener('click', (event) => {
+                var rect = field.getBoundingClientRect();
+                var x = (event.pageX - field.offsetLeft) / rect.width;
+                var y = 1 - (event.clientY - rect.top) / rect.height;
+
+                x = minX + (maxX - minX) * x;
+                y = minY + (maxY - minY) * y;
+                
+                setUniform_2D(data.name, x, y);              
+            });
+
+            container.appendChild(field);
+        }
+        
+        function setUniform_1D(name, value)
+        {
+            if(sandbox == null)
+            {
+                sandbox = new GlslCanvas(canvas)
+            }
+            
+            sandbox.setUniform(name, value);
+            console.log(` ${ name } : ${ value } `);
+        }
+        function setUniform_2D(name, x, y)
+        {
+            if(sandbox == null)
+            {
+                sandbox = new GlslCanvas(canvas)
+            }
+            
+            sandbox.setUniform(name, x, y);
+            console.log(` ${ name }.x : ${ x }, ${ name }.y : ${ y } `);
+        }
+    });
+    
+</script>
