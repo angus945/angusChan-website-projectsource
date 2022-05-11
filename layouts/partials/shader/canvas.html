@@ -15,11 +15,9 @@
 {{ $frag := .frag }}
 
 {{ $datas := "" | string }}
+{{ $inputs := split .input "," }}
 
-<div id="{{ $id }}" class="shader-container">
-    <canvas class="glslCanvas" data-fragment="{{ $frag }}" width="{{ $width }}" height="{{ $height }}"></canvas>
-
-{{ range $index, $element := split .input "," }}
+{{ range $index, $element := $inputs }}
 
     {{ $tokens := split . " " }}
     {{ $type := index $tokens 0 }}
@@ -37,10 +35,6 @@
         {{ $min := dict "x" (index $tokens 2) "y" (index $tokens 3) }}
         {{ $max := dict "x" (index $tokens 4) "y" (index $tokens 5) }}
         {{ $default := dict "x" (index $tokens 6) "y" (index $tokens 7) }}
-
-        {{/*  {{ $min := printf "%s,%s" (index $tokens 2) (index $tokens 3) }}  */}}
-        {{/*  {{ $max := printf "%s,%s" (index $tokens 4) (index $tokens 5) }}  */}}
-        {{/*  {{ $default := printf "%s,%s" (index $tokens 6) (index $tokens 7) }}  */}}
         {{ $json = dict "type" $type "name" $name "min" $min "max" $max "default" $default | jsonify }}
 
     {{ else if eq $type "color" }}
@@ -54,11 +48,39 @@
     {{ end }}        
 {{ end }}
 
+{{ $datas = printf "[%s]" $datas }}
+{{/*  {{ $datas }}  */}}
+
+<div id="{{ $id }}" class="shader-container">
+    <canvas class="glslCanvas" data-fragment="{{ $frag }}" width="{{ $width }}" height="{{ $height }}"></canvas>
+
+    <div class="shader-input">
+        
+        {{ range $index, $element := $inputs }}
+        {{ $tokens := split . " " }}
+        {{ $type := index $tokens 0 }}
+        {{ $name := index $tokens 1 }}
+
+        <div id="{{ $name }}" class="shader-input-field"> 
+            <div id="text" style="display:flex; justify-content:space-between">
+                <div id="name"> {{ $name }} </div>
+                <div id="value"> value </div>
+            </div>
+
+            {{ if eq $type "float" }}
+            <input class="shader-input-silder" type="range" min="{{ index $tokens 2 }}" max="{{ index $tokens 3 }}" value="{{ index $tokens 4 }}" step="any" >
+            {{ else if eq $type "int" }}
+            <input class="shader-input-silder" type="range" min="{{ index $tokens 2 }}" max="{{ index $tokens 3 }}" value="{{ index $tokens 4 }}" step="1" >
+            {{ else if eq $type "vector" }}
+
+            {{ end }}
+        </div>
+
+        {{ end }}
+    </div>
 </div>
 
 
-{{ $datas = printf "[%s]" $datas }}
-{{ $datas }}
 
 <script type="text/javascript">
 
@@ -68,23 +90,21 @@
 
         var container = document.getElementById("{{ $id }}");   
         var canvas = container.getElementsByTagName("canvas")[0];
-        var sandbox;
-
-        // sandbox.setUniform("u_input0", parseFloat(1));
-                    
+        var sandbox = new GlslCanvas(canvas);
+      
         for(var i = 0; i < datas.length; i ++)
         {
             var data = datas[i];
-            console.log(data);
+            // console.log(data);
 
             switch(data.type)
             {
                 case "int":
-                    rangeField(container, data, 1);
+                    rangeField(container, data, 1, 0);
                     break;
 
                 case "float":
-                    rangeField(container, data, "any");
+                    rangeField(container, data, "any", 2);
                     break;
 
                 case "vector":
@@ -93,44 +113,54 @@
             }
         }
         
-        function rangeField(container, data, step)
+        function rangeField(container, data, step, fixed)
         {
-            var field = document.createElement("input");
-            field.type = "range";
-            field.min = parseFloat(data.min);
-            field.max = parseFloat(data.max);
-            field.value = parseFloat(data.default);
-            field.step = step;
+            var field = container.querySelector(`#${data.name}`);
 
-            field.addEventListener('input', (event) => {
-                setUniform_1D(data.name, parseFloat(field.value))
+            var value = field.querySelector("#value");
+            var slider = field.getElementsByTagName("input")[0];
+
+            slider.addEventListener('input', (event) => {
+                var input = parseFloat(slider.value);
+
+                setUniform_1D(data.name, input);
+                value.innerHTML = input.toFixed(fixed);
             });
-            
-            container.appendChild(field);
+
+            value.innerHTML = parseFloat(slider.value).toFixed(fixed);
+            setUniform_1D(data.name, parseFloat(slider.value));
         }
         function vectorField(container, data)
         {            
-            var field = document.createElement("input");
-            field.type = "image";
-            field.src = "/common/gridmap.jpg";
+            var field = container.querySelector(`#${data.name}`);
+
+            var value = field.querySelector("#value");
+            value.innerHTML = data.default;
+            
+            var picker = document.createElement("input");
+            picker.width = 150;
+            picker.height = 150;
+            picker.type = "image";
+            picker.src = "/common/gridmap.jpg";
 
             var minX = parseFloat(data.min.x);
             var maxX = parseFloat(data.max.x);
             var minY = parseFloat(data.min.y);
             var maxY = parseFloat(data.max.y);
             
-            field.addEventListener('click', (event) => {
-                var rect = field.getBoundingClientRect();
-                var x = (event.pageX - field.offsetLeft) / rect.width;
+            picker.addEventListener('click', (event) => {
+                var rect = picker.getBoundingClientRect();
+                var x = (event.pageX - picker.offsetLeft) / rect.width;
                 var y = 1 - (event.clientY - rect.top) / rect.height;
 
                 x = minX + (maxX - minX) * x;
                 y = minY + (maxY - minY) * y;
                 
+                value.innerHTML = `(${ x.toFixed(2) }, ${ y.toFixed(2) })`;
                 setUniform_2D(data.name, x, y);              
             });
 
-            container.appendChild(field);
+            field.appendChild(picker);
         }
         
         function setUniform_1D(name, value)
@@ -141,7 +171,7 @@
             }
             
             sandbox.setUniform(name, value);
-            console.log(` ${ name } : ${ value } `);
+            // console.log(` ${ name } : ${ value } `);
         }
         function setUniform_2D(name, x, y)
         {
@@ -151,7 +181,7 @@
             }
             
             sandbox.setUniform(name, x, y);
-            console.log(` ${ name }.x : ${ x }, ${ name }.y : ${ y } `);
+            // console.log(` ${ name }.x : ${ x }, ${ name }.y : ${ y } `);
         }
     });
     

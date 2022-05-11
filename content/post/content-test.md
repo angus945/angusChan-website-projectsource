@@ -28,7 +28,8 @@ vector u_position 0 0 1 1 0 0
 {{< resources/shader "shader-1" "300 300" "sandboxShader.glsl" >}}
 float u_input0 0 1 0.5,
 float u_input1 0 1 0.5,
-float u_input2 0 1 0.5
+float u_input2 0 1 0.5,
+int u_test 0 10 0
 {{</ resources/shader >}}
 
 <!-- {{< shader/frageditor >}} -->
