@@ -2,7 +2,6 @@
     float name min max value,
     int name min max value,
     vector name min max value,
-    color name r g b a,
 */}}
 
 {{ $id := .id }}
@@ -72,7 +71,8 @@
             {{ else if eq $type "int" }}
             <input class="shader-input-silder" type="range" min="{{ index $tokens 2 }}" max="{{ index $tokens 3 }}" value="{{ index $tokens 4 }}" step="1" >
             {{ else if eq $type "vector" }}
-
+            {{/*  <input class="" type="button">  */}}
+            <canvas class="shader-input-vector"></canvas>
             {{ end }}
         </div>
 
@@ -100,11 +100,11 @@
             switch(data.type)
             {
                 case "int":
-                    rangeField(container, data, 1, 0);
+                    rangeField(container, data, 0);
                     break;
 
                 case "float":
-                    rangeField(container, data, "any", 2);
+                    rangeField(container, data, 2);
                     break;
 
                 case "vector":
@@ -113,7 +113,7 @@
             }
         }
         
-        function rangeField(container, data, step, fixed)
+        function rangeField(container, data, fixed)
         {
             var field = container.querySelector(`#${data.name}`);
 
@@ -137,30 +137,57 @@
             var value = field.querySelector("#value");
             value.innerHTML = data.default;
             
-            var picker = document.createElement("input");
-            picker.width = 150;
-            picker.height = 150;
-            picker.type = "image";
-            picker.src = "/common/gridmap.jpg";
+            var picker = field.getElementsByTagName("canvas")[0];
+            picker.width = picker.clientWidth;
+            picker.height = picker.clientHeight;
+            picker.style.display = "none";
+
+            var context = picker.getContext('2d');
 
             var minX = parseFloat(data.min.x);
             var maxX = parseFloat(data.max.x);
             var minY = parseFloat(data.min.y);
             var maxY = parseFloat(data.max.y);
+
+            var popup = false;
+            var mouseDown = false;
             
-            picker.addEventListener('click', (event) => {
-                var rect = picker.getBoundingClientRect();
-                var x = (event.pageX - picker.offsetLeft) / rect.width;
-                var y = 1 - (event.clientY - rect.top) / rect.height;
-
-                x = minX + (maxX - minX) * x;
-                y = minY + (maxY - minY) * y;
-                
-                value.innerHTML = `(${ x.toFixed(2) }, ${ y.toFixed(2) })`;
-                setUniform_2D(data.name, x, y);              
+            value.addEventListener('click', (event) => {
+                popup = !popup;
+                picker.style.display = popup ? "block" : "none";
             });
+            picker.addEventListener('mousedown', (event) => {
+                mouseDown = true;
 
-            field.appendChild(picker);
+                pickPosition(event);
+            });
+            picker.addEventListener('mousemove', (event) => {
+
+                if(!mouseDown) return;
+
+                pickPosition(event);                
+            });
+            picker.addEventListener('mouseup', (event) => {
+                mouseDown = false;
+            });
+                        
+            function pickPosition(event)
+            {
+                var rect = picker.getBoundingClientRect();
+                var clickX = event.pageX - picker.offsetLeft;
+                var clickY = event.clientY - rect.top;
+                
+                var uvX = (clickX) / rect.width;
+                var uvY = 1 - (clickY) / rect.height;
+
+                var x = minX + (maxX - minX) * uvX;
+                var y = minY + (maxY - minY) * uvY;
+
+                drawPoint(picker, context, clickX, clickY, 'red', 5);
+                value.innerHTML = `(${ x.toFixed(2) }, ${ y.toFixed(2) })`;
+                
+                setUniform_2D(data.name, x, y);              
+            }
         }
         
         function setUniform_1D(name, value)
@@ -183,6 +210,18 @@
             sandbox.setUniform(name, x, y);
             // console.log(` ${ name }.x : ${ x }, ${ name }.y : ${ y } `);
         }
+
+        function drawPoint(canvas, context, x, y, color, radius) 
+        {
+            context.clearRect(0, 0, canvas.width, canvas.height);
+
+            context.fillStyle = "red"; //blue
+            
+            context.beginPath();
+            context.arc(x, y, radius, 0, 2 * Math.PI, true);
+            context.fill();
+      }
+        
     });
     
 </script>

@@ -7,5 +7,10 @@
 
 {{ $input := replace .Inner "\n" "" }}
 
-{{ partial "shader/canvas" (dict "id" $id "size" $size "vert" $vert "frag" $frag "input" $input) }}
+{{ with $input }}
+    {{ partial "shader/canvas" (dict "id" $id "size" $size "vert" $vert "frag" $frag "input" $input) }}
+{{ else }}
+    {{ partial "shader/defaultCanvas" (dict "id" $id "size" $size "vert" $vert "frag" $frag "input" $input) }}
+{{ end }}
+
 {{/*  {{ partial "shader/z_threejs_glslCanvas" (dict "size" $size "vert" $vert "frag" $frag "input" $input) }}  */}}
