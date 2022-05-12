@@ -1,16 +1,15 @@
 {{ $resources := .Page.Params.resources }}
 
-{{ $id := .Get 0}}
-{{ $size := (.Get 1) }}
+{{ $size := (.Get 0) }}
 {{ $vert := os.ReadFile "static/shader/baseVert.vert" | string }}
-{{ $frag := os.ReadFile (printf "%s%s%s" "static" $resources (.Get 2)) }}
+{{ $frag := os.ReadFile (printf "%s%s%s" "static" $resources (.Get 1)) }}
 
 {{ $input := replace .Inner "\n" "" }}
 
 {{ with $input }}
-    {{ partial "shader/canvas" (dict "id" $id "size" $size "vert" $vert "frag" $frag "input" $input) }}
+    {{ partial "shader/canvas" (dict "size" $size "vert" $vert "frag" $frag "input" $input) }}
 {{ else }}
-    {{ partial "shader/defaultCanvas" (dict "id" $id "size" $size "vert" $vert "frag" $frag "input" $input) }}
+    {{ partial "shader/defaultCanvas" (dict "size" $size "vert" $vert "frag" $frag "input" $input) }}
 {{ end }}
 
 {{/*  {{ partial "shader/z_threejs_glslCanvas" (dict "size" $size "vert" $vert "frag" $frag "input" $input) }}  */}}

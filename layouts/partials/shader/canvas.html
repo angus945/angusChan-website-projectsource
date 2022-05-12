@@ -4,8 +4,6 @@
     vector name min max value,
 */}}
 
-{{ $id := .id }}
-
 {{ $size := split .size " " }}
 {{ $width := index $size 0 }}
 {{ $height := index $size 1 }}
@@ -50,10 +48,10 @@
 {{ $datas = printf "[%s]" $datas }}
 {{/*  {{ $datas }}  */}}
 
-<div id="{{ $id }}" class="shader-container">
+<div class="shader-container">
     <canvas class="glslCanvas" data-fragment="{{ $frag }}" width="{{ $width }}" height="{{ $height }}"></canvas>
 
-    <div class="shader-input">
+    <div class="shader-input" data-inputs="{{ $datas }}">
         
         {{ range $index, $element := $inputs }}
         {{ $tokens := split . " " }}
@@ -81,147 +79,3 @@
 </div>
 
 
-
-<script type="text/javascript">
-
-    window.addEventListener('load', function () 
-    {
-        var datas = JSON.parse("{{ $datas }}");
-
-        var container = document.getElementById("{{ $id }}");   
-        var canvas = container.getElementsByTagName("canvas")[0];
-        var sandbox = new GlslCanvas(canvas);
-      
-        for(var i = 0; i < datas.length; i ++)
-        {
-            var data = datas[i];
-            // console.log(data);
-
-            switch(data.type)
-            {
-                case "int":
-                    rangeField(container, data, 0);
-                    break;
-
-                case "float":
-                    rangeField(container, data, 2);
-                    break;
-
-                case "vector":
-                    vectorField(container, data);
-                    break;
-            }
-        }
-        
-        function rangeField(container, data, fixed)
-        {
-            var field = container.querySelector(`#${data.name}`);
-
-            var value = field.querySelector("#value");
-            var slider = field.getElementsByTagName("input")[0];
-
-            slider.addEventListener('input', (event) => {
-                var input = parseFloat(slider.value);
-
-                setUniform_1D(data.name, input);
-                value.innerHTML = input.toFixed(fixed);
-            });
-
-            value.innerHTML = parseFloat(slider.value).toFixed(fixed);
-            setUniform_1D(data.name, parseFloat(slider.value));
-        }
-        function vectorField(container, data)
-        {            
-            var field = container.querySelector(`#${data.name}`);
-
-            var value = field.querySelector("#value");
-            value.innerHTML = data.default;
-            
-            var picker = field.getElementsByTagName("canvas")[0];
-            picker.width = picker.clientWidth;
-            picker.height = picker.clientHeight;
-            picker.style.display = "none";
-
-            var context = picker.getContext('2d');
-
-            var minX = parseFloat(data.min.x);
-            var maxX = parseFloat(data.max.x);
-            var minY = parseFloat(data.min.y);
-            var maxY = parseFloat(data.max.y);
-
-            var popup = false;
-            var mouseDown = false;
-            
-            value.addEventListener('click', (event) => {
-                popup = !popup;
-                picker.style.display = popup ? "block" : "none";
-            });
-            picker.addEventListener('mousedown', (event) => {
-                mouseDown = true;
-
-                pickPosition(event);
-            });
-            picker.addEventListener('mousemove', (event) => {
-
-                if(!mouseDown) return;
-
-                pickPosition(event);                
-            });
-            picker.addEventListener('mouseup', (event) => {
-                mouseDown = false;
-            });
-                        
-            function pickPosition(event)
-            {
-                var rect = picker.getBoundingClientRect();
-                var clickX = event.pageX - picker.offsetLeft;
-                var clickY = event.clientY - rect.top;
-                
-                var uvX = (clickX) / rect.width;
-                var uvY = 1 - (clickY) / rect.height;
-
-                var x = minX + (maxX - minX) * uvX;
-                var y = minY + (maxY - minY) * uvY;
-
-                drawPoint(picker, context, clickX, clickY, 'red', 5);
-                value.innerHTML = `(${ x.toFixed(2) }, ${ y.toFixed(2) })`;
-                
-                setUniform_2D(data.name, x, y);              
-            }
-        }
-        
-        function setUniform_1D(name, value)
-        {
-            if(sandbox == null)
-            {
-                sandbox = new GlslCanvas(canvas)
-            }
-            
-            sandbox.setUniform(name, value);
-            // console.log(` ${ name } : ${ value } `);
-        }
-        function setUniform_2D(name, x, y)
-        {
-            if(sandbox == null)
-            {
-                sandbox = new GlslCanvas(canvas)
-            }
-            
-            sandbox.setUniform(name, x, y);
-            // console.log(` ${ name }.x : ${ x }, ${ name }.y : ${ y } `);
-        }
-
-        function drawPoint(canvas, context, x, y, color, radius) 
-        {
-            context.clearRect(0, 0, canvas.width, canvas.height);
-
-            context.fillStyle = "red"; //blue
-            
-            context.beginPath();
-            context.arc(x, y, radius, 0, 2 * Math.PI, true);
-            context.fill();
-      }
-        
-    });
-    
-</script>

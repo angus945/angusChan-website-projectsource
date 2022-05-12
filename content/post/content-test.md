@@ -22,18 +22,18 @@ listable: [all, recommand]
 ### 測試著色器嵌入
 
 測試一般 Shader 嵌入
-{{< resources/shader "" "300 300" "sandboxShader.glsl" >}}
+{{< resources/shader "300 300" "sandboxShader.glsl" >}}
 {{</ resources/shader >}}
 
 測試 Float Silder
-{{< resources/shader "shader-1" "300 300" "sandboxShader.glsl" >}}
+{{< resources/shader "300 300" "sandboxShader.glsl" >}}
 float u_input0 0 1 0.5,
 float u_input1 0 1 0.5,
 float u_input2 0 1 0.5
 {{</ resources/shader >}}
 
 測試 Vector Picker
-{{< resources/shader "shader-0" "300 300" "sandboxShader.glsl" >}}
+{{< resources/shader "300 300" "sandboxShader.glsl" >}}
 vector u_position -1 -1 1 1 0 0
 {{</ resources/shader >}}
 
