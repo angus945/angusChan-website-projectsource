@@ -8,7 +8,7 @@ tags: []
 # background: static/shader/sandboxShader.glsl
 
 ## listout with recommand, new and all pages
-# listable: [recommand, new, all]
+listable: [all]
 ---
 
 存放一些比較初期的學習筆記，包括 C#, Unity, Shader 等等

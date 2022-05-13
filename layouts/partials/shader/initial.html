@@ -7,13 +7,14 @@
 <script type="text/javascript" src="https://rawgit.com/patriciogonzalezvivo/glslCanvas/master/dist/GlslCanvas.js"></script>
 
 {{/*  Include GLSL Editor */}}
-<link type="text/css" rel="stylesheet" href="https://rawgit.com/patriciogonzalezvivo/glslEditor/gh-pages/build/glslEditor.css">
-<script type="application/javascript" src="https://rawgit.com/patriciogonzalezvivo/glslEditor/gh-pages/build/glslEditor.js"></script>
+{{/*  <link type="text/css" rel="stylesheet" href="https://rawgit.com/patriciogonzalezvivo/glslEditor/gh-pages/build/glslEditor.css">  */}}
+{{/*  <script type="application/javascript" src="https://rawgit.com/patriciogonzalezvivo/glslEditor/gh-pages/build/glslEditor.js"></script>  */}}
 
 
 
 <script type="text/javascript">
 
+    //$(document).ready(function()
     window.addEventListener('load', function()
     {
         var containers = document.getElementsByClassName("shader-container");
@@ -45,17 +46,14 @@
         switch(data.type)
         {
             case "int":
-                console.log("int value");
                 rangeField(sandbox, field, data, 0);
                 break;
                 
             case "float":
-                console.log("float value");
                 rangeField(sandbox, field, data, 2);
                 break;
                 
             case "vector":
-                console.log("vec value");
                 vectorField(sandbox, field, data);
                 break;
         }

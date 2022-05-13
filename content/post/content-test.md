@@ -66,7 +66,19 @@ void main()
 
 {{< resources/audio "audio_throw.mp3" >}}
 
+### 測試文字上色
+
+上色 <h> 提示 </h> 區塊
+
+上色 <c> 註解 </c> 區塊
+
+{{< content/comment >}}
+上色，註解整段
+{{</ content/comment >}}
+
+
 ## 原生模板功能測試
+
 
 code block
 
