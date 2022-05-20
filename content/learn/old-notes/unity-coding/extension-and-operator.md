@@ -35,7 +35,7 @@ int c = i.GetBit(2); //1
 int d = i.GetBit(3); //1
 public static int GetBit(this int i, int bit)
 {
-    return i & (1 << bit);   
+    return i & (1 << bit);
 }
 註: 最後會補充邏輯閘運算和指定二進制數值
 
