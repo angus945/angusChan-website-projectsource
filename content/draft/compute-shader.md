@@ -143,7 +143,7 @@ void MyComputeKernelB (uint3 id : SV_DispatchThreadID) { }
 void MyComputeKernelC (uint3 id : SV_DispatchThreadID) { }
 ```
 
-### 執行緒 +
+### 多執行緒 +
 
 並行便是由多個執行緒（或線程）
 
@@ -280,11 +280,15 @@ void BoxBlur (uint3 id : SV_DispatchThreadID)
 }
 ```
 
-## 資料傳遞 -
+## 資料傳遞 +
 
 GPU 運算 使用的是 GPU 緩衝
 
 而非 CPU 的記憶體或快取
+
+加上計算著色器是獨立於管線之外的
+
+所以資料也需要手動控管
 
 兩者是不能直接互通的，而且傳遞成本是一個注意事項
 
@@ -306,75 +310,51 @@ float2 _BrushPos;
 float4 _BrushColor;
 ```
 
-### 緩衝資料
+### 緩衝資料 +
 
-也是計算著色器的主要目的
-
-Buffer 有許多種類型 
-
-<!-- https://docs.unity3d.com/ScriptReference/ComputeBufferType.html -->
-
-這裡就先把重點放在幾個常用的上面
-
-```hlsl
-StructuredBuffer<T>
-
-AppendStructuredBuffer<T>
-
-RWStructuredBuffer<T>
-```
-
-分配 GPU 空間
-陣列長度，元素大小 `sizeof()`，型別
+也是計算著色器的主要目的，要透過計算著色器進行處理的資料，由 CPU 端分配 GPU 緩衝區，並傳遞給 Compute Shader 使用。
 
 ```cs
 ComputeBuffer buffer = new ComputeBuffer(count, stride, ComputeBufferType);
 ```
 
-將一個長度為 10000 的 vector 陣列傳入
+`count` 代表的是資料有多少元素，也就是要傳入的陣列長度。`stride` 為一個元素的大小，可以透過 `sizeof()` 取得。而 `ComputeBufferType` 則是緩衝區的類別，根據需求使用不同的類型。
+
+Buffer 有許多種類型，不過這裡就先著重在常用的兩種類型上：
+
++ **ComputeBufferType.Structured**  
+    結構緩衝區，傳遞一般的陣列資料結構，讓著色器能夠讀寫內容。
+
++ **ComputeBufferType.Append**  
+    添加緩衝區，傳遞一個容器緩衝區，允許在著色器中對它添加元素，通常用於過濾元素。
+    <!-- TODO Out of range -->
+
+假設我要將一個長度為 10000 的向量陣列傳入計算著色器，並對裡面的元素進行過濾的話，就會需要兩個緩衝區。緩衝區長度為 10000、元素大小為三個單精度浮點數，類型為 Structured, Append。
 
 ```cs
 Vector3[] positions = new Vector3[10000];
 
-buffer = new ComputeBuffer(positions.Length, sizeof(float) * 3, ComputeBufferType.Structured);
+sourceBuffer = new ComputeBuffer(positions.Length, sizeof(float) * 3, ComputeBufferType.Structured);
+filteBuffer = new ComputeBuffer(positions.Length, sizeof(float) * 3, ComputeBufferType.Append);
+
 buffer.SetData(positions);
 ```
 
-這只是分配空間而已，如果要讓著色器使用還要指定給他 指定給要使用的計算核心
+建立完緩衝區後，還需要將它分配給計算著色器使用。不過與先前的只讀參數不同，緩衝資料需要指定給目標核心。不太需要擔心這個動作的開銷，因為在 setData 的時候資料傳遞就已經完成了，這裡只是將緩衝區位置的指標傳給著色器而已。
 
 ```cs
-compute.SetBuffer(kernel, name, buffer);
+compute.SetBuffer(kernel, "sourceBuffer", sourceBuffer);
+compute.SetBuffer(kernel, "filteBuffer", filteBuffer);
 ```
 
-一個 Shader, Kernel 一樣也能使用複數的
+同樣著色器也需要對應的變數接收，並在 `<T>` 中指定緩衝區的資料型別。
 
-主要是 ComputeBufferType.Structured, ComputeBufferType.Append 
+```hlsl
+StructuredBuffer<float3> sourceBuffer;
+AppendStructuredBuffer<float3> filteBuffer;
+```
 
-對比圖
-
-### 貼圖
-
-`Texture2D<T>` 只讀 可以接收 Unity Texture, Texture2D
-
-`RWTexture2D<T>` ; 讀寫 只接收 RenderTexture 
-因為分配的空間的問題 (?
-
-T 為通道數以及精度 float, fixed4
-
-RW 
-
-Compute Shader 不接受 sampler2D, 無法使用 Tex2D 採樣
-(已確認)
-
-訪問時是直接透過 像素 位置訪問圖片的二維像素陣列
-
-不確定會不會受 filter mode, mipmap 的引響? 
-
-
-
-### 結構資料
-
-能夠將資料包裝成 Struct 記得要分號
+也可以透過結構包裝多重變數，一次傳遞複合資料。
 
 ```hlsl
 struct transform
@@ -384,16 +364,59 @@ struct transform
     float3 scale;
 };
 
-StructuredBuffer<transform> Transforms;
+StructuredBuffer<transform> transforms;
 ```
 
-C# 傳遞相同大小的資料進去
+除此之外，結構緩衝區還有一種 `RWStructuredBuffer<T>`，這種緩衝區會允許計算核心將寫入資料，視需求使用。
 
+<!-- https://docs.unity3d.com/ScriptReference/ComputeBufferType.html -->
 
+### 貼圖資料 +
 
-## 實作 範例
+除了傳遞一維陣列進緩衝區外，計算著色器也能接受圖片資料，將二維的像素陣列傳入計算著色器使用。透過 `SetTexture()` 函式傳遞圖片至著色器中，和緩衝資料一樣需要指定計算核心。
+
+```cs
+compute.SetTexture(kernel, "image", image);
+```
+
+在著色器中同樣需要有對應的變數接收，並在 `<T>` 欄位指定通道數量與精度，`float, fixed3, half4` 等等。
+
+```hlsl
+Texture2D<fixed4> image;
+```
+
+和一般著色器的 `sampler2D` 不同，`Texture2D<T>` 是透過座標直接訪問特定的像素，而非 Tex2D 的 uv 採樣。
+<!-- 不確定會不會受 filter mode, mipmap 的引響?  -->
+
+```hlsl
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    fixed4 pixel = image[id.xy];
+}
+```
+
+`Texture2D<T>` 為只讀，如果要允許寫入像素的話需要用 `RWTexture2D<T>`。要注意的是讀寫貼圖只能傳入 `RenderTexture`，原理和建立緩衝區時一樣，建立渲染貼圖時也會做分配空間的工做，才能讓著色器寫入數值。
+
+## 實作範例
+
+回到最一開始，有什麼問題是 <h> 能透過並行解決的 </h> ，以及 <h> 該怎麼透過並行解決問題
+
+```cs
+for(int i = 0; i < 10; i ++)
+{
+    SomeFunction(i);
+}
+SomeFunction(int index) 
+{ 
+    //DoSomething
+}
+```
+
+如果問題能夠被拆分為獨立且重複的小塊，便能透過並行解決。
 
 傳遞資料並拿回
+
+最後的章節䟬透過各種範例將上面的部份串起來
 
 傳遞資料並直接進渲染管線
 
@@ -403,24 +426,76 @@ Animation Instance
 
 要做的事、要傳遞的資料、要執行的方法
 
+
 ### 陣列計算
 
-要解決什麼問題：將陣列中每個元素的數值 + 10
-要怎麼解決問題：以多個 thread 對應到陣列的所有元素上，並各自執行 +10 的動作
++ 要解決什麼問題：將陣列中每個元素的數值 + 10
++ 要怎麼解決問題：以多個 thread 對應到陣列的所有元素上，並各自執行 +10 的動作
 
-資料從哪裡來：C# (CPU) > ComputeShader (GPU)
-資料到哪裡去：ComputeShader (GPU) > C# (CPU)
+- 資料從哪裡來：C# (CPU) > ComputeShader (GPU)
+- 資料到哪裡去：ComputeShader (GPU) > C# (CPU)
 
-要傳遞什麼資料：C# int array
-要怎麼傳遞資料：RWStructuredBuffer
++ 要傳遞什麼資料：C# int array
++ 要怎麼傳遞資料：RWStructuredBuffer
+
+```cs
+//AddValues.cs
+public class AddValues : MonoBehaviour
+{
+    [SerializeField] ComputeShader compute = null;
+    [SerializeField] int[] array = new int[] { 0, 1, 2, 3, 4, 5, 6 };
+
+    void Start()
+    {
+        ComputeBuffer buffer = new ComputeBuffer(array.Length, sizeof(int), ComputeBufferType.Structured);
+        buffer.SetData(array);
+
+        int kernel = compute.FindKernel("AddValueKernel");
+        compute.SetBuffer(kernel, "valuesBuffer", buffer);
+        compute.Dispatch(kernel, Mathf.CeilToInt(array.Length / 10f), 1, 1);
+        
+        buffer.GetData(array);
+    }
+}
+```
+
+```hlsl
+// AddValues.compute
+
+#pragma kernel AddValueKernel
+
+RWStructuredBuffer<int> valuesBuffer;
+
+[numthreads(10, 1, 1)]
+void AddValueKernel (uint3 id : SV_DispatchThreadID)
+{
+    valuesBuffer[id.x] = valuesBuffer[id.x] + 10;
+}
+```
 
 ### 資料過濾
+
++ 要解決什麼問題：判斷陣列中的元素，過濾出於原點半徑 radius 以內的元素
++ 要怎麼解決問題：對每個元素進行各自判斷，將距離小於 radius 的元素加入 AppendBuffer，達成過濾目的
+
+- 資料從哪裡來：C# (CPU) > ComputeShader (GPU)
+- 資料到哪裡去：ComputeShader (GPU) > C# (CPU)
+
++ 要傳遞什麼資料：C# Vector2 Array
++ 要怎麼傳遞資料：RWStructuredBuffer, AppendBuffer
 
 ### 影像處裡
 
 ### 粒子模擬
 
-### Culling
++ 要解決什麼問題：
++ 要怎麼解決問題：
+
+- 資料從哪裡來：
+- 資料到哪裡去：
+
++ 要傳遞什麼資料：
++ 要怎麼傳遞資料：
 
 ## 結尾
 

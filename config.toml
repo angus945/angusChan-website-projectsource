@@ -1,5 +1,6 @@
 baseURL = "https://angus945.github.io/"
 title = "AngusChan's Devlog"
+# 樂小呈的學習日誌
 
 theme = "fuji"
 hasCJKLanguage = true
