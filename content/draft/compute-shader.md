@@ -1,12 +1,12 @@
 ---
 title: "筆記 計算著色器"
-date: 2022-05-14T17:12:03+08:00
-lastmod: 2022-05-14T17:12:03+08:00
+date: 2022-05-14
+lastmod: 2022-05-14
 
 draft: false
 
 description:
-tags: []
+tags: [ComputeShader]
 
 ## image for preview
 # feature: 
@@ -26,34 +26,33 @@ listable: [recommand, new, all]
 
 計算著色器學習筆記
 
+知道了 GPU Instance 和 GPU Culling，
+
+尋找計算著色器資料
+
+踏入 GPU 並行的世界了
+
+但
+
 不夠直觀
+
+於是在
+
+花幾個月 實做和研究了些東西後
+
+所以這篇文就
 
 以自己的理解解釋一次計算著色器
 
-<!--more-->
-<!-- 
-以下以 C# 代表 CPU 語言
-
-以 HLSL 代表 GPU 語言
-
-以 Unity 中的 Compute Shader 為主 -->
-
 ## 概括 -
 
-計算著色器 (Compute Shader) 是一種位於於渲染管線之外，用途也不僅限於著色計算的獨立工具。
+計算著色器 (Compute Shader) 是一種位於於渲染管線之外，用途也不僅限於著色計算的獨立工具。目的在透過 GPU 的大量核心進行平行運算，以獲得效能。
 
-透過 GPU 並行來 解決問題
+計算著色器的兩大難點： <h> 並行運算 </h> 與 <h> 資料傳遞 </h>
 
-大致有兩項重點： <h> 並行運算 </h> 與 <h> 資料傳遞 </h>
+### 並行運算 +
 
-### 並行運算 -
-
-著色器是由 GPU 並行進行計算的，
-由於目的不同 而產生不同的架構
-運作原理也相異
-
-
-以重複執行函式為例子，在 CPU 語言中會透過迴圈執行。假設要執行某項函式 10 次，迴圈將會從 index = 1 到 10 依序線性執行，只有當前的迴圈內容被完整執行完後，才會進入下一次的迴圈。
+首先以重複執行函式為例子，假設要執行某項函式 10 次，在 CPU 語言中會透過迴圈執行。迴圈將會從 index = 1 到 10 依序線性執行，只有當前的迴圈內容被完整執行完後，才會進入下一次的迴圈。
 
 ```cs
 for(int i = 0; i < 10; i ++)
@@ -66,7 +65,7 @@ SomeFunction(int index)
 }
 ```
 
-而在著色器這種 GPU 語言中，則會交由十個獨立的執行緒 (thread) 獨立運作，讓 GPU 的大量核心以並行的方式完成任務，執行時並無順序之分（亂序）。
+而在著色器這種 GPU 語言中，函式則會交由十個獨立的執行緒 (thread) 進行運算，讓 GPU 的大量核心以平行的方式完成任務，執行時並無順序之分（亂序）。
 
 ```hlsl
 [numthreads(10, 1, 1)]
@@ -80,33 +79,17 @@ void SomeFunction (uint3 id : SV_DispatchThreadID)
 
 <!-- TODO 示意圖 -->
 
-如果有編寫過材質著色器的話，運作差異就不是真正的難點了。
+不過在計算著色器中，運作差異並不是真正的難點，如果有編寫材質著色器經驗的話，應該已經很熟悉平行運算這件事了。與材質著色器不同的點在於，計算著色器是獨立於渲染管線之外的系統，所以它也沒有 vertices shader 或 fragment shader 這種渲染管線提供的「框架」來提示該寫些什麼。
 
-不過在計算著色器中，單純的運作差異並不是真正的難點。
+因此，真正的難點是在少了明確的目標後，我們只能靠自己判斷 <h> 有什麼問題是能透過並行解決的 </h> ，以及 <h> 該怎麼透過並行解決問題 </h> ，這也是初次接觸並行運算容易遇到的瓶頸。
 
-由於計算著色器是獨立於渲染管線之外的系統，因此使用者對其有完整的控制權，但少了渲染管線的
+### 資料傳遞 +
 
-但與渲染管線中的 vertices, fragment shader 不同，
+計算著色器的第二項難點：資料傳遞。
 
-也意味著我們必須自己判斷有什麼問題是 <h> 能透過並行解決的 </h> ，以及 <h> 該怎麼透過並行解決問題 </h>。
+在常規的渲染著色器中，引擎管線會幫使用者處理完資料傳遞等問題。但同樣，更大的權力更大的責任，使用者對於計算著色有完全的控制權，資料傳遞的工作也包括在其中。
 
-剛開始比較會遇到不知道如何編寫 
-
-### 資料傳遞 -
-
-計算著色器的第二項重點：資料傳遞。
-
-通常情況下引擎的管線會幫我們處理完
-
-但同樣的，更大的權力代表更大的責任，在計算著色器中這些分配資源的工作也落到我們手上了。
-
-資料從哪裡來、資料到哪裡去，該傳遞什麼資料以及該怎麼傳遞資料
-
-實做上比較容易遇到問題的部份
-
-與 C# 端的主要交界處
-
-資料傳遞的限制也是 優化
+由於資料是在兩種不同環境中進行傳遞，因此資料從哪裡來、資料到哪裡去，該傳遞什麼資料以及該怎麼傳遞資料都是實做時需要面對的問題。在加上著色器本身的除錯難度，在遇到錯誤時，難以辨識究竟是資料傳遞出錯還是函式編寫有誤。
 
 ## 腳本結構 +
 
@@ -232,14 +215,14 @@ void CSMain() { }
 
 執行緒的具體數量或比例則沒有明確規則，大概抓個資料總數 1% 吧？假設陣列長度大約一萬上下，numthread 就分配為 `(100, 1, 1)`、圖片大小 2048 的話就分配 `(20, 20, 1)`。
 
-最後，組的數量可以透過資料長度除以執行緒數量得出，確保任何情況下都能分配足夠的組來運行著色器，畢竟資料的長度不一定是固定的。
+最後，組的數量可以透過資料長度除以執行緒數量得出，確保任何情況下都能分配足夠的組來運行著色器，畢竟資料的多寡可能根據情況產生差異。
 
 ```cs
-compute.Dispatch(knrnelIndex, array.Length / 100, 1, 1);
-compute.Dispatch(knrnelIndex, image.width / 20, image.height / 20, 1);
+compute.Dispatch(knrnelIndex, 1 + (array.Length / 100), 1, 1);
+compute.Dispatch(knrnelIndex, 1 + (image.width / 20), 1 + (image.height / 20), 1);
 ```
 
-著色器中訪問陣列時，不會因為 index out of range 出現錯誤而中斷，所以只需要確保分配的數量足夠即可，即時稍微超出需求也沒關係。（除了少數情況會真的遇到問題，後面會講防呆處置）
+著色器中訪問陣列時，不會因為 index out of range 出現錯誤而中斷，所以只需要確保分配的數量足夠即可。
 
 <!-- out of bound 時的行為 ? -->
 
@@ -247,7 +230,9 @@ compute.Dispatch(knrnelIndex, image.width / 20, image.height / 20, 1);
 
 ### 訪問資料 +
 
-要透過計算著色器處理的資料主要會透過 Buffer 傳遞至 GPU，而存取 Buffer 資料的方法就和陣列一樣，透過索引值訪問特定欄位中的資料。透過執行緒 ID 對應至圖片的每個像素，並將黑色寫入像素。
+要透過計算著色器處理的資料主要會透過 Buffer 傳遞至 GPU，而存取 Buffer 資料的方法就和陣列一樣，透過索引值訪問特定欄位中的資料。
+
+透過執行緒 ID 對應至圖片的每個像素，並將黑色寫入像素。
 
 ```hlsl
 RWTexture2D<float4> Image;
@@ -280,7 +265,7 @@ void BoxBlur (uint3 id : SV_DispatchThreadID)
 }
 ```
 
-## 資料傳遞 +
+## 資料傳遞 -
 
 GPU 運算 使用的是 GPU 緩衝
 
@@ -427,7 +412,7 @@ Animation Instance
 要做的事、要傳遞的資料、要執行的方法
 
 
-### 陣列計算
+### 陣列計算 -
 
 + 要解決什麼問題：將陣列中每個元素的數值 + 10
 + 要怎麼解決問題：以多個 thread 對應到陣列的所有元素上，並各自執行 +10 的動作
@@ -473,7 +458,7 @@ void AddValueKernel (uint3 id : SV_DispatchThreadID)
 }
 ```
 
-### 資料過濾
+### 資料過濾 -
 
 + 要解決什麼問題：判斷陣列中的元素，過濾出於原點半徑 radius 以內的元素
 + 要怎麼解決問題：對每個元素進行各自判斷，將距離小於 radius 的元素加入 AppendBuffer，達成過濾目的
@@ -484,21 +469,100 @@ void AddValueKernel (uint3 id : SV_DispatchThreadID)
 + 要傳遞什麼資料：C# Vector2 Array
 + 要怎麼傳遞資料：RWStructuredBuffer, AppendBuffer
 
-### 影像處裡
+```cs
+public class FilteElement : MonoBehaviour
+{
+    [SerializeField] ComputeShader compute = null;
 
-### 粒子模擬
+    [SerializeField] float radius = 5;
+    [SerializeField] Vector2[] array = new Vector2[] 
+    {
+        new Vector2( 0,  5),
+        new Vector2( 1,  2),
+        new Vector2( 8,  3),
+        new Vector2(-9,  0),
+        new Vector2(-1, -3),
+    };
+    [SerializeField] Vector2[] result = null;
+
+    void Start()
+    {
+        result = new Vector2[array.Length];
+        
+        ComputeBuffer sourceBuffer = new ComputeBuffer(array.Length, sizeof(float) * 2, ComputeBufferType.Structured);
+        ComputeBuffer resultBuffer = new ComputeBuffer(array.Length, sizeof(float) * 2, ComputeBufferType.Append);
+        sourceBuffer.SetData(array);
+
+        int kernel = compute.FindKernel("FilteKernel");
+        
+        compute.SetFloat("_Radius", radius);
+        compute.SetBuffer(kernel, "sourceBuffer", sourceBuffer);
+        compute.SetBuffer(kernel, "resultBuffer", resultBuffer);
+        
+        resultBuffer.SetCounterValue(0);
+
+        compute.Dispatch(kernel, Mathf.CeilToInt(array.Length / 10f), 1, 1);
+
+        sourceBuffer.GetData(array);
+        resultBuffer.GetData(result);
+    }
+}
+```
+
+```hlsl
+#pragma kernel FilteKernel
+
+float _Radius;
+RWStructuredBuffer<float2> sourceBuffer;
+AppendStructuredBuffer<float2> resultBuffer;
+
+[numthreads(10, 1, 1)]
+void FilteKernel (uint3 id : SV_DispatchThreadID)
+{
+    float2 position = sourceBuffer[id.x];
+    float distance = length(position);
+
+    if(distance < _Radius)
+    {
+        resultBuffer.Append(position);
+    }
+}
+```
+
+<!-- ### 影像模糊
 
 + 要解決什麼問題：
 + 要怎麼解決問題：
 
-- 資料從哪裡來：
-- 資料到哪裡去：
+- 資料從哪裡來：C# (CPU) > ComputeShader (GPU)
+- 資料到哪裡去：ComputeShader (GPU) > RenderPipleline (GPU)
 
 + 要傳遞什麼資料：
-+ 要怎麼傳遞資料：
++ 要怎麼傳遞資料： -->
 
-## 結尾
+## 感謝閱讀
 
-參考資料
+### 更多例子 -
+
+比較實際的範例放進來會太長， 給關鍵字
+
+GPU Instance, GPU Culling
+透過 資料過濾 將超出視錐範圍的物件剔除
+
+GPU Ray Tracing
+http://blog.three-eyed-games.com/2018/05/03/gpu-ray-tracing-in-unity-part-1/
+
+GPU Line, cloth simulation 
+透過每個節點的動向，模擬出現段或布料材質
+
+GPU Slime Simulations
+模擬一堆 agent
+https://youtu.be/X-iSQQgOd1A
+
+GPU Fluid Simulations
+網格平行運算
+https://www.youtube.com/watch?v=qsYE1wMEMPA
+
+### 參考資料 -
 
 https://docs.microsoft.com/zh-tw/windows/win32/direct3dhlsl/sm5-attributes-numthreads
