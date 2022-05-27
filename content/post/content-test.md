@@ -17,6 +17,14 @@ listable: [all, recommand]
 
 <!--more-->
 
+```cs
+print("hi");
+```
+
+```
+print("hi");
+```
+
 ## 自定義功能測試
 
 ### 測試著色器嵌入
@@ -89,5 +97,12 @@ void Start()
 }
 ```
 
+
+```hlsl
+void Start()
+{
+    Debug.Log("Hello World");
+}
+```
 
 

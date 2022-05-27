@@ -10,10 +10,10 @@
     <!-- post main content -->
     <div class="post-content markdown-body">
         {{ $content := .Content }}
-        {{ $content := replace $content " <h> " "<h>" }}
-        {{ $content := replace $content " </h> " "</h>" }}
-        {{ $content := replace $content " <c> " "<c>" }}
-        {{ $content := replace $content " </c> " "</c>" }}
+        {{ $content := partial "content/color-replace.html" (dict "Content" $content ) }} 
+        {{ $content := partial "content/code-block.html" (dict "Content" $content ) }} 
+        {{/*  {{ partial "content/code-block.html" (dict "Content" $content ) }}   */}}
+
         {{ $content | safeHTML }}
     </div>
 </article>

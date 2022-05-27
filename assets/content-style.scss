@@ -1,11 +1,10 @@
 /* override default theme stylesheet */
 .h1, h2
 {
-    // padding-top: 3px;
+    padding-top: 3px;
     // border-top: 2px dashed;
     // border-top-color: var(--color-border-tertiary);
-
-    border-bottom: none !important;
+    // border-bottom: none !important;
 }
 
 // images
@@ -28,6 +27,12 @@
     {
         display: none;
     }
+}
+
+//code block
+.code-title
+{
+    border-bottom: 1px !important; 
 }
 
 // slider style

@@ -1,12 +1,12 @@
 ---
-title: "筆記 計算著色器"
+title: "【筆記】入門重點，計算著色器"
 date: 2022-05-14
 lastmod: 2022-05-14
 
 draft: false
 
 description:
-tags: [ComputeShader]
+tags: [Unity, ComputeShader]
 
 ## image for preview
 # feature: 
@@ -24,31 +24,9 @@ tags: [ComputeShader]
 listable: [recommand, new, all]
 ---
 
-計算著色器學習筆記
+## 概括 +
 
-知道了 GPU Instance 和 GPU Culling，
-
-尋找計算著色器資料
-
-踏入 GPU 並行的世界了
-
-但
-
-不夠直觀
-
-於是在
-
-花幾個月 實做和研究了些東西後
-
-所以這篇文就
-
-以自己的理解解釋一次計算著色器
-
-## 概括 -
-
-計算著色器 (Compute Shader) 是一種位於於渲染管線之外，用途也不僅限於著色計算的獨立工具。目的在透過 GPU 的大量核心進行平行運算，以獲得效能。
-
-計算著色器的兩大難點： <h> 並行運算 </h> 與 <h> 資料傳遞 </h>
+計算著色器 (Compute Shader) 是一種位於於渲染管線之外，用途也不僅限於著色計算的獨立工具，目的在透過 GPU 的大量核心進行平行運算，以獲得效能。正式開始前先稍微帶過計算著色器的兩大難點： <h> 並行運算 </h> 與 <h> 資料傳遞 </h>
 
 ### 並行運算 +
 
@@ -93,7 +71,7 @@ void SomeFunction (uint3 id : SV_DispatchThreadID)
 
 ## 腳本結構 +
 
-這是 Unity 中的預設 Compute Shader 腳本，這個章節就來逐步解析他的結構
+這是 Unity 中的預設 Compute Shader 腳本，這個章節就來逐步解析他的結構。
 
 ```hlsl
 // Each #kernel tells which function to compile; you can have many kernels
@@ -265,19 +243,11 @@ void BoxBlur (uint3 id : SV_DispatchThreadID)
 }
 ```
 
-## 資料傳遞 -
+## 資料傳遞 +
 
-GPU 運算 使用的是 GPU 緩衝
+資料傳遞，計算著色器的第二項重點。著色器是透過 GPU 進行運算的，運算過程中使用的資料也是存放在 GPU 的緩衝區 (Buffer) 當中。GPU 與 CPU 使用的空間不同，因此兩者的資料也不是直接相通的，任何想在著色器中的操作資料都需要先先傳遞至緩衝區中。
 
-而非 CPU 的記憶體或快取
-
-加上計算著色器是獨立於管線之外的
-
-所以資料也需要手動控管
-
-兩者是不能直接互通的，而且傳遞成本是一個注意事項
-
-因此任何資料操作都需要先傳遞至 GPU
+而在少了管線幫助的計算著色器中，資料的傳遞也需要由使用者手動控管。
 
 ### 只讀參數 +
 
@@ -384,6 +354,7 @@ void CSMain (uint3 id : SV_DispatchThreadID)
 
 ## 實作範例
 
+
 回到最一開始，有什麼問題是 <h> 能透過並行解決的 </h> ，以及 <h> 該怎麼透過並行解決問題
 
 ```cs
@@ -403,133 +374,163 @@ SomeFunction(int index)
 
 最後的章節䟬透過各種範例將上面的部份串起來
 
-傳遞資料並直接進渲染管線
-
-GPU Instance, Culling
-
-Animation Instance
+簡單的範例並逐步分析
 
 要做的事、要傳遞的資料、要執行的方法
 
+偽碼注意 (fake code)
+
+串起內容
+
+並不是真正 （篇幅太長ㄌ）
+
+### 回顧腳本
+
+最後，回顧一次預設的腳本結構
+
+```hlsl
+// 宣告一個計算核心，名稱叫做：CSMain
+#pragma kernel CSMain
+
+
+RWTexture2D<float4> Result;
+
+[numthreads(8,8,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    // TODO: insert actual code here!
+
+    Result[id.xy] = float4(id.x & id.y, (id.x & 15)/15.0, (id.y & 15)/15.0, 0.0);
+}
+```
 
 ### 陣列計算 -
 
-+ 要解決什麼問題：將陣列中每個元素的數值 + 10
-+ 要怎麼解決問題：以多個 thread 對應到陣列的所有元素上，並各自執行 +10 的動作
+首先是最基礎的範例，透過平行運算對陣列元素進行操作
 
-- 資料從哪裡來：C# (CPU) > ComputeShader (GPU)
-- 資料到哪裡去：ComputeShader (GPU) > C# (CPU)
+**1. 要解決什麼問題**
 
-+ 要傳遞什麼資料：C# int array
-+ 要怎麼傳遞資料：RWStructuredBuffer
+將陣列中每個元素的數值 + n
 
-```cs
-//AddValues.cs
-public class AddValues : MonoBehaviour
-{
-    [SerializeField] ComputeShader compute = null;
-    [SerializeField] int[] array = new int[] { 0, 1, 2, 3, 4, 5, 6 };
+**2. 要怎麼解決問題**
 
-    void Start()
-    {
-        ComputeBuffer buffer = new ComputeBuffer(array.Length, sizeof(int), ComputeBufferType.Structured);
-        buffer.SetData(array);
-
-        int kernel = compute.FindKernel("AddValueKernel");
-        compute.SetBuffer(kernel, "valuesBuffer", buffer);
-        compute.Dispatch(kernel, Mathf.CeilToInt(array.Length / 10f), 1, 1);
-        
-        buffer.GetData(array);
-    }
-}
-```
+將問題拆分為重複的片段，以多個 thread 對應到陣列的所有元素上，並各自執行 + n 的動作 
 
 ```hlsl
-// AddValues.compute
-
-#pragma kernel AddValueKernel
-
-RWStructuredBuffer<int> valuesBuffer;
-
 [numthreads(10, 1, 1)]
 void AddValueKernel (uint3 id : SV_DispatchThreadID)
 {
-    valuesBuffer[id.x] = valuesBuffer[id.x] + 10;
+    buffer[id.x] = buffer[id.x] + _Addition;
 }
 ```
+
+```cs
+compute.Dispatch(kernel, 1 + array.Length / 10f, 1, 1);
+```
+
+**3. 要怎麼傳遞資料**
+
+透過 SetInt 傳遞 運算 參數
+
+```cs
+int addition;
+
+compute.SetInt("_Addition", addition);
+```
+
+並透過 ComputeBuffer 分配 GPU 緩儲存空間，將陣列資料存入後指定給計算著色器。
+
+```cs
+int[] array;
+
+ComputeBuffer buffer = new ComputeBuffer(array.Length, sizeof(int), ComputeBufferType.Structured);
+buffer.SetData(array);
+
+compute.SetBuffer(kernel, "valuesBuffer", buffer);
+```
+
+**4. 要怎麼使用資料**
+
+在運算完成後，透過 GetData 取得緩衝區資料，用於檢視效果
+
+```cs
+buffer.GetData(array);
+```
+
+完整腳本放在這 >
 
 ### 資料過濾 -
 
-+ 要解決什麼問題：判斷陣列中的元素，過濾出於原點半徑 radius 以內的元素
-+ 要怎麼解決問題：對每個元素進行各自判斷，將距離小於 radius 的元素加入 AppendBuffer，達成過濾目的
+基礎範例，透過平行運算進行元素過濾
 
-- 資料從哪裡來：C# (CPU) > ComputeShader (GPU)
-- 資料到哪裡去：ComputeShader (GPU) > C# (CPU)
+**1. 要解決什麼問題**
 
-+ 要傳遞什麼資料：C# Vector2 Array
-+ 要怎麼傳遞資料：RWStructuredBuffer, AppendBuffer
+在陣列中，過濾出位於指定範圍中的元素 
 
-```cs
-public class FilteElement : MonoBehaviour
-{
-    [SerializeField] ComputeShader compute = null;
+**2. 要怎麼解決問題**
 
-    [SerializeField] float radius = 5;
-    [SerializeField] Vector2[] array = new Vector2[] 
-    {
-        new Vector2( 0,  5),
-        new Vector2( 1,  2),
-        new Vector2( 8,  3),
-        new Vector2(-9,  0),
-        new Vector2(-1, -3),
-    };
-    [SerializeField] Vector2[] result = null;
+以多個 thread 對應到陣列的所有元素上，判斷元素是否大於範圍最小值，同時小於範圍最大值，並將符合條件的元素加入結果緩衝區中。
 
-    void Start()
-    {
-        result = new Vector2[array.Length];
-        
-        ComputeBuffer sourceBuffer = new ComputeBuffer(array.Length, sizeof(float) * 2, ComputeBufferType.Structured);
-        ComputeBuffer resultBuffer = new ComputeBuffer(array.Length, sizeof(float) * 2, ComputeBufferType.Append);
-        sourceBuffer.SetData(array);
-
-        int kernel = compute.FindKernel("FilteKernel");
-        
-        compute.SetFloat("_Radius", radius);
-        compute.SetBuffer(kernel, "sourceBuffer", sourceBuffer);
-        compute.SetBuffer(kernel, "resultBuffer", resultBuffer);
-        
-        resultBuffer.SetCounterValue(0);
-
-        compute.Dispatch(kernel, Mathf.CeilToInt(array.Length / 10f), 1, 1);
-
-        sourceBuffer.GetData(array);
-        resultBuffer.GetData(result);
-    }
-}
-```
+防呆判斷
 
 ```hlsl
-#pragma kernel FilteKernel
-
-float _Radius;
-RWStructuredBuffer<float2> sourceBuffer;
-AppendStructuredBuffer<float2> resultBuffer;
-
 [numthreads(10, 1, 1)]
 void FilteKernel (uint3 id : SV_DispatchThreadID)
 {
+    if(id.x >= elementCount) return;
+    
     float2 position = sourceBuffer[id.x];
-    float distance = length(position);
 
-    if(distance < _Radius)
-    {
-        resultBuffer.Append(position);
-    }
+    if(position.x < _RangeMin.x) return;
+    if(position.y < _RangeMin.y) return;
+    if(position.x > _RangeMax.x) return;
+    if(position.y > _RangeMax.y) return;
+
+    culledBuffer.Append(position);
 }
 ```
 
-<!-- ### 影像模糊
+```cs
+compute.Dispatch(kernel, 1 + array.Length / 10f, 1, 1);
+```
+
+**3. 要怎麼傳遞資料**
+
+透過 `SetVector` 傳遞範圍參數
+
+```cs
+Vector2 rangeMin, rangeMax;
+compute.SetVector("_RangeMin", rangeMin);
+compute.SetVector("_RangeMax", rangeMax);
+```
+
+分配兩個緩衝區，一個用於傳遞原始陣列，一個用於保存過濾後的結果
+
+```cs
+Vector2[] array;
+
+ComputeBuffer sourceBuffer = new ComputeBuffer(array.Length, sizeof(float) * 2, ComputeBufferType.Structured);
+ComputeBuffer resultBuffer = new ComputeBuffer(array.Length, sizeof(float) * 2, ComputeBufferType.Append);
+sourceBuffer.SetData(array);
+```
+
+**4. 要怎麼使用資料**
+
+運算完成後，透過 GetData 取得緩衝區資料，用於檢視效果
+
+```cs
+sourceBuffer.GetData(array);
+resultBuffer.GetData(result);
+```
+
+Copy count
+
+<!-- 
+**1. 要解決什麼問題**
+**2. 要怎麼解決問題**
+**3. 要怎麼傳遞資料**
+**4. 要怎麼使用資料**
+### 影像模糊
 
 + 要解決什麼問題：
 + 要怎麼解決問題：
@@ -541,6 +542,10 @@ void FilteKernel (uint3 id : SV_DispatchThreadID)
 + 要怎麼傳遞資料： -->
 
 ## 感謝閱讀
+
+計算著色器學習筆記，在知道了 GPU Instance 和 GPU Culling ，我也接觸到計算著色器這項工具了，正式踏入 GPU 並行的世界。但查了不少資料感覺都不夠直觀，或是一口氣跳到太深的內容（像是直接教 RayTracing 的文章）。
+
+於是在花幾個月實做和研究各項些東西後，嘗試用自己的理解重新解釋一次計算著色器，這篇筆記就是我整理出關於計算著色器的幾項重點。
 
 ### 更多例子 -
 
@@ -562,6 +567,9 @@ https://youtu.be/X-iSQQgOd1A
 GPU Fluid Simulations
 網格平行運算
 https://www.youtube.com/watch?v=qsYE1wMEMPA
+
+Game of Life
+每個單位格
 
 ### 參考資料 -
 

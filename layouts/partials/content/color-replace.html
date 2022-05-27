@@ -1,0 +1,10 @@
+
+{{ $content := .Content }}
+
+{{ $content := replace $content " <h> " "<h>" }}
+{{ $content := replace $content " </h> " "</h>" }}
+{{ $content := replace $content " <c> " "<c>" }}
+{{ $content := replace $content " </c> " "</c>" }}
+
+{{ return $content }}
+
