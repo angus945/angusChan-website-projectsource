@@ -6,7 +6,9 @@
 {{/*  TODO json method  */}}
 
 {{ if isset .Params "background" }}
-    {{ $datas = readFile $.Params.background }}
+    {{ if ne $.Params.background "none" }}
+        {{ $datas = readFile $.Params.background }}
+    {{ end }}
 {{ else }}
     {{ range readDir $default_folders }}
     {{ $path := printf "%s/%s" $default_folders .Name }}

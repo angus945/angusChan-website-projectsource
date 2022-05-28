@@ -87,7 +87,11 @@
 
             title.innerHTML = `<a href="${ data.url }">  ${ data.title } </a>`;
             date.innerHTML = `&nbsp; ${ data.date }`;
-            lastmod.innerHTML = `&nbsp; ${ data.lastmod }`;
+            if(data.lastmod == data.date) 
+            {
+                lastmod.parentNode.style.display = "none";
+            }
+            else lastmod.innerHTML = `&nbsp; ${ data.lastmod }`;
             word.innerHTML = `&nbsp; ${ data.word }`;
             for(var tag = 0; tag < data.tags.length; tag ++)
             {

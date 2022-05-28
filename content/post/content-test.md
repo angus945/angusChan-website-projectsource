@@ -17,6 +17,12 @@ listable: [all, recommand]
 
 <!--more-->
 
+### hi
+
+```cs
+print("hi");
+```
+
 ```cs
 print("hi");
 ```

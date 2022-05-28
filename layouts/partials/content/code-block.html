@@ -1,23 +1,25 @@
 {{ $content := .Content }}
 
-{{ $codeblocks := findRE "<code.*?>(.|\n)*?</code>" $content }}
+{{ $codeblocks := findRE "<code class=\"language-(.*)\">(.|\n)*?</code>" $content }}
 
-{{ range $codeblocks }}
+{{ range $codeblocks | uniq }}
+    {{/*  {{ . }}  */}}
+
     {{ $language := index (findRE "\"language-(.*)\"" .) 0}}
     {{ $language := trim $language "\"" }}
-    {{ $language := index (split $language "-") 1 }}
+    {{ $language := replace $language "language-" "" }}
     
     {{/*  {{ with $language }}  */}}
-        {{ $title := printf "<span class=\"code-title\">%s</span>" $language }}
+        {{ $title := printf "<span>%s</span><hr style='margin-top:5px; margin-bottom:0px'>" $language }}
         {{ $codeblock := printf "%s\n%s" $title . }}
         {{ $content = replace $content . $codeblock }}
     {{/*  {{ end }}  */}}
 
 
-    {{/*  {{ $codeblock }}  */}}    
+    {{ $codeblock }}1
+    <hr>    
     {{/*  {{ $language }}  */}}
     {{/*  {{ . }}  */}}
-    {{/*  <hr>  */}}
 {{ end }}
 
 {{ return $content }}

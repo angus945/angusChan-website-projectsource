@@ -17,9 +17,6 @@
   .feature-image {
     display: none; } }
 
-.code-title {
-  border-bottom: 1px !important; }
-
 input[type="range"] {
   width: 200px;
   height: 16px;

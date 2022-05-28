@@ -18,7 +18,7 @@ tags: [Unity, ComputeShader]
 # resources: /common/
 
 ## customize page background
-# background: static/shader/sandboxShader.glsl
+background: "none"
 
 ## listout with recommand, new and all pages
 listable: [recommand, new, all]
@@ -291,7 +291,10 @@ Vector3[] positions = new Vector3[10000];
 
 sourceBuffer = new ComputeBuffer(positions.Length, sizeof(float) * 3, ComputeBufferType.Structured);
 filteBuffer = new ComputeBuffer(positions.Length, sizeof(float) * 3, ComputeBufferType.Append);
+```
 
+透過 SetData 將資料存入緩衝區當中。
+```cs
 buffer.SetData(positions);
 ```
 
@@ -322,7 +325,7 @@ struct transform
 StructuredBuffer<transform> transforms;
 ```
 
-除此之外，結構緩衝區還有一種 `RWStructuredBuffer<T>`，這種緩衝區會允許計算核心將寫入資料，視需求使用。
+除此之外，結構緩衝區還有一種 `RWStructuredBuffer<T>`，這種緩衝區會允許計算核心將資料寫入緩衝區，視需求使用。
 
 <!-- https://docs.unity3d.com/ScriptReference/ComputeBufferType.html -->
 
@@ -352,50 +355,46 @@ void CSMain (uint3 id : SV_DispatchThreadID)
 
 `Texture2D<T>` 為只讀，如果要允許寫入像素的話需要用 `RWTexture2D<T>`。要注意的是讀寫貼圖只能傳入 `RenderTexture`，原理和建立緩衝區時一樣，建立渲染貼圖時也會做分配空間的工做，才能讓著色器寫入數值。
 
-## 實作範例
+## 實作範例 +
 
-
-回到最一開始，有什麼問題是 <h> 能透過並行解決的 </h> ，以及 <h> 該怎麼透過並行解決問題
+回到最一開始的問題，有什麼問題是能透過並行解決的，以及該怎麼透過並行解決問題？無論是計算核心的編寫方法，還是代換成 C# 中迴圈的形式，他們都表現出了一個共同點：重複執行相似的工作。
 
 ```cs
 for(int i = 0; i < 10; i ++)
 {
     SomeFunction(i);
 }
-SomeFunction(int index) 
-{ 
-    //DoSomething
-}
+SomeFunction(int index) { }
 ```
 
-如果問題能夠被拆分為獨立且重複的小塊，便能透過並行解決。
+意思是，如果要解決的問題能夠被拆分為個別獨立並且高度相似的片段，就能透過重複執行相似工作的方法完成，無論是透過迴圈線性執行，或是將每個片段分配給獨立的執行緒，以並行的方式達成任務。
 
-傳遞資料並拿回
+最後的章節就透過各種範例將文中提到的各項重點串起，問題拆分、資料傳遞、解決問題，逐步分析如何使用計算著色器，透過並行的方式達成任務。
 
-最後的章節䟬透過各種範例將上面的部份串起來
+### 回顧腳本 +
 
-簡單的範例並逐步分析
+首先，回顧一次預設的計算著色器結構，分析一下這個著色器做了哪些事，以及要傳遞什麼資料，和要怎麼使用這個腳本。
 
-要做的事、要傳遞的資料、要執行的方法
-
-偽碼注意 (fake code)
-
-串起內容
-
-並不是真正 （篇幅太長ㄌ）
-
-### 回顧腳本
-
-最後，回顧一次預設的腳本結構
+宣告了一個計算核心，名稱叫做 CSMain。
 
 ```hlsl
-// 宣告一個計算核心，名稱叫做：CSMain
 #pragma kernel CSMain
+```
 
+定義一個讀寫貼圖給計算著色器使用，精度為 float，通道數量 4 個。
 
+```hlsl
 RWTexture2D<float4> Result;
+```
 
+指定著色器要使用的執行序數量，由於訪問資料的維度軸為二維（圖片、像素資料），因此數量的格式為 `(x, y, 1)`。
+```hlsl
 [numthreads(8,8,1)]
+```
+
+實做計算核心的函式，名稱對應一開始宣告的 CSMain 核心。透過多個執行緒，對應到圖片資料 Result 的每個像素上，並根據像素的座標（也就是 id）寫入計算過後的像素數值。（先忽略計算式的原理，那不是這裡的重點）
+
+```hlsl
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
     // TODO: insert actual code here!
@@ -404,33 +403,38 @@ void CSMain (uint3 id : SV_DispatchThreadID)
 }
 ```
 
-### 陣列計算 -
+回到 C# 處，接著來看看如何使用這個預設著色器。首先要尋找著色器中定義的計算核心 CSMain。
 
-首先是最基礎的範例，透過平行運算對陣列元素進行操作
+```cs
+int kernel = compute.FindKernel("CSMain");
+```
+
+接著建立 RenderTexture，並傳入計算著色器的 Result 當中，提供著色器使用。
+```cs
+RenderTexture resultTex = new RenderTexture(1024, 1024, 0); 
+compute.SetTexture(kernel, "Result", resultTex);
+```
+
+最後，調用著色器執行指定的計算核心。由於著色器中指定的執行序數量為 8，因此執行時必須將組的數量分配至圖片大小 / 8 才會足夠。
+```cs
+compute.Dispatch(kernel, 1 + (resultTex.width / 8), 1 + (resultTex.height / 8), 1);
+```
+
+運作結果如下，這是一個能繪製分型的計算著色器。
+
+<!-- TODO Result Image -->
+
+### 陣列計算 +
+
+看完了預設的著色器，現在輪到我們解決自己的問題，嘗試透過平行運算對陣列元素進行操作。一步一步來，首先是：
 
 **1. 要解決什麼問題**
 
-將陣列中每個元素的數值 + n
+透過並行運算將陣列中每個元素的數值 + n
 
-**2. 要怎麼解決問題**
+**2. 要怎麼傳遞資料**
 
-將問題拆分為重複的片段，以多個 thread 對應到陣列的所有元素上，並各自執行 + n 的動作 
-
-```hlsl
-[numthreads(10, 1, 1)]
-void AddValueKernel (uint3 id : SV_DispatchThreadID)
-{
-    buffer[id.x] = buffer[id.x] + _Addition;
-}
-```
-
-```cs
-compute.Dispatch(kernel, 1 + array.Length / 10f, 1, 1);
-```
-
-**3. 要怎麼傳遞資料**
-
-透過 SetInt 傳遞 運算 參數
+首先透過 SetInt 函式將要添加的數值 n 傳入著色器當中。
 
 ```cs
 int addition;
@@ -438,7 +442,7 @@ int addition;
 compute.SetInt("_Addition", addition);
 ```
 
-並透過 ComputeBuffer 分配 GPU 緩儲存空間，將陣列資料存入後指定給計算著色器。
+接著透過 ComputeBuffer 分配 GPU 緩儲存空間，將要進行操作的陣列資料存入緩衝區，並指定給計算著色器。
 
 ```cs
 int[] array;
@@ -449,36 +453,85 @@ buffer.SetData(array);
 compute.SetBuffer(kernel, "valuesBuffer", buffer);
 ```
 
-**4. 要怎麼使用資料**
+**3. 要怎麼解決問題**
 
-在運算完成後，透過 GetData 取得緩衝區資料，用於檢視效果
+將問題拆分為相似的片段，透過重複執行的方式解決問題。在這個例子中便是以多個執行緒分別對應到陣列的所有元素上，並各自執行 + n 的動作。
 
-```cs
-buffer.GetData(array);
+```hlsl
+void AddValueKernel (uint3 id : SV_DispatchThreadID)
+{
+    buffer[id.x] = buffer[id.x] + _Addition;
+}
 ```
 
-完整腳本放在這 >
-
-### 資料過濾 -
-
-基礎範例，透過平行運算進行元素過濾
-
-**1. 要解決什麼問題**
-
-在陣列中，過濾出位於指定範圍中的元素 
-
-**2. 要怎麼解決問題**
-
-以多個 thread 對應到陣列的所有元素上，判斷元素是否大於範圍最小值，同時小於範圍最大值，並將符合條件的元素加入結果緩衝區中。
-
-防呆判斷
+由於資料維度為一維陣列，因此執行序數量的格式為 `(n, 1, 1)`。
 
 ```hlsl
 [numthreads(10, 1, 1)]
+```
+
+呼叫計算著色器執行計算，組的數量為陣列數量 / 10。
+
+```cs
+compute.Dispatch(kernel, 1 + (array.Length / 10f), 1, 1);
+```
+
+**4. 要怎麼使用資料**
+
+在運算完成後，透過 GetData 取得緩衝區資料，用於檢視效果。
+
+```cs
+int[] result = new int[array.Length];
+
+buffer.GetData(result);
+```
+
+<!-- TODO 結果圖片 -->
+
+### 資料過濾 +
+
+第二個範例，透過計算著色器進行資料過濾。首先：
+
+**1. 要解決什麼問題**
+
+透過並行運算對陣列中的元素進行過濾，找出位於指定範圍中的向量元素 
+
+**2. 要怎麼傳遞資料**
+
+首先是作為範圍參考的兩個向量，透過 `SetVector` 傳遞。
+
+```cs
+Vector2 rangeMin, rangeMax;
+compute.SetVector("_RangeMin", rangeMin);
+compute.SetVector("_RangeMax", rangeMax);
+```
+
+接著分配 GPU 除存空間，建立兩個緩衝區，一個用於傳遞原始陣列進著色器 `Structured`，另一個則作為除存過濾後元素的容器 `Append`。並指定給計算著色器使用。
+
+```cs
+Vector2[] array;
+
+ComputeBuffer sourceBuffer = new ComputeBuffer(array.Length, sizeof(float) * 2, ComputeBufferType.Structured);
+ComputeBuffer resultBuffer = new ComputeBuffer(array.Length, sizeof(float) * 2, ComputeBufferType.Append);
+sourceBuffer.SetData(array);
+
+compute.SetBuffer(kernel, "sourceBuffer", buffer);
+compute.SetBuffer(kernel, "resultBuffer", buffer);
+```
+
+傳遞陣列長度給著色器，用於防止執行緒數量超出陣列長度時產生的非預期結果。
+
+```cs
+compute.SetInt("_ElementCount", array.Length);
+```
+
+**3. 要怎麼解決問題**
+
+以多個執行緒對應到陣列的所有元素上，判斷元素是否大於範圍最小值，同時小於範圍最大值，並將符合條件的元素加入結果緩衝區中。
+
+```hlsl
 void FilteKernel (uint3 id : SV_DispatchThreadID)
-{
-    if(id.x >= elementCount) return;
-    
+{    
     float2 position = sourceBuffer[id.x];
 
     if(position.x < _RangeMin.x) return;
@@ -490,28 +543,28 @@ void FilteKernel (uint3 id : SV_DispatchThreadID)
 }
 ```
 
-```cs
-compute.Dispatch(kernel, 1 + array.Length / 10f, 1, 1);
+雖然計算著色氣在訪問緩衝區的資料時不會因為超出長度而出錯，但在使用到 AppendBuffer 的情況下，多出的長度可能是使計算著色器將非預期的元素存入緩衝區，因此需要透過防呆判斷避免這件事發生。
+
+```hlsl
+void FilteKernel (uint3 id : SV_DispatchThreadID)
+{    
+    if(id.x >= _ElementCount) return;
+
+    // codes ...
+}
+
 ```
 
-**3. 要怎麼傳遞資料**
+由於資料維度為一維陣列，因此執行序數量的格式為 `(n, 1, 1)`。
 
-透過 `SetVector` 傳遞範圍參數
-
-```cs
-Vector2 rangeMin, rangeMax;
-compute.SetVector("_RangeMin", rangeMin);
-compute.SetVector("_RangeMax", rangeMax);
+```hlsl
+[numthreads(10, 1, 1)]
 ```
 
-分配兩個緩衝區，一個用於傳遞原始陣列，一個用於保存過濾後的結果
+最後，呼叫著色器執行計算。
 
 ```cs
-Vector2[] array;
-
-ComputeBuffer sourceBuffer = new ComputeBuffer(array.Length, sizeof(float) * 2, ComputeBufferType.Structured);
-ComputeBuffer resultBuffer = new ComputeBuffer(array.Length, sizeof(float) * 2, ComputeBufferType.Append);
-sourceBuffer.SetData(array);
+compute.Dispatch(kernel, 1 + (array.Length / 10f), 1, 1);
 ```
 
 **4. 要怎麼使用資料**
@@ -519,58 +572,60 @@ sourceBuffer.SetData(array);
 運算完成後，透過 GetData 取得緩衝區資料，用於檢視效果
 
 ```cs
-sourceBuffer.GetData(array);
+Vector2[] result = new Vector2[array.Length];
+
 resultBuffer.GetData(result);
 ```
 
-Copy count
+<!-- TODO 成果圖 -->
 
-<!-- 
-**1. 要解決什麼問題**
-**2. 要怎麼解決問題**
-**3. 要怎麼傳遞資料**
-**4. 要怎麼使用資料**
-### 影像模糊
+### 更多例子 -
 
-+ 要解決什麼問題：
-+ 要怎麼解決問題：
+上面用了兩個簡單的例子展示
 
-- 資料從哪裡來：C# (CPU) > ComputeShader (GPU)
-- 資料到哪裡去：ComputeShader (GPU) > RenderPipleline (GPU)
+實際上是不會像這樣把資料傳入
 
-+ 要傳遞什麼資料：
-+ 要怎麼傳遞資料： -->
+因為更實際的範例放進來會太長，所以這裡就提供關鍵字和一些
+
+嘗試
+
+**Conway's Game of Life**  
+[康威生命遊戲](https://zh.wikipedia.org/zh-tw/%E5%BA%B7%E5%A8%81%E7%94%9F%E5%91%BD%E6%B8%B8%E6%88%8F)，每個單位格都是一個細胞，以獨立的回合為時間單位，在每個回合中細胞都會根據周圍的環境狀態來決定自己將會存活還是死亡。屬於比較好分辨出如何並行的例子。
+
+https://upload.wikimedia.org/wikipedia/commons/e/e5/Gospers_glider_gun.gif
+
+**GPU Culling**  
+與 GPU Instance 搭配使用的技術，透過計算著色器進行視錐剃除，過濾出在攝影機視角內的物件，達成更高效的渲染優化。是比較實際的例子。
+
+**GPU Slime Simulations**  
+模擬一堆 agent
+https://youtu.be/X-iSQQgOd1A
+
+**GPU Ray Tracing**
+http://blog.three-eyed-games.com/2018/05/03/gpu-ray-tracing-in-unity-part-1/
+當然不侷限於光線追蹤，任何以螢幕像素為單位的並行都可以
+射線邁進、
+
+**GPU Line, cloth simulation**  
+透過
+透過每個節點的動向，模擬出現段或布料材質
+
+
+**GPU Slime Simulations**  
+模擬一堆 agent
+https://youtu.be/X-iSQQgOd1A
+
+**GPU Fluid Simulations**  
+網格平行運算
+https://www.youtube.com/watch?v=qsYE1wMEMPA
+
+
 
 ## 感謝閱讀
 
 計算著色器學習筆記，在知道了 GPU Instance 和 GPU Culling ，我也接觸到計算著色器這項工具了，正式踏入 GPU 並行的世界。但查了不少資料感覺都不夠直觀，或是一口氣跳到太深的內容（像是直接教 RayTracing 的文章）。
 
 於是在花幾個月實做和研究各項些東西後，嘗試用自己的理解重新解釋一次計算著色器，這篇筆記就是我整理出關於計算著色器的幾項重點。
-
-### 更多例子 -
-
-比較實際的範例放進來會太長， 給關鍵字
-
-GPU Instance, GPU Culling
-透過 資料過濾 將超出視錐範圍的物件剔除
-
-GPU Ray Tracing
-http://blog.three-eyed-games.com/2018/05/03/gpu-ray-tracing-in-unity-part-1/
-
-GPU Line, cloth simulation 
-透過每個節點的動向，模擬出現段或布料材質
-
-GPU Slime Simulations
-模擬一堆 agent
-https://youtu.be/X-iSQQgOd1A
-
-GPU Fluid Simulations
-網格平行運算
-https://www.youtube.com/watch?v=qsYE1wMEMPA
-
-Game of Life
-每個單位格
-
 ### 參考資料 -
 
 https://docs.microsoft.com/zh-tw/windows/win32/direct3dhlsl/sm5-attributes-numthreads
