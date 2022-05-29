@@ -329,7 +329,7 @@ listable: [recommand, new, all]
 
 如果喜歡文章的話也請幫我按個拍手紐 >///<
 
-{{< likecoin >}}
+{{< outpost/likecoin >}}
 
 ### 參考資料
 

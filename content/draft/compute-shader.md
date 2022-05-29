@@ -15,14 +15,16 @@ tags: [Unity, ComputeShader]
 # og: "/post/about-learning/featured.jpg"
 
 ## when calling "resources" shortcode, well link to static folder with this path 
-# resources: /common/
+resources: /learn/shader/compute-shader/
 
 ## customize page background
 background: "none"
 
 ## listout with recommand, new and all pages
-listable: [recommand, new, all]
+# listable: [recommand, new, all]
 ---
+
+<!-- TODO Colors -->
 
 ## 概括 +
 
@@ -282,7 +284,6 @@ Buffer 有許多種類型，不過這裡就先著重在常用的兩種類型上�
 
 + **ComputeBufferType.Append**  
     添加緩衝區，傳遞一個容器緩衝區，允許在著色器中對它添加元素，通常用於過濾元素。
-    <!-- TODO Out of range -->
 
 假設我要將一個長度為 10000 的向量陣列傳入計算著色器，並對裡面的元素進行過濾的話，就會需要兩個緩衝區。緩衝區長度為 10000、元素大小為三個單精度浮點數，類型為 Structured, Append。
 
@@ -371,6 +372,8 @@ SomeFunction(int index) { }
 
 最後的章節就透過各種範例將文中提到的各項重點串起，問題拆分、資料傳遞、解決問題，逐步分析如何使用計算著色器，透過並行的方式達成任務。
 
+{{< resources/assets "examples" "如果想直接觀看完整腳本也可以點我" >}}
+
 ### 回顧腳本 +
 
 首先，回顧一次預設的計算著色器結構，分析一下這個著色器做了哪些事，以及要傳遞什麼資料，和要怎麼使用這個腳本。
@@ -411,8 +414,9 @@ int kernel = compute.FindKernel("CSMain");
 
 接著建立 RenderTexture，並傳入計算著色器的 Result 當中，提供著色器使用。
 ```cs
-RenderTexture resultTex = new RenderTexture(1024, 1024, 0); 
-compute.SetTexture(kernel, "Result", resultTex);
+    resultTex = new RenderTexture(1024, 1024, 0, RenderTextureFormat.Default);
+    resultTex.enableRandomWrite = true;
+    resultTex.Create();
 ```
 
 最後，調用著色器執行指定的計算核心。由於著色器中指定的執行序數量為 8，因此執行時必須將組的數量分配至圖片大小 / 8 才會足夠。
@@ -422,7 +426,7 @@ compute.Dispatch(kernel, 1 + (resultTex.width / 8), 1 + (resultTex.height / 8), 
 
 運作結果如下，這是一個能繪製分型的計算著色器。
 
-<!-- TODO Result Image -->
+{{< resources/image "example-0.jpg" "50%" >}}
 
 ### 陣列計算 +
 
@@ -486,7 +490,7 @@ int[] result = new int[array.Length];
 buffer.GetData(result);
 ```
 
-<!-- TODO 結果圖片 -->
+{{< resources/image "example-1.jpg" "80%" >}}
 
 ### 資料過濾 +
 
@@ -515,8 +519,8 @@ ComputeBuffer sourceBuffer = new ComputeBuffer(array.Length, sizeof(float) * 2, 
 ComputeBuffer resultBuffer = new ComputeBuffer(array.Length, sizeof(float) * 2, ComputeBufferType.Append);
 sourceBuffer.SetData(array);
 
-compute.SetBuffer(kernel, "sourceBuffer", buffer);
-compute.SetBuffer(kernel, "resultBuffer", buffer);
+compute.SetBuffer(kernel, "sourceBuffer", sourceBuffer);
+compute.SetBuffer(kernel, "resultBuffer", resultBuffer);
 ```
 
 傳遞陣列長度給著色器，用於防止執行緒數量超出陣列長度時產生的非預期結果。
@@ -539,7 +543,7 @@ void FilteKernel (uint3 id : SV_DispatchThreadID)
     if(position.x > _RangeMax.x) return;
     if(position.y > _RangeMax.y) return;
 
-    culledBuffer.Append(position);
+    resultBuffer.Append(position);
 }
 ```
 
@@ -564,7 +568,7 @@ void FilteKernel (uint3 id : SV_DispatchThreadID)
 最後，呼叫著色器執行計算。
 
 ```cs
-compute.Dispatch(kernel, 1 + (array.Length / 10f), 1, 1);
+compute.Dispatch(kernel, 1 + (array.Length / 10), 1, 1);
 ```
 
 **4. 要怎麼使用資料**
@@ -577,55 +581,54 @@ Vector2[] result = new Vector2[array.Length];
 resultBuffer.GetData(result);
 ```
 
-<!-- TODO 成果圖 -->
+{{< resources/image "example-2.jpg" "80%" >}}
 
-### 更多例子 -
+### 更多例子 +
 
-上面用了兩個簡單的例子展示
+上面用了兩個簡單的例子展示如何編寫自己的計算著色器，不過要注意這並不是「真正」應用計算著色器時會使用的作法。由於 CPU 與 GPU 間的資料傳遞成本高昂，實際應用時不會像範例中透過 GetData 將資料取回 C#，而是直接讓渲染管線使用這些資料。
 
-實際上是不會像這樣把資料傳入
-
-因為更實際的範例放進來會太長，所以這裡就提供關鍵字和一些
-
-嘗試
+例如傳入 [Graphics.DrawMeshInstancedIndirect](https://docs.unity3d.com/ScriptReference/Graphics.DrawMeshInstancedIndirect.html) 讓 Unity 進行 GPU Instance，或是透過計算著色器將結果繪製到 RenderTexture 中，再利用 ImageEffectShader 渲染到畫面上。可惜的是更實際的範例放進來會讓篇幅太長，所以這裡就先提供一些實際應用的例子，讓有興趣深入的人自行研究。
 
 **Conway's Game of Life**  
-[康威生命遊戲](https://zh.wikipedia.org/zh-tw/%E5%BA%B7%E5%A8%81%E7%94%9F%E5%91%BD%E6%B8%B8%E6%88%8F)，每個單位格都是一個細胞，以獨立的回合為時間單位，在每個回合中細胞都會根據周圍的環境狀態來決定自己將會存活還是死亡。屬於比較好分辨出如何並行的例子。
+康威生命遊戲，每個單位格都是一個細胞，以獨立的回合為時間單位，在每個回合中細胞都會根據周圍的環境狀態來決定自己將會存活還是死亡。屬於比較好分辨出如何並行的例子。
 
-https://upload.wikimedia.org/wikipedia/commons/e/e5/Gospers_glider_gun.gif
+{{< resources/image "conway's-game-of-life.gif" >}}
+
+具體遊戲規則可以參考 [Wiki](https://zh.wikipedia.org/zh-tw/%E5%BA%B7%E5%A8%81%E7%94%9F%E5%91%BD%E6%B8%B8%E6%88%8F)。
+
+**GPU Slime Simulations**  
+透過計算著色器模擬大量的單位，並讓這些單位以簡單的行為互相交互，產生有趣的結果。屬於比較好玩的例子。
+
+{{< resources/image "slime-simulations.gif" "80%" >}}
+
+參考影片 [Coding Adventure: Ant and Slime Simulations](https://youtu.be/X-iSQQgOd1A)
 
 **GPU Culling**  
-與 GPU Instance 搭配使用的技術，透過計算著色器進行視錐剃除，過濾出在攝影機視角內的物件，達成更高效的渲染優化。是比較實際的例子。
+與 GPU Instance 搭配使用的技術，透過計算著色器進行視錐剃除，過濾出在攝影機視角內的物件，達成更高效的渲染優化。是比較實際而且簡單的例子。
 
-**GPU Slime Simulations**  
-模擬一堆 agent
-https://youtu.be/X-iSQQgOd1A
+{{< resources/image "compute-culling.gif" >}}
 
-**GPU Ray Tracing**
-http://blog.three-eyed-games.com/2018/05/03/gpu-ray-tracing-in-unity-part-1/
-當然不侷限於光線追蹤，任何以螢幕像素為單位的並行都可以
-射線邁進、
+更多細節可以參考此篇文章 [Unity中使用ComputeShader做视锥剔除（View Frustum Culling）](https://zhuanlan.zhihu.com/p/376801370)。
 
-**GPU Line, cloth simulation**  
-透過
-透過每個節點的動向，模擬出現段或布料材質
+**GPU Ray Tracing**  
+將環境、物件與材質等資料傳入計算著色器，直接透過自訂的方法進行渲染，並將結果輸出至畫面上。方法不侷限於光線追蹤，任何以螢幕像素為單位的並行都可以使用（如射線邁進），是比較實際但也有難度的運用。
 
+{{< resources/image "ray-tracing.jpg" "50%" >}}
 
-**GPU Slime Simulations**  
-模擬一堆 agent
-https://youtu.be/X-iSQQgOd1A
+參考資料 [GPU Ray Tracing in Unity](http://blog.three-eyed-games.com/2018/05/03/gpu-ray-tracing-in-unity-part-1/)
 
-**GPU Fluid Simulations**  
-網格平行運算
-https://www.youtube.com/watch?v=qsYE1wMEMPA
+## 感謝閱讀 +
 
+在知道了 GPU Instance 和 GPU Culling ，我也接觸到計算著色器這項工具了，正式踏入 GPU 並行的世界。但查了不少資料感覺都不夠直觀，不然就是一口氣跳到太深的內容（像是直接教 RayTracing 的文章）。
 
+於是在花幾個月實做和研究各項些東西後，嘗試用自己的理解重新解釋一次計算著色器，這篇筆記就是我整理出關於計算著色器的幾項重點，在這裡分享給各位，如果有任何建議都歡迎提出。
 
-## 感謝閱讀
+### 參考資料 +
 
-計算著色器學習筆記，在知道了 GPU Instance 和 GPU Culling ，我也接觸到計算著色器這項工具了，正式踏入 GPU 並行的世界。但查了不少資料感覺都不夠直觀，或是一口氣跳到太深的內容（像是直接教 RayTracing 的文章）。
+[numthreads](https://docs.microsoft.com/zh-tw/windows/win32/direct3dhlsl/sm5-attributes-numthreads)
 
-於是在花幾個月實做和研究各項些東西後，嘗試用自己的理解重新解釋一次計算著色器，這篇筆記就是我整理出關於計算著色器的幾項重點。
-### 參考資料 -
+[Unity中ComputeShader的基础介绍与使用](https://zhuanlan.zhihu.com/p/368307575)
 
-https://docs.microsoft.com/zh-tw/windows/win32/direct3dhlsl/sm5-attributes-numthreads
+[Coding Adventure: Compute Shaders](https://youtu.be/9RHGLZLUuwc)
+
+[Getting Started with Compute Shaders in Unity](https://www.youtube.com/watch?v=BrZ4pWwkpto)
