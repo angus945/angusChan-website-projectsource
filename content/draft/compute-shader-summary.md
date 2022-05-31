@@ -81,9 +81,9 @@ CPU 與 GPU 運作時使用的儲存空間不同，因此想執行任何的操�
 
 再加上著色器本身的除錯難度，使用者難以辨識究竟是資料傳遞出錯還是著色器計算有誤。對於初次接觸計算著色器，還不熟悉除錯方法的新手來說也是一大瓶頸。
 
-## 腳本結構 +
+## 腳本結構 +-
 
-這是 Unity 中的預設 Compute Shader 腳本，這個章節就來逐步解析他的結構。
+以下是 Unity 中的預設 Compute Shader 腳本，這個章節就來逐步解析他的結構。
 
 ```hlsl
 // Each #kernel tells which function to compile; you can have many kernels
@@ -102,25 +102,28 @@ void CSMain (uint3 id : SV_DispatchThreadID)
 }
 ```
 
-### 計算核心 +
+### 計算核心 +-
 
-和名稱一樣，計算核心 (Kernel) 是計算著色器中的核心區塊，著色器的具體功能會在此處定義。透過 `#pragma kernel ___` 關鍵字宣告計算核心，就和 vert 和 frag 編寫時一樣，核心的名稱可以自由定義，但一定要有一個對應的函式實做才能運行。也可以根據需求定義一個以上的核心。
+就和名稱一樣，計算核心 (Kernel) 是計算著色器中的核心區塊，當執行計算著色器時，其中的程式便會透過並行的方式運行。
+
+透過 `#pragma kernel ___` 關鍵字宣告計算核心，就和 vert 和 frag 編寫時一樣，核心的名稱可以自由定義，但一定要有一個對應的函式實做才能運行。一個計算著色器也可以根據需求定義複數個核心。
 
 ```hlsl
 #pragma kernel MyComputeKernelA
 #pragma kernel MyComputeKernelB
 #pragma kernel MyComputeKernelC
 
-void MyComputeKernelA (uint3 id : SV_DispatchThreadID) { }
+void MyComputeKernelA (uint3 id : SV_DispatchThreadID) 
+{ 
+    // TODO: insert actual code here!
+}
 void MyComputeKernelB (uint3 id : SV_DispatchThreadID) { }
 void MyComputeKernelC (uint3 id : SV_DispatchThreadID) { }
 ```
 
-### 多執行緒 +
+### 多執行緒 +-
 
-並行便是由多個執行緒（或線程）
-
-因此除了定義計算核心外，還需要透過 `[numthreads(x, y, z)]` 分配這個核心需要的執行緒數量 "num" "threads"。三個欄位分別代表維度軸 `xyz`，而計算著色器運作時也會透過 `SV_DispatchThreadID` 當前的執行緒 ID 傳入計算函式中。
+定義和實做了計算核心之後，接著便需要指定需要的「執行數量」。並行是透過將工作分配給多個執行緒達成的，因此除了定義計算核心外，還需要透過 `[numthreads(x, y, z)]` 分配這個核心需要的執行緒數量 "num" "threads"。
 
 ```hlsl
 [numthreads(10, 1, 1)]
@@ -130,7 +133,7 @@ void CSMain (uint3 id : SV_DispatchThreadID)
 }
 ```
 
-轉換成 CPU 語言中的迴圈看起來應該會更直觀。但請注意！這只是比喻，計算著色器中不會真的像迴圈那樣跑，而是以並行的方式亂序執行，別忘了最一開始的示意圖。
+三個欄位分別代表維度軸 `xyz`，計算著色器運作時便會透過 `SV_DispatchThreadID` 將當前的執行緒 ID 傳入計算函式中。轉換成 CPU 語言中的迴圈看起來應該會更直觀。
 
 ```cs
 Vector3 numthreads = new Vector3(10, 1, 1);
@@ -142,34 +145,40 @@ void Threads()
         {
             for(int z = 0; z < numthreads.y; z ++)
             {
-                CSMain();
+                CSMain(new Vector3(x, y, z));
             }
         }
     }
 }
-void CSMain() 
+void CSMain(Vector3 threadID) 
 { 
     // TODO: insert actual code here!
 }
 ```
 
+但請注意！這只是比喻，計算著色器中不會真的像迴圈那樣跑，而是以並行的方式亂序執行，別忘了最一開始的示意圖。
+
+<!-- TODO 示意圖 -->
+
 至於為什麼會執行緒的數量需要三個維度軸呢？Microsoft 官方文檔是這樣說的：[numthreads](https://docs.microsoft.com/en-us/windows/win32/direct3dhlsl/sm5-attributes-numthreads)
 
 > For example, if a compute shader is doing 4x4 matrix addition then numthreads could be set to numthreads(4,4,1) and the indexing in the individual threads would automatically match the matrix entries. The compute shader could also declare a thread group with the same number of threads (16) using numthreads(16,1,1), however it would then have to calculate the current matrix entry based on the current thread number.
 
-簡單來說就是為了「方便」，視你要處裡的資料結構而定，多的維度軸可以幫使用者省去轉換工作，讓 ID 與資料欄位直接對應。在 CPU 語言中，如果要遍歷具有座標性質的資料時（如二維陣列 `int[,]`），透過兩層迴圈對應維度的 x, y 軸會更加輕鬆。
+簡單來說就是為了「方便」，視你要處理的資料結構而定，多的維度軸可以幫使用者省去轉換工作，讓 ID 與資料欄位直接對應。與 CPU 語言中，要遍歷具有座標性質的資料時（如二維陣列），透過兩層迴圈對應維度的 x, y 軸會更加輕鬆同理。
 
-當然並行時也同理，假如我現在要處裡的是圖片資料，透過兩個維度軸直接對應至像素位置上，會比透過長寬換算來的方便，這就是為什麼計算著器起也允許分配多個軸向的執行緒數量。
+當然並行時也同理，假如我現在要處理的是圖片資料，透過兩個維度軸直接對應至像素位置上，會比透過長寬換算來的方便，這就是為什麼計算著色器也允許分配多個軸向的執行緒數量。
 
-### 執行緒組 +
+### 執行緒組 +-
 
-即使定義了計算核心，Compute Shader 還是需要由使用者手動呼叫 [ComputeShader.Dispatch](https://docs.unity3d.com/ScriptReference/ComputeShader.Dispatch.html) 執行。
+由於計算著色器的運行時機是由使用者掌控的，因此在定義完計算核心與執行序數量後，還是需要手動呼叫 `ComputeShader.Dispatch`來「運行」計算著色器。
+
+<!-- TODO 真正的運行時機？ -->
 
 ```cs
 public void Dispatch(int kernelIndex, int threadGroupsX, int threadGroupsY, int threadGroupsZ); 
 ```
 
-第一個變數 `kernelIndex` 代表的是這次 Dispath 要使用的計算核心，如果著色器中有定義複數的核心，便可由這裡進行選擇。可以使用 `FindKernel` 函式透過名稱尋找計算核心。
+`Dispath` 函式一共接受四個參數輸入，第一個 `kernelIndex` 代表的是這次 Dispath 要使用的計算核心，如果著色器中有定義複數的核心，便可由這裡進行選擇。可以使用 `FindKernel` 函式，透過名稱尋找對應的計算核心。
 
 ```cs
 int knrnelIndex = compute.FindKernel("MyComputeKernel");
@@ -177,9 +186,9 @@ int knrnelIndex = compute.FindKernel("MyComputeKernel");
 compute.Dispatch(knrnelIndex, 1, 1, 1);
 ```
 
-Dispatch 還有三個輸入 `threadGroupsX,Y,Z`，意思這次運行是要分配的「執行緒組」數量 "thread" "Groups"（下面簡稱 "組"）。numthread 分配的是一個組裡面要有多少執行緒，而 threadGroups 則會指定一共使用多少組來運行，所以一次運行的最終次數便是 threadGroups * numthreads。
+至於後面三個參數 `threadGroupsX,Y,Z`，代表的是這次運行著色器要分配的「執行緒組」有多少個 "thread" "Groups"（下面簡稱 "組"）。上個部份提到的 `numthread` 分配的是一個組裡面要有多少執行緒，而 `threadGroups` 則會指定一共使用多少組來運行。
 
-同樣，替換 CPU 語言中的迴圈看起來會更直觀。但也再次提醒，這只是比喻，別忘了一開始的對比圖。並且組和組之間也會並行，並非上一個組完成才會進入下一個組。
+因此，當計算著色器運行時，最終會執行的次數（也是分配的執行緒數量）會有 threadGroups * numthreads 次。同樣，替換 CPU 語言中的迴圈看起來會更直觀。
 
 ```cs
 void ThreadGroups(int threadGroupsX, int threadGroupsY, int threadGroupsZ)
@@ -199,30 +208,32 @@ void Threads() { }
 void CSMain() { }
 ```
 
-每個執行緒的 SV_DispatchThreadID 便是當前的組 * 執行緒數量 + 當前的執行緒，不過這些 ID 的計算 Compute Shader 都會幫我們完成，所以使用者只要分配好需要的數量即可。
+但也再次提醒，這只是比喻，別忘了一開始的對比圖。而且組和組之間也會並行，並非上一個組完成才會進入下一個組。
 
-至具體數量該怎麼分配呢？首先從處理資料的維度下手，如果是一維的資料陣列就分配 `(n, 1, 1)`、二維圖片的像素陣列就用 `(x, y, 1)`、三維的體積網格就 `(x, y, z)`。
+<!-- TODO 示意 -->
 
-執行緒的具體數量或比例則沒有明確規則，大概抓個資料總數 1% 吧？假設陣列長度大約一萬上下，numthread 就分配為 `(100, 1, 1)`、圖片大小 2048 的話就分配 `(20, 20, 1)`。
+每個執行緒的 SV_DispatchThreadID 便是當前的組 * 執行緒數量 + 當前的執行緒，不過這些 ID 的計算著色器運行時都會幫我們完成，所以使用者只要分配好需要的數量即可。
 
-最後，組的數量可以透過資料長度除以執行緒數量得出，確保任何情況下都能分配足夠的組來運行著色器，畢竟資料的多寡可能根據情況產生差異。
+<!-- TODO https://docs.microsoft.com/en-us/windows/win32/direct3dhlsl/images/threadgroupids.png -->
+
+至具體數量該怎麼分配呢？首先從處理資料的維度下手，假設著色器要處理的主要數據為一維的陣列就分配 `(n, 1, 1)`，若要對圖片的二維像素陣列操作就用 `(x, y, 1)`，或是要計算三維的體積網格就 `(x, y, z)`。
+
+執行緒的具體數量或比例則沒有明確規則，大概抓個介於 10 和資料總數 1% 以下的數值吧。假設陣列長度大約一萬，numthread 就分配為 `(100, 1, 1)`，若圖片大小 2048 的話就分配 `(20, 20, 1)`。
+
+最後，組的數量可以透過資料長度除以執行緒數量得出，畢竟資料的多寡可能根據情況產生差異，透過這種方式可以確保任何情況下都有足夠的組來運行著色器。
 
 ```cs
 compute.Dispatch(knrnelIndex, 1 + (array.Length / 100), 1, 1);
 compute.Dispatch(knrnelIndex, 1 + (image.width / 20), 1 + (image.height / 20), 1);
 ```
 
-著色器中訪問陣列時，不會因為 index out of range 出現錯誤而中斷，所以只需要確保分配的數量足夠即可。
+在著色器訪問陣列時，不會因為 index out of range 出現錯誤而中斷，所以只需要確保分配的數量足夠即可。（只有少數情況會因為數量過多導致結果錯誤，文章最後的範例會提到解決方法）
 
-<!-- out of bound 時的行為 ? -->
+### 資料訪問 +-
 
-<!-- https://github.com/gpuweb/gpuweb/issues/35 ? -->
+最後，計算著色器中最關鍵的部份，對傳入著色器的資料進行操作，透過並行運算達成任務！如果執行緒的數量分配正確，每個 ThreadID 都會對應到各自的要處理的資料欄位上。
 
-### 訪問資料 +
-
-要透過計算著色器處理的資料主要會透過 Buffer 傳遞至 GPU，而存取 Buffer 資料的方法就和陣列一樣，透過索引值訪問特定欄位中的資料。
-
-透過執行緒 ID 對應至圖片的每個像素，並將黑色寫入像素。
+假如我要將一張圖片重置為黑色，只需要透過執行緒 ID 對應至圖片的每個像素，並將黑色寫入像素即可。由於資料的維度為二維，因此訪問資料欄位時的索引也是二維輸入。
 
 ```hlsl
 RWTexture2D<float4> Image;
@@ -234,7 +245,7 @@ void ClearImage (uint3 id : SV_DispatchThreadID)
 }
 ```
 
-當然資料訪問也不僅限於自己的 ID，視需求也可以讀、寫其他欄位上的資料。例如時常應用在影像處裡中的卷積矩陣 (Kernel Convolution)，就會訪問周圍的像素資料來進行計算。下面是方框模糊的範例程式，將像素與周圍八格進行平均。
+並且，每個執行緒的資料訪問也不侷限於自己的 ID，視需求也可以讀、寫其他欄位上的資料。例如時常應用在影像處理中的卷積矩陣 (Kernel Convolution)，就會參考周圍像素的資料來進行計算。下面是方框模糊的範例程式，將像素與周圍八格進行平均。
 
 ```hlsl
 RWTexture2D<float4> Image;
@@ -255,47 +266,55 @@ void BoxBlur (uint3 id : SV_DispatchThreadID)
 }
 ```
 
-## 資料傳遞 +
+<!-- TODO 示意圖 -->
 
-資料傳遞，計算著色器的第二項重點。著色器是透過 GPU 進行運算的，運算過程中使用的資料也是存放在 GPU 的緩衝區 (Buffer) 當中。GPU 與 CPU 使用的空間不同，因此兩者的資料也不是直接相通的，任何想在著色器中的操作資料都需要先先傳遞至緩衝區中。
+## 資料傳遞 +-
 
-而在少了管線幫助的計算著色器中，資料的傳遞也需要由使用者手動控管。
+資料傳遞，計算著色器的第二項重點。一開始有提到過，CPU 與 GPU 運作時使用的儲存空間不同，因此想執行任何的操作前都必須先將資料傳遞給 GPU 才行，這個章節就來解說如何將資料傳遞給計算著色器使用。
 
-### 只讀參數 +
+### 只讀參數 +-
 
-就和一般的渲染著色器一樣，計算著色器也可以傳入個別的參數用於計算。且同樣的，這些數值會被整個著色器共享（包括不同的計算核心），並且只讀。通常用於傳遞全域的屬性參數，如圖片大小、筆刷位置、顏色等。
+就和一般的渲染著色器一樣，計算著色器也可以傳入獨立的參數用於計算。且同樣的，這些數值在著色器中是全局共享的，報括不同計算核心、函式，並且只讀，通常用於傳遞屬性類的參數。
+
+以繪圖系統為例就是畫布大小、筆刷位置、筆刷強度與顏色等等。透過 `SetVector`, `SetFloat` 等函式進行傳遞。
 
 ```cs
-compute.SetVector("_Resourection", resourction);
+compute.SetVector("_CanavsSize", canvasSize);
 compute.SetVector("_BrushPos", mousePosition);
-compute.SetVector("_BrushColor", color);
+compute.SetFloat("_Intensity", intensity);
+compute.SetVector("_Color", color);
 ```
+
+要使用這些參數的話，在著色器中也需要建立對應的變數接收。
 
 ```hlsl
-float2 _Resourection;
+int2 _CanavsSize;
 float2 _BrushPos;
-float4 _BrushColor;
+float _Intensity;
+float4 _Intensity;
 ```
 
-### 緩衝資料 +
+### 緩衝資料 +-
 
-也是計算著色器的主要目的，要透過計算著色器進行處理的資料，由 CPU 端分配 GPU 緩衝區，並傳遞給 Compute Shader 使用。
+與只讀的全域參數不同，由於資料儲存空間的差異以及資料傳遞的成本，若想讓計算著色器對資料內容進行讀寫，或是想傳遞大量的獨立參數供不同執行緒個別使用的話，就必須先對 GPU 的儲存空間進行分配。
+
+GPU 的資料儲存空間為緩衝區 (Buffer)，在 Unity 中只需要透過 `new ComputeBuffer()` 即可建立一個新的 GPU 緩衝區，引擎會完成其他的內部作業。
 
 ```cs
 ComputeBuffer buffer = new ComputeBuffer(count, stride, ComputeBufferType);
 ```
 
-`count` 代表的是資料有多少元素，也就是要傳入的陣列長度。`stride` 為一個元素的大小，可以透過 `sizeof()` 取得。而 `ComputeBufferType` 則是緩衝區的類別，根據需求使用不同的類型。
+計算緩衝區的建構子需要接收三個參數輸入，第一個 `count` 代表的是緩衝區「最多」需要儲存多少元素，通常就是我們想傳遞的陣列資料的長度。`stride` 為一個欄位的元素大小，通常就是想傳遞的陣列資料的型別，可以透過 `sizeof(type)` 取得。
 
-Buffer 有許多種類型，不過這裡就先著重在常用的兩種類型上：
+而最後的 `ComputeBufferType` 則是緩衝區的類別，可以根據需求使用不同的類型。具體的類型有許多種，不過這裡就先關注最常用的兩種就好：
 
 + **ComputeBufferType.Structured**  
-    結構緩衝區，傳遞一般的陣列資料結構，讓著色器能夠讀寫內容。
+    結構緩衝區，通常用於傳遞一般的陣列資料，讓計算著色器讀、寫其中的資料。
 
 + **ComputeBufferType.Append**  
-    添加緩衝區，傳遞一個容器緩衝區，允許在著色器中對它添加元素，通常用於過濾元素。
+    容器緩衝區，允許計算著色器對它「添加」元素，通常用於資料過濾。
 
-假設我要將一個長度為 10000 的向量陣列傳入計算著色器，並對裡面的元素進行過濾的話，就會需要兩個緩衝區。緩衝區長度為 10000、元素大小為三個單精度浮點數，類型為 Structured, Append。
+假設我要將一個長度為 10000 的向量陣列傳入計算著色器，並對裡面的元素進行過濾的話，就會需要兩個緩衝區。緩衝區長度為 10000、元素大小為三個單精度浮點數，緩衝區類型為 Structured 與 Append。
 
 ```cs
 Vector3[] positions = new Vector3[10000];
@@ -304,26 +323,27 @@ sourceBuffer = new ComputeBuffer(positions.Length, sizeof(float) * 3, ComputeBuf
 filteBuffer = new ComputeBuffer(positions.Length, sizeof(float) * 3, ComputeBufferType.Append);
 ```
 
-透過 SetData 將資料存入緩衝區當中。
+在分配完儲存空間後，還需要將欲傳遞的資料透過 `SetData` 存入緩衝區。
+
 ```cs
-buffer.SetData(positions);
+sourceBuffer.SetData(positions);
 ```
 
-建立完緩衝區後，還需要將它分配給計算著色器使用。不過與先前的只讀參數不同，緩衝資料需要指定給目標核心。不太需要擔心這個動作的開銷，因為在 setData 的時候資料傳遞就已經完成了，這裡只是將緩衝區位置的指標傳給著色器而已。
+最後，只需要將緩衝區指定給計算著色器，就能讓他在運行時使用這些資料了，不過與先前的只讀參數不同，緩衝資料需要指定給一個計算核心。不太需要擔心這個動作的開銷，因為在 `SetData` 的時候資料傳遞就已經完成了，這裡只是改變計算著色器中對緩衝區空間的指標而已。
 
 ```cs
 compute.SetBuffer(kernel, "sourceBuffer", sourceBuffer);
 compute.SetBuffer(kernel, "filteBuffer", filteBuffer);
 ```
 
-同樣著色器也需要對應的變數接收，並在 `<T>` 中指定緩衝區的資料型別。
+計算著色器也需要對應的緩衝區變數接收才能使用這些資料，建立時需要透過 `<T>` 欄位指定資料型別。
 
 ```hlsl
 StructuredBuffer<float3> sourceBuffer;
 AppendStructuredBuffer<float3> filteBuffer;
 ```
 
-也可以透過結構包裝多重變數，一次傳遞複合資料。
+若想在讓緩衝區一次傳遞複合資料，也可以透過結構包裝多重變數。在 C# 部份也是建立相同的結構進行傳遞。
 
 ```hlsl
 struct transform
@@ -338,9 +358,7 @@ StructuredBuffer<transform> transforms;
 
 除此之外，結構緩衝區還有一種 `RWStructuredBuffer<T>`，這種緩衝區會允許計算核心將資料寫入緩衝區，視需求使用。
 
-<!-- https://docs.unity3d.com/ScriptReference/ComputeBufferType.html -->
-
-### 貼圖資料 +
+### 貼圖資料 +-
 
 除了傳遞一維陣列進緩衝區外，計算著色器也能接受圖片資料，將二維的像素陣列傳入計算著色器使用。透過 `SetTexture()` 函式傳遞圖片至著色器中，和緩衝資料一樣需要指定計算核心。
 
@@ -348,14 +366,15 @@ StructuredBuffer<transform> transforms;
 compute.SetTexture(kernel, "image", image);
 ```
 
-在著色器中同樣需要有對應的變數接收，並在 `<T>` 欄位指定通道數量與精度，`float, fixed3, half4` 等等。
+與所有資料傳遞相同，圖片接收也需要建立對應的變數。建立時需要 `<T>` 欄位指定圖片的通道數量與精度，`float, fixed3, half4` 等等。
 
 ```hlsl
 Texture2D<fixed4> image;
 ```
 
-和一般著色器的 `sampler2D` 不同，`Texture2D<T>` 是透過座標直接訪問特定的像素，而非 Tex2D 的 uv 採樣。
-<!-- 不確定會不會受 filter mode, mipmap 的引響?  -->
+不過在訪問圖片像素時，與一般著色器的 `sampler2D` 不同，`Texture2D<T>` 是透過像素座標直接訪問特定欄位上的資料，而非 `Tex2D` 的 uv 採樣。
+
+<!-- TODO 浮點數 id 的 filter  -->
 
 ```hlsl
 void CSMain (uint3 id : SV_DispatchThreadID)
@@ -364,11 +383,22 @@ void CSMain (uint3 id : SV_DispatchThreadID)
 }
 ```
 
-`Texture2D<T>` 為只讀，如果要允許寫入像素的話需要用 `RWTexture2D<T>`。要注意的是讀寫貼圖只能傳入 `RenderTexture`，原理和建立緩衝區時一樣，建立渲染貼圖時也會做分配空間的工做，才能讓著色器寫入數值。
+`Texture2D<T>` 為只讀的像素緩衝區，如果要允許寫入像素的話需要用 `RWTexture2D<T>`。要注意的是讀寫貼圖只能傳入 `RenderTexture`，原理和建立緩衝區時一樣，建立渲染貼圖時也會做分配空間的工作，才能讓著色器寫入數值。
+
+### 釋放空間 +-
+
+最後，由於 GPU 儲存空間是相當珍貴的，所以在不需要緩衝區時也要記得將空間釋放。透過 `Release` 函式執行。
+
+```cs
+buffer.Release();
+renderTexture.Release();
+```
+
+<!-- TODO Dispose vs Release -->
 
 ## 實作範例 +
 
-回到最一開始的問題，有什麼問題是能透過並行解決的，以及該怎麼透過並行解決問題？無論是計算核心的編寫方法，還是代換成 C# 中迴圈的形式，他們都表現出了一個共同點：重複執行相似的工作。
+最後，回到最一開始的問題，有什麼問題是能透過並行解決的，以及該怎麼透過並行解決問題？無論是計算核心的編寫方法，還是代換成 C# 中迴圈的形式，他們都表現出了一個共同點：重複執行相似的工作。
 
 ```cs
 for(int i = 0; i < 10; i ++)
@@ -378,11 +408,11 @@ for(int i = 0; i < 10; i ++)
 SomeFunction(int index) { }
 ```
 
-意思是，如果要解決的問題能夠被拆分為個別獨立並且高度相似的片段，就能透過重複執行相似工作的方法完成，無論是透過迴圈線性執行，或是將每個片段分配給獨立的執行緒，以並行的方式達成任務。
+意思是，如果要解決的問題能夠被拆分為個別獨立並且高度相似的片段，就能透過重複執行的方法完成。只要能完成拆分工作，那麼無論要透過迴圈線性執行，或是將每個問題片段分配給獨立的執行緒，以並行的方式解決都能完成任務。
 
 最後的章節就透過各種範例將文中提到的各項重點串起，問題拆分、資料傳遞、解決問題，逐步分析如何使用計算著色器，透過並行的方式達成任務。
 
-{{< resources/assets "examples" "如果想直接觀看完整腳本也可以點我" >}}
+{{< resources/assets "examples" "> 如果想直接觀看完整腳本也可以點我 <" >}}
 
 ### 回顧腳本 +
 
@@ -642,3 +672,8 @@ resultBuffer.GetData(result);
 [Coding Adventure: Compute Shaders](https://youtu.be/9RHGLZLUuwc)
 
 [Getting Started with Compute Shaders in Unity](https://www.youtube.com/watch?v=BrZ4pWwkpto)
+
+https://zhuanlan.zhihu.com/p/113482286
+執行緒不夠的情況
+
+<!-- https://docs.unity3d.com/ScriptReference/ComputeBufferType.html -->
