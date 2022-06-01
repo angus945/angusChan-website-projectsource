@@ -15,7 +15,7 @@ tags: [Unity, ComputeShader]
 # og: "/post/about-learning/featured.jpg"
 
 ## when calling "resources" shortcode, well link to static folder with this path 
-resources: /learn/shader/compute-shader/
+resources: /learn/shader/compute-shader-basis/
 
 ## customize page background
 background: "none"
@@ -686,7 +686,7 @@ resultBuffer.GetData(result);
 
 {{< outpost/likecoin >}}
 
-個人網站留言功能還未製作，如果想要留言的請移駕至[巴哈的文章留言板]() Orz
+個人網站留言功能還未製作，如果需要留言還請移駕至[巴哈的文章留言板]() Orz
 
 ### 參考資料 +-
 
