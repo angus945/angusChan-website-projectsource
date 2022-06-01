@@ -9,6 +9,8 @@
   --color-bg: #{$light-color-bg};
   --color-codebg: #{$light-color-codebg};
   --color-gridmap: #{$light-color-gridmap};
+  --color-highlight: #{$light-color-highlight};
+  --color-remark: #{$light-color-remark};
 
   // primer variable fix
   --color-text-primary: #{$light-color-font};
@@ -40,6 +42,8 @@
   --color-bg: #{$dark-color-bg};
   --color-codebg: #{$dark-color-codebg};
   --color-gridmap: #{$dark-color-gridmap};
+  --color-highlight: #{$dark-color-highlight};
+  --color-remark: #{$dark-color-remark};
 
   // primer variable fix
   --color-text-primary: #{$dark-color-font};

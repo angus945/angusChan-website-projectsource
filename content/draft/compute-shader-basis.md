@@ -63,7 +63,7 @@ void SomeFunction (uint3 id : SV_DispatchThreadID)
 
 這裡用一張簡單的示意圖展示運作差異。注意，這只是表示兩者「運作方式的差異」，與實際運行時的處理效率無關。
 
-<!-- TODO 示意圖 -->
+{{< resources/image "cpu-vs-gpu.gif" "90%" >}}
 
 不過，在計算著色器中，運作差異並不是真正的難點，如果有編寫材質著色器經驗的話，應該已經很熟悉平行運算這件事了。與材質著色器不同的點在於，計算著色器是獨立於渲染管線之外的系統，所以它也沒有 vertices shader 或 fragment shader 這種渲染管線提供的「框架」來提示使用者該做些什麼。
 
@@ -76,8 +76,6 @@ void SomeFunction (uint3 id : SV_DispatchThreadID)
 在常規的渲染著色器中，引擎管線會幫使用者處理完資料傳遞等問題。但在計算著色器中，使用者擁有更大的權力能指揮 GPU 幫助我們達成各種任務，因此相應的責任也產生了，我們必須接手一些原本會由渲染管線完成的工作 - 資料傳遞。
 
 CPU 與 GPU 運作時使用的儲存空間不同，因此想執行任何的操作前都必須先將資料傳遞給 GPU 才行。由於資料是在兩種不同環境中進行傳遞，資料從哪裡來、資料到哪裡去，該傳遞什麼資料以及該怎麼傳遞資料都是實做時需要面對的問題。
-
-<!-- 示意圖 -->
 
 再加上著色器本身的除錯難度，使用者難以辨識究竟是資料傳遞出錯還是著色器計算有誤。對於初次接觸計算著色器，還不熟悉除錯方法的新手來說也是一大瓶頸。
 
@@ -158,7 +156,7 @@ void CSMain(Vector3 threadID)
 
 但請注意！這只是比喻，計算著色器中不會真的像迴圈那樣跑，而是以並行的方式亂序執行，別忘了最一開始的示意圖。
 
-<!-- TODO 示意圖 -->
+{{< resources/image "cpu-vs-gpu.gif" "90%" >}}
 
 至於為什麼會執行緒的數量需要三個維度軸呢？Microsoft 官方文檔是這樣說的：[numthreads](https://docs.microsoft.com/en-us/windows/win32/direct3dhlsl/sm5-attributes-numthreads)
 
@@ -172,11 +170,13 @@ void CSMain(Vector3 threadID)
 
 由於計算著色器的運行時機是由使用者掌控的，因此在定義完計算核心與執行序數量後，還是需要手動呼叫 `ComputeShader.Dispatch`來「運行」計算著色器。
 
-<!-- TODO 真正的運行時機？ -->
-
 ```cs
 public void Dispatch(int kernelIndex, int threadGroupsX, int threadGroupsY, int threadGroupsZ); 
 ```
+
+<p><c> 註：CPU 與 GPU 的運作通常是異步的，因此「通常情況下」計算著色器並不是在使用者調用 Dispatch 的當下就會執行，而是有自己的運行時機在。 </c></p>
+
+<p><c> 註2：我猜測這也是為什麼函式會叫做 Dispatch，而非更直白的 Execute，但我還沒找到「直接」證實這一點的官方文檔，如果我的猜測或描述有誤的話還請各位指正。參考資料會補充在文末。 </c></p>
 
 `Dispath` 函式一共接受四個參數輸入，第一個 `kernelIndex` 代表的是這次 Dispath 要使用的計算核心，如果著色器中有定義複數的核心，便可由這裡進行選擇。可以使用 `FindKernel` 函式，透過名稱尋找對應的計算核心。
 
@@ -188,7 +188,7 @@ compute.Dispatch(knrnelIndex, 1, 1, 1);
 
 至於後面三個參數 `threadGroupsX,Y,Z`，代表的是這次運行著色器要分配的「執行緒組」有多少個 "thread" "Groups"（下面簡稱 "組"）。上個部份提到的 `numthread` 分配的是一個組裡面要有多少執行緒，而 `threadGroups` 則會指定一共使用多少組來運行。
 
-因此，當計算著色器運行時，最終會執行的次數（也是分配的執行緒數量）會有 threadGroups * numthreads 次。同樣，替換 CPU 語言中的迴圈看起來會更直觀。
+因此，當計算著色器運行時，最終會執行的次數（也是分配的執行緒數量）會有 threadGroups * numthreads 次。同樣，替換 CPU 語言中的迴圈看起來會更直觀。但也再次提醒這只是比喻，而且組和組之間也會並行，並非上一個組完成才會進入下一個組。
 
 ```cs
 void ThreadGroups(int threadGroupsX, int threadGroupsY, int threadGroupsZ)
@@ -208,13 +208,9 @@ void Threads() { }
 void CSMain() { }
 ```
 
-但也再次提醒，這只是比喻，別忘了一開始的對比圖。而且組和組之間也會並行，並非上一個組完成才會進入下一個組。
-
-<!-- TODO 示意 -->
-
 每個執行緒的 SV_DispatchThreadID 便是當前的組 * 執行緒數量 + 當前的執行緒，不過這些 ID 的計算著色器運行時都會幫我們完成，所以使用者只要分配好需要的數量即可。
 
-<!-- TODO https://docs.microsoft.com/en-us/windows/win32/direct3dhlsl/images/threadgroupids.png -->
+{{< resources/image "thread-group-id.jpg" "60%" "圖片引用自 microsoft HLSL 文檔，numthreads" >}}
 
 至具體數量該怎麼分配呢？首先從處理資料的維度下手，假設著色器要處理的主要數據為一維的陣列就分配 `(n, 1, 1)`，若要對圖片的二維像素陣列操作就用 `(x, y, 1)`，或是要計算三維的體積網格就 `(x, y, z)`。
 
@@ -245,7 +241,7 @@ void ClearImage (uint3 id : SV_DispatchThreadID)
 }
 ```
 
-並且，每個執行緒的資料訪問也不侷限於自己的 ID，視需求也可以讀、寫其他欄位上的資料。例如時常應用在影像處理中的卷積矩陣 (Kernel Convolution)，就會參考周圍像素的資料來進行計算。下面是方框模糊的範例程式，將像素與周圍八格進行平均。
+並且，每個執行緒的資料訪問也不侷限於自己的 ID，視需求也可以讀、寫其他欄位上的資料。例如時常應用在影像處理中的卷積矩陣 ([Kernel Convolution](https://en.wikipedia.org/wiki/Kernel_(image_processing)))，就會參考周圍像素的資料來進行計算。下面是方框模糊的範例程式，將像素與周圍八格進行平均。
 
 ```hlsl
 RWTexture2D<float4> Image;
@@ -266,7 +262,9 @@ void BoxBlur (uint3 id : SV_DispatchThreadID)
 }
 ```
 
-<!-- TODO 示意圖 -->
+卷積矩陣的簡單範例，分別為無效果、方框模糊與高斯模糊。
+
+{{< resources/image "kernel-convolution-operation.jpg" "80%" "圖片引用自 Kernel Convolution Wiki" >}}
 
 ## 資料傳遞 +-
 
@@ -374,8 +372,6 @@ Texture2D<fixed4> image;
 
 不過在訪問圖片像素時，與一般著色器的 `sampler2D` 不同，`Texture2D<T>` 是透過像素座標直接訪問特定欄位上的資料，而非 `Tex2D` 的 uv 採樣。
 
-<!-- TODO 浮點數 id 的 filter  -->
-
 ```hlsl
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
@@ -387,18 +383,16 @@ void CSMain (uint3 id : SV_DispatchThreadID)
 
 ### 釋放空間 +-
 
-最後，由於 GPU 儲存空間是相當珍貴的，所以在不需要緩衝區時也要記得將空間釋放。透過 `Release` 函式執行。
+最後，由於 GPU 儲存空間是相當珍貴的，所以在不需要緩衝區時也要記得將空間釋放。只要透過 `Release` 函式執行即可。
 
 ```cs
 buffer.Release();
 renderTexture.Release();
 ```
 
-<!-- TODO Dispose vs Release -->
+## 實作範例 +-
 
-## 實作範例 +
-
-最後，回到最一開始的問題，有什麼問題是能透過並行解決的，以及該怎麼透過並行解決問題？無論是計算核心的編寫方法，還是代換成 C# 中迴圈的形式，他們都表現出了一個共同點：重複執行相似的工作。
+最後，回到最一開始的問題，有什麼問題是能透過並行解決的，以及該怎麼透過並行解決問題？在一開始的對比與腳本結構的章節中有看到過，無論是計算核心的編寫方法，還是代換成 C# 中迴圈的形式，他們都表現出了一個共同點：重複執行相似的工作。
 
 ```cs
 for(int i = 0; i < 10; i ++)
@@ -408,34 +402,43 @@ for(int i = 0; i < 10; i ++)
 SomeFunction(int index) { }
 ```
 
-意思是，如果要解決的問題能夠被拆分為個別獨立並且高度相似的片段，就能透過重複執行的方法完成。只要能完成拆分工作，那麼無論要透過迴圈線性執行，或是將每個問題片段分配給獨立的執行緒，以並行的方式解決都能完成任務。
+```hlsl
+[numthreads(10, 1, 1)]
+void SomeFunction (uint3 id : SV_DispatchThreadID)
+{
+    //DoSomething
+}
+```
 
-最後的章節就透過各種範例將文中提到的各項重點串起，問題拆分、資料傳遞、解決問題，逐步分析如何使用計算著色器，透過並行的方式達成任務。
+意思是，如果要解決的問題能夠被拆分為個別獨立並且高度相似的片段，就能透過重複執行的方法完成。如此一來，無論是要透過迴圈線性執行，或是將每個片段分配給獨立的執行緒，以並行的方式解決，都能有效的達成目標。
+
+最後的章節就透過各種範例，將文中提到的各項重點串起。問題拆分、資料傳遞、解決問題，逐步分析如何使用計算著色器，透過並行的方式達成任務。
 
 {{< resources/assets "examples" "> 如果想直接觀看完整腳本也可以點我 <" >}}
 
-### 回顧腳本 +
+### 回顧腳本 +-
 
-首先，回顧一次預設的計算著色器結構，分析一下這個著色器做了哪些事，以及要傳遞什麼資料，和要怎麼使用這個腳本。
+首先，在開始解決自己的問題前，先來回顧一次預設的計算著色器結構，分析這個著色器做了哪些事，傳遞了什麼資料，以及怎麼使用這個腳本。
 
-宣告了一個計算核心，名稱叫做 CSMain。
+預設著色器宣告了一個計算核心，名稱叫做 CSMain (Compute Shader Main)。
 
 ```hlsl
 #pragma kernel CSMain
 ```
 
-定義一個讀寫貼圖給計算著色器使用，精度為 float，通道數量 4 個。
+他只宣告了一個讀寫貼讀緩衝區，精度為 float，通道數量 4 個。代表這個計算著色器要處理的主要資料結構是圖片。
 
 ```hlsl
 RWTexture2D<float4> Result;
 ```
 
-指定著色器要使用的執行序數量，由於訪問資料的維度軸為二維（圖片、像素資料），因此數量的格式為 `(x, y, 1)`。
+由於訪問資料的維度軸為二維（圖片、像素資料），因此執行緒數量的格式為 `(x, y, 1)`。
+
 ```hlsl
 [numthreads(8,8,1)]
 ```
 
-實做計算核心的函式，名稱對應一開始宣告的 CSMain 核心。透過多個執行緒，對應到圖片資料 Result 的每個像素上，並根據像素的座標（也就是 id）寫入計算過後的像素數值。（先忽略計算式的原理，那不是這裡的重點）
+最後是預設的計算核心，名稱對應一開始宣告的 `CSMain`。透過多個執行緒，對應到圖片資料 `Result` 的每個像素上，根據像素座標（也就是 `id`）進行計算，並將計算結果寫入像素中。（先忽略計算式的原理，那不是這裡的重點）
 
 ```hlsl
 void CSMain (uint3 id : SV_DispatchThreadID)
@@ -446,20 +449,22 @@ void CSMain (uint3 id : SV_DispatchThreadID)
 }
 ```
 
-回到 C# 處，接著來看看如何使用這個預設著色器。首先要尋找著色器中定義的計算核心 CSMain。
+回到 C# 處，接著來看看如何使用這個預設著色器。首先要尋找著色器中定義的計算核心 `CSMain`。
 
 ```cs
 int kernel = compute.FindKernel("CSMain");
 ```
 
-接著建立 RenderTexture，並傳入計算著色器的 Result 當中，提供著色器使用。
+接著，為了提供讀寫貼圖需要的圖片資料，建立一個 RenderTexture，並傳入計算著色器的 Result 當中。
 ```cs
-    resultTex = new RenderTexture(1024, 1024, 0, RenderTextureFormat.Default);
-    resultTex.enableRandomWrite = true;
-    resultTex.Create();
+resultTex = new RenderTexture(1024, 1024, 0, RenderTextureFormat.Default);
+resultTex.enableRandomWrite = true;
+resultTex.Create();
+
+compute.SetTexture(kernel, "Result", resultTex);
 ```
 
-最後，調用著色器執行指定的計算核心。由於著色器中指定的執行序數量為 8，因此執行時必須將組的數量分配至圖片大小 / 8 才會足夠。
+最後，調用著色器執行指定的計算核心。由於著色器中指定的執行序數量為 8，因此執行時必須將組的數量分配至圖片大小除以 8 才會足夠。
 ```cs
 compute.Dispatch(kernel, 1 + (resultTex.width / 8), 1 + (resultTex.height / 8), 1);
 ```
@@ -468,17 +473,17 @@ compute.Dispatch(kernel, 1 + (resultTex.width / 8), 1 + (resultTex.height / 8), 
 
 {{< resources/image "example-0.jpg" "50%" >}}
 
-### 陣列計算 +
+### 陣列計算 +-
 
-看完了預設的著色器，現在輪到我們解決自己的問題，嘗試透過平行運算對陣列元素進行操作。一步一步來，首先是：
+看完了預設的著色器，現在輪到我們應用這些知識嘗試解決自己的問題，透過平行運算對陣列元素進行操作。一步一步來，首先是：
 
 **1. 要解決什麼問題**
 
-透過並行運算將陣列中每個元素的數值 + n
+陣列中每個元素的數值 + n
 
 **2. 要怎麼傳遞資料**
 
-首先透過 SetInt 函式將要添加的數值 n 傳入著色器當中。
+首先是全域只讀的參處，也就是要增加的數值 n。透過 `SetInt()` 函式將參數傳入計算著色器。
 
 ```cs
 int addition;
@@ -486,7 +491,7 @@ int addition;
 compute.SetInt("_Addition", addition);
 ```
 
-接著透過 ComputeBuffer 分配 GPU 緩儲存空間，將要進行操作的陣列資料存入緩衝區，並指定給計算著色器。
+接著是實際要透過計算著色器處理的陣列資料，建立一個 ComputeBuffer 分配需要 GPU 儲存空間，將要進行操作的陣列資料存入緩衝區，並指定給計算著色器。
 
 ```cs
 int[] array;
@@ -502,6 +507,9 @@ compute.SetBuffer(kernel, "valuesBuffer", buffer);
 將問題拆分為相似的片段，透過重複執行的方式解決問題。在這個例子中便是以多個執行緒分別對應到陣列的所有元素上，並各自執行 + n 的動作。
 
 ```hlsl
+int _Addition;
+RWStructuredBuffer<int> valuesBuffer;
+
 void AddValueKernel (uint3 id : SV_DispatchThreadID)
 {
     buffer[id.x] = buffer[id.x] + _Addition;
@@ -514,15 +522,15 @@ void AddValueKernel (uint3 id : SV_DispatchThreadID)
 [numthreads(10, 1, 1)]
 ```
 
-呼叫計算著色器執行計算，組的數量為陣列數量 / 10。
+最後，呼叫計算著色器執行計算，執行緒組的數量為陣列數量除以 10。
 
 ```cs
-compute.Dispatch(kernel, 1 + (array.Length / 10f), 1, 1);
+compute.Dispatch(kernel, 1 + (array.Length / 10), 1, 1);
 ```
 
 **4. 要怎麼使用資料**
 
-在運算完成後，透過 GetData 取得緩衝區資料，用於檢視效果。
+運算完畢後，透過 GetData 取得緩衝區資料，用於檢視運行結果。
 
 ```cs
 int[] result = new int[array.Length];
@@ -532,25 +540,26 @@ buffer.GetData(result);
 
 {{< resources/image "example-1.jpg" "80%" >}}
 
-### 資料過濾 +
+### 資料過濾 +-
 
 第二個範例，透過計算著色器進行資料過濾。首先：
 
 **1. 要解決什麼問題**
 
-透過並行運算對陣列中的元素進行過濾，找出位於指定範圍中的向量元素 
+對陣列的元素進行過濾，找出位於指定範圍中的向量元素。
 
 **2. 要怎麼傳遞資料**
 
-首先是作為範圍參考的兩個向量，透過 `SetVector` 傳遞。
+首先是兩個只讀的全域向量，用於作為範圍參考最大與最小值。使用 `SetVector()` 函式進行傳遞。
 
 ```cs
 Vector2 rangeMin, rangeMax;
+
 compute.SetVector("_RangeMin", rangeMin);
 compute.SetVector("_RangeMax", rangeMax);
 ```
 
-接著分配 GPU 除存空間，建立兩個緩衝區，一個用於傳遞原始陣列進著色器 `Structured`，另一個則作為除存過濾後元素的容器 `Append`。並指定給計算著色器使用。
+接著是要透過計算著色器處理的資料，由於我們像要對元素進行過濾，因此需要建立兩個計算緩衝區，一個為 `StructuredBuffer` 用於傳遞原始陣列進著色器，另一個則是用於儲存過濾後元素的 `AppendBuffer`。
 
 ```cs
 Vector2[] array;
@@ -563,7 +572,7 @@ compute.SetBuffer(kernel, "sourceBuffer", sourceBuffer);
 compute.SetBuffer(kernel, "resultBuffer", resultBuffer);
 ```
 
-傳遞陣列長度給著色器，用於防止執行緒數量超出陣列長度時產生的非預期結果。
+除此之外，使用計算著色器過濾元素時，可能因為執行序數量過多而導致錯誤的元素被添加至結果緩衝區當中，也就是資料傳遞章節中提到的非預期錯誤。為了防止錯誤發生，還需要將實際的陣列長度傳遞給著色器。
 
 ```cs
 compute.SetInt("_ElementCount", array.Length);
@@ -571,25 +580,32 @@ compute.SetInt("_ElementCount", array.Length);
 
 **3. 要怎麼解決問題**
 
-以多個執行緒對應到陣列的所有元素上，判斷元素是否大於範圍最小值，同時小於範圍最大值，並將符合條件的元素加入結果緩衝區中。
+將問題拆分為相似的片段，在這個範例中便是透過執行緒 ID 對應到各自的元素，並將符合條件的元素加入結果緩衝區中。透過 `Append` 函式即可將元素存入緩衝區。
 
 ```hlsl
+float2 _RangeMin, _RangeMax;
+
+RWStructuredBuffer<float2> sourceBuffer;
+AppendStructuredBuffer<float2> resultBuffer;
+
 void FilteKernel (uint3 id : SV_DispatchThreadID)
 {    
-    float2 position = sourceBuffer[id.x];
+    float2 element = sourceBuffer[id.x];
 
-    if(position.x < _RangeMin.x) return;
-    if(position.y < _RangeMin.y) return;
-    if(position.x > _RangeMax.x) return;
-    if(position.y > _RangeMax.y) return;
+    if(element.x < _RangeMin.x) return;
+    if(element.y < _RangeMin.y) return;
+    if(element.x > _RangeMax.x) return;
+    if(element.y > _RangeMax.y) return;
 
-    resultBuffer.Append(position);
+    resultBuffer.Append(element);
 }
 ```
 
-雖然計算著色氣在訪問緩衝區的資料時不會因為超出長度而出錯，但在使用到 AppendBuffer 的情況下，多出的長度可能是使計算著色器將非預期的元素存入緩衝區，因此需要透過防呆判斷避免這件事發生。
+為了避免將非預期的元素也存入緩衝區，可以判斷執行緒 ID 是否超出陣列的長度，添加防呆判斷。
 
 ```hlsl
+int _ElementCount;
+
 void FilteKernel (uint3 id : SV_DispatchThreadID)
 {    
     if(id.x >= _ElementCount) return;
@@ -599,7 +615,7 @@ void FilteKernel (uint3 id : SV_DispatchThreadID)
 
 ```
 
-由於資料維度為一維陣列，因此執行序數量的格式為 `(n, 1, 1)`。
+執行緒的數量和上個範例相同，因為資料維度為一維陣列，所以執行序數量的格式為 `(n, 1, 1)`。
 
 ```hlsl
 [numthreads(10, 1, 1)]
@@ -613,7 +629,7 @@ compute.Dispatch(kernel, 1 + (array.Length / 10), 1, 1);
 
 **4. 要怎麼使用資料**
 
-運算完成後，透過 GetData 取得緩衝區資料，用於檢視效果
+運算完成後，透過 GetData 取得緩衝區資料，用於檢視效果。
 
 ```cs
 Vector2[] result = new Vector2[array.Length];
@@ -623,47 +639,56 @@ resultBuffer.GetData(result);
 
 {{< resources/image "example-2.jpg" "80%" >}}
 
-### 更多例子 +
+要注意的是緩衝區在建立時，欄位數量是根據「可能的最大值」建立的，即使 AppendBuffer 當中沒有「添加」那麼多元素，他的長度還是會與完整陣列相同。如果想獲得實際存入的元素數量，可以透過 [ComputeBuffer.CopyCount](https://docs.unity3d.com/ScriptReference/ComputeBuffer.CopyCount.html) 函式取得。
 
-上面用了兩個簡單的例子展示如何編寫自己的計算著色器，不過要注意這並不是「真正」應用計算著色器時會使用的作法。由於 CPU 與 GPU 間的資料傳遞成本高昂，實際應用時不會像範例中透過 GetData 將資料取回 C#，而是直接讓渲染管線使用這些資料。
+
+### 更多例子 +-
+
+上面用了兩個簡單的例子展示如何編寫自己的計算著色器，不過要注意這並不是「真正」應用計算著色器時會使用的作法。由於 CPU 與 GPU 間的資料傳遞成本高昂以及運行時機等問題，通常不會像範例中透過 GetData 將資料「取回」 C#，而是直接讓渲染管線使用這些資料。
 
 例如傳入 [Graphics.DrawMeshInstancedIndirect](https://docs.unity3d.com/ScriptReference/Graphics.DrawMeshInstancedIndirect.html) 讓 Unity 進行 GPU Instance，或是透過計算著色器將結果繪製到 RenderTexture 中，再利用 ImageEffectShader 渲染到畫面上。可惜的是更實際的範例放進來會讓篇幅太長，所以這裡就先提供一些實際應用的例子，讓有興趣深入的人自行研究。
 
 **Conway's Game of Life**  
-康威生命遊戲，每個單位格都是一個細胞，以獨立的回合為時間單位，在每個回合中細胞都會根據周圍的環境狀態來決定自己將會存活還是死亡。屬於比較好分辨出如何並行的例子。
+康威生命遊戲，每個單位格都是一個細胞，以獨立的回合為時間單位，在每個回合中細胞都會根據周圍的環境狀態來決定自己將會存活還是死亡。屬於比較好分辨出如何並行的例子，實做難度低。
 
 {{< resources/image "conway's-game-of-life.gif" >}}
 
 具體遊戲規則可以參考 [Wiki](https://zh.wikipedia.org/zh-tw/%E5%BA%B7%E5%A8%81%E7%94%9F%E5%91%BD%E6%B8%B8%E6%88%8F)。
 
 **GPU Slime Simulations**  
-透過計算著色器模擬大量的單位，並讓這些單位以簡單的行為互相交互，產生有趣的結果。屬於比較好玩的例子。
+透過計算著色器模擬大量的單位，並讓這些單位以簡單的行為互相交互，產生有趣的結果。屬於比較好玩的例子。實做上稍微複雜一點，需要透過多個階段的處裡才能「看到結果」。
 
 {{< resources/image "slime-simulations.gif" "80%" >}}
 
 參考影片 [Coding Adventure: Ant and Slime Simulations](https://youtu.be/X-iSQQgOd1A)
 
 **GPU Culling**  
-與 GPU Instance 搭配使用的技術，透過計算著色器進行視錐剃除，過濾出在攝影機視角內的物件，達成更高效的渲染優化。是比較實際而且簡單的例子。
+與 GPU Instance 搭配使用的技術，透過計算著色器進行視錐剃除，過濾出在攝影機視角內的物件，達成更高效的渲染優化。是比較實際而且簡單的例子，需要注意的主要是渲染相關的問題。
 
 {{< resources/image "compute-culling.gif" >}}
 
 更多細節可以參考此篇文章 [Unity中使用ComputeShader做视锥剔除（View Frustum Culling）](https://zhuanlan.zhihu.com/p/376801370)。
 
 **GPU Ray Tracing**  
-將環境、物件與材質等資料傳入計算著色器，直接透過自訂的方法進行渲染，並將結果輸出至畫面上。方法不侷限於光線追蹤，任何以螢幕像素為單位的並行都可以使用（如射線邁進），是比較實際但也有難度的運用。
+將環境、物件與材質等資料傳入計算著色器，直接透過自訂的方法進行渲染，並將結果輸出至畫面上。方法不侷限於光線追蹤，任何以螢幕像素為單位的並行都可以使用（如射線邁進），是比較實際但較高難度的運用。
 
 {{< resources/image "ray-tracing.jpg" "50%" >}}
 
-參考資料 [GPU Ray Tracing in Unity](http://blog.three-eyed-games.com/2018/05/03/gpu-ray-tracing-in-unity-part-1/)
+參考資料 [GPU Ray Tracing in Unity](http://blog.three-eyed-games.com/2018/05/03/gpu-ray-tracing-in-unity-part-1/), [Coding Adventure: Ray Marching](https://youtu.be/Cp5WWtMoeKg)
 
-## 感謝閱讀 +
+## 感謝閱讀 +-
 
-在知道了 GPU Instance 和 GPU Culling ，我也接觸到計算著色器這項工具了，正式踏入 GPU 並行的世界。但查了不少資料感覺都不夠直觀，不然就是一口氣跳到太深的內容（像是直接教 RayTracing 的文章）。
+在知道了 GPU Instance 和 GPU Culling 兩項技術後，我也接觸到計算著色器這項工具，並正式踏入 GPU 並行的世界了。為了學計算著色器我也查了不少資料研究，但總覺的很多內容都不夠直觀，不然就是一口氣跳到太深的內容（像是直接教 RayTracing 的文章），以至於我花了不少時間試錯後才得出一些基礎但相當重要的結論，也就是在概括中提到的兩項重點。
 
-於是在花幾個月實做和研究各項些東西後，嘗試用自己的理解重新解釋一次計算著色器，這篇筆記就是我整理出關於計算著色器的幾項重點，在這裡分享給各位，如果有任何建議都歡迎提出。
+於是，在花幾個月實做和研究各項東西後，嘗試用自己的理解重新解釋了一次計算著色器，在這裡分享給各位，希望能提供有興趣的人參考方向！
 
-### 參考資料 +
+有任何建議和想法都歡迎提出討論，如果喜歡文章內容的話也請幫我點一下 Like Button :D
+
+{{< outpost/likecoin >}}
+
+個人網站留言功能還未製作，如果想要留言的請移駕至[巴哈的文章留言板]() Orz
+
+### 參考資料 +-
 
 [numthreads](https://docs.microsoft.com/zh-tw/windows/win32/direct3dhlsl/sm5-attributes-numthreads)
 
@@ -673,7 +698,8 @@ resultBuffer.GetData(result);
 
 [Getting Started with Compute Shaders in Unity](https://www.youtube.com/watch?v=BrZ4pWwkpto)
 
-https://zhuanlan.zhihu.com/p/113482286
-執行緒不夠的情況
+[Unity | 浅谈 Compute Shader](https://zhuanlan.zhihu.com/p/113482286)
 
-<!-- https://docs.unity3d.com/ScriptReference/ComputeBufferType.html -->
+[ComputeBufferType](https://docs.unity3d.com/ScriptReference/ComputeBufferType.html)
+
+[Check if a ComputeShader.Dispatch() command is completed on GPU before doing second kernel dispatch](https://forum.unity.com/threads/check-if-a-computeshader-dispatch-command-is-completed-on-gpu-before-doing-second-kernel-dispatch.369631/)

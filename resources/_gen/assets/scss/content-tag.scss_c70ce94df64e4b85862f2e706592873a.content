@@ -1,5 +1,5 @@
 h {
-  color: #ed6707; }
+  color: var(--color-highlight); }
 
 c {
-  color: green; }
+  color: var(--color-remark); }
