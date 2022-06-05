@@ -680,7 +680,7 @@ resultBuffer.GetData(result);
 **Conway's Game of Life**  
 康威生命遊戲，以網格為空間單位，每個單位格都是一個細胞，而回合則為這個世界的時間單位，在每個回合中細胞都會 <h> 根據周圍的環境狀態來決定自己將存活還是死亡 </h> 。屬於比較好分辨出如何並行的例子，實做難度低。
 
-{{< resources/image "conway's-game-of-life.gif" "80%" "引用自 Conway’s Game of Life Wiki" >}}
+{{< resources/image "conway-game-of-life.gif" "80%" "引用自 Conway’s Game of Life Wiki" >}}
 
 具體遊戲規則可以參考 [Wiki](https://zh.wikipedia.org/zh-tw/%E5%BA%B7%E5%A8%81%E7%94%9F%E5%91%BD%E6%B8%B8%E6%88%8F)。
 
