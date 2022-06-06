@@ -36,21 +36,3 @@
     width: 150px;
     height: 150px;
 }
-
-//
-.shader-background
-{
-    position: absolute;
-    z-index: -100;
-    opacity: 0.01;
-
-    pointer-events: none;
-}
-.shader-foreground
-{
-    position: absolute;
-    z-index: +100;
-    opacity: .5;
-
-    pointer-events: none;
-}

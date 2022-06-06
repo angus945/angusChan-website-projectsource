@@ -15,4 +15,4 @@ _build:
 
 F5 會改變背景歐 :D 
 
-[測試文章]({{< ref "post/content-test" >}}) [最新文章]({{< ref "new" >}}) [所有文章]({{< ref "all" >}})
+[測試文章]({{< ref "post/content-test" >}}) [所有文章]({{< ref "all" >}})

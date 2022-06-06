@@ -1,0 +1,40 @@
+[
+    {
+        "name":"none",
+        "style":"",
+        
+        "shader":"",
+
+        "dark_opacity": 0.0,
+        "dark_image" : "",
+
+        "light_opacity": 0.0,
+        "light_image" : ""        
+    },
+    {
+        "name":"watercolor-A",
+        "style":"background image-basis",
+
+        "shader":"",
+
+        "dark_opacity": 0.2,
+        "dark_image" : "/background/watercolor-black.jpg",
+
+        "light_opacity": 0.7,
+        "light_image" : "/background/watercolor-white.jpg"
+    },
+    {
+        "name":"shader-A",
+        "style":"background image-basis",
+
+        "shader":"/background/fellow.frag",
+
+        "dark_opacity": 0.2,
+        "dark_image" : "/background/watercolor-black.jpg",
+
+        "light_opacity": 0.7,
+        "light_image" : "/background/watercolor-white.jpg"
+    }
+    
+    
+]

@@ -18,10 +18,10 @@ tags: []
 # resources: /common/
 
 ## customize page background
-# background: static/shader/sandboxShader.glsl
+# background: [watercolor-A] 
 
 ## listout with recommand, new and all pages
-# listable: [recommand, new, all]
+# listable: [recommand, all]
 ---
 
 <!--more-->

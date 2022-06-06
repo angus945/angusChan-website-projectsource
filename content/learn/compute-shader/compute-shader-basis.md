@@ -18,7 +18,7 @@ og: "/learn/compute-shader/compute-shader-basis/thread-group-id.jpg"
 resources: /learn/compute-shader/compute-shader-basis/
 
 ## customize page background
-background: "none"
+background: [watercolor-A] 
 
 ## listout with recommand, new and all pages
 listable: [recommand, new, all]

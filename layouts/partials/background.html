@@ -1,0 +1,110 @@
+
+{{ $datas := "" }}
+
+{{ $default_folders := "static/shader/background" | string }}
+{{/*  {{ $sliceIdentifier := "<slice-identifier>" }}  */}}
+
+
+{{ $backgrounds := where (.Site.Data.background) ".name" "in" (.Param "background") }}
+{{/*  {{ $backgrounds }}  */}}
+
+{{ $data := "" | string }}
+{{ range $index, $element := $backgrounds }}
+    {{ $code := "" | string }}
+    {{ with .shader }}
+        {{ $code = readFile (printf "static%s" .) }}
+    {{ end }}
+    
+    {{ $json := dict "name" .name "style" .style "code" $code "dark_opacity" .dark_opacity "dark_image" .dark_image "light_opacity" .light_opacity "light_image" .light_image  | jsonify}}
+
+    {{ if eq $index 0 }}
+        {{ $datas = printf "%s%s" $datas $json }}
+    {{ else}}
+        {{ $datas = printf "%s,%s" $datas $json }}
+    {{ end }} 
+{{ end }}
+
+{{ $datas = printf "[%s]" $datas }}
+{{/*  {{ $datas }}  */}}
+
+<script type="text/javascript">
+    var seed = Math.random();
+    var backgroundData = randomBackground("{{ $datas }}"); 
+    
+    var canvas = createCanvas(backgroundData);
+    var sandbox;
+
+    console.log(backgroundData);
+    
+    function randomBackground(datas)
+    {
+        var backgrounds = JSON.parse(datas);
+        var index = Math.floor(Math.random() * backgrounds.length);
+        return backgrounds[index];        
+    }
+    function createCanvas(data)
+    {
+        var canvas = document.createElement("canvas");
+        canvas.className = data.style;
+
+        return canvas;
+    }
+    
+    window.addEventListener('load', function () 
+    {
+        var main = document.getElementsByTagName("main")[0]; 
+        main.appendChild(canvas);
+
+        var themeButton = document.getElementsByClassName('btn-toggle-mode')[0];
+        themeButton.addEventListener('click', () => updateTheme(backgroundData));
+
+        updateTheme(backgroundData);
+        updateShader(backgroundData);
+        updateCanvas(backgroundData);
+    });
+    window.addEventListener('resize', function () 
+    {
+        updateCanvas(backgroundData);
+    });
+
+
+    function updateShader(data)
+    {
+        if(data.code == "") return;
+
+        sandbox = new GlslCanvas(canvas);
+        sandbox.load(data.code);
+        
+        sandbox.setUniform("u_seed", seed);
+    }
+    function updateTheme(data)
+    {
+        var theme = document.body.dataset.theme;
+
+        if(theme == "dark")
+        {
+            canvas.style.opacity = data.dark_opacity;
+            canvas.style.backgroundImage = `url("${ data.dark_image }")`
+
+            sandbox?.setUniform("u_theme", 0);
+            // sandbox?.setUniform("u_opacity", parseFloat(data.dark_opacity));
+        }
+        else
+        {
+            canvas.style.opacity = data.light_opacity;
+            canvas.style.backgroundImage = `url("${ data.light_image }")`
+            
+            sandbox?.setUniform("u_theme", 1);
+            // sandbox?.setUniform("u_opacity", parseFloat(data.light_opacity));
+        }
+    }
+    function updateCanvas(data)
+    {
+        canvas.width = canvas.parentElement.clientWidth;
+        canvas.height = canvas.parentElement.clientHeight;
+
+        canvas.style.top = 0;
+    }
+    
+</script>
+

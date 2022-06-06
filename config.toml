@@ -76,6 +76,9 @@ copyrightStartYear = "2021"
 description = "AngusChan's website"
 og = "/siteImage/head.png"                                          # This will use the image called og.png in static/img folder
 
+## customize page background
+background = ["watercolor-A"] 
+
 # Posts shown in homepage
 mainSections = ["post"]
 

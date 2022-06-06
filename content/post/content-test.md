@@ -11,6 +11,8 @@ resources: "/common/"
 
 listable: [all, recommand]
 
+background: [shader-A] 
+
 ---
 
 測試各種新玩具，主要是網頁的 Shader 嵌入，還有互動內容測試 
