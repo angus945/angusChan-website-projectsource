@@ -7,23 +7,29 @@ uniform vec2 u_mouse;
 uniform float u_time;
 
 uniform float u_seed;
+uniform float u_theme;
 
-uniform sampler2D u_buffer0;
-
-float random(vec2 st)
+vec3 ran1To3(float seed)
 {
-    return fract(sin(dot(st.xy, vec2(12.9898, u_seed))) * 43758.5453123);
+    float x = fract(sin(dot(vec2(seed, 31.12), vec2(12.9898, 78.233))) * 43758.5453);
+    float y = fract(x * 21.5 + 451.548);
+    float z = fract((y - x) * (x + y));
+    return vec3(x, y, z);
 }
-void main()
+
+void main() 
 {
-    float width = min(u_resolution.x, u_resolution.y);
-    vec2 uv = gl_FragCoord.xy / width;
+    vec2 st = gl_FragCoord.xy / u_resolution.xy;
+    vec2 mouse = u_mouse / u_resolution;
 
-    vec2 cell = fract(uv * 10.0);
-    vec2 coord = floor(uv * 10.0);
-
-    float value = random(coord.xy);
-    gl_FragColor = vec4(value, value, value, 1);
-    // gl_FragColor = vec4(cell, 0, 1);
-    // gl_FragColor = vec4(coord / 10.0, 0, 1);
+    float dis = length(mouse - st);
+    vec3 colorA = ran1To3(u_seed);
+    vec3 colorB = fract(colorA * 31.5 + 784.451);
+    vec3 color = mix(colorA, colorB, dot(st, colorA.xy));
+    
+    dis = step(dis, 0.5);
+    
+    vec4 darkColor = vec4(color * 0.1, 0);
+    vec4 lightColor = vec4(color * 0.1, 0.1);
+    gl_FragColor = mix(darkColor, lightColor, u_theme);
 }

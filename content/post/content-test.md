@@ -11,7 +11,7 @@ resources: "/common/"
 
 listable: [all, recommand]
 
-background: [shader-A] 
+background: [watercolor-b] 
 
 ---
 

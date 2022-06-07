@@ -4,19 +4,18 @@
 {{/*  {{ $name := (printf "container-%s" $.id) }}  */}}
 {{ $name := "shadercanvas" }}
 
-{{ $size := split .size " " }}
-{{ $width := index $size 0 }}
-{{ $height := index $size 1 }}
+{{ $vert := "" }}
+{{ $frag := "" }}
 
-{{ $vert := .vert }}
-{{ $frag := .frag }}
 
-{{ $vert }}
-{{ $frag }}
+{{/*  {{ $size := split .size " " }}  */}}
+{{ $width := "300" }}
+{{ $height := "300" }}
 
-<head>
-    <script src="https://threejs.org/build/three.min.js"></script>
-</head>
+{{/*  {{ $vert }}
+{{ $frag }}  */}}
+
+<script src="https://threejs.org/build/three.min.js"></script>
 
 <!-- Copyright 2015 Patricio Gonzalez Vivo (https://patriciogonzalezvivo.com) -->
 <div id="{{$name}}"></div>
