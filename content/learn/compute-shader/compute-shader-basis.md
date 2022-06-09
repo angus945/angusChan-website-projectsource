@@ -217,6 +217,10 @@ void CSMain() { }
 
 執行緒的具體數量或比例則沒有明確規則，大概抓個介於 10 和資料總數 1% 以下的數值吧。假設陣列長度大約一萬，numthread 就分配為 `(100, 1, 1)`，若圖片大小 2048 的話就分配 `(20, 20, 1)`。
 
+<p><r>
+修正：理想的執行緒組數量應該是介於 32 至 1024 之間，並且為 32 的倍數，似乎與 GPU 的硬體結構有關，資料先補充在文末，細節會等我深入了解後再補上。(感謝巴友 美遊ちゃん 指正)
+</r></p>
+
 最後，組的數量可以透過 <h> 資料長度除以執行緒數量 </h> 得出，畢竟資料的多寡可能根據情況產生差異，透過這種方式可以確保 <h> 在任何情況下都有足夠的執行緒進行計算 </h> 。
 
 ```cs
@@ -736,3 +740,6 @@ resultBuffer.GetData(result);
 [Check if a ComputeShader.Dispatch() command is completed on GPU before doing second kernel dispatch](https://forum.unity.com/threads/check-if-a-computeshader-dispatch-command-is-completed-on-gpu-before-doing-second-kernel-dispatch.369631/)
 
 [hlsl CG compute shader Race Condition](https://stackoverflow.com/questions/59349081/hlsl-cg-compute-shader-race-condition)
+
+[Parallel Computer Architecture and Programming, Spring 2018: Schedule](https://www.cs.cmu.edu/afs/cs/academic/class/15418-s18/www/schedule.html) (感謝巴友 美遊ちゃん 提供)
+
