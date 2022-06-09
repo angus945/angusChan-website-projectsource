@@ -12,7 +12,7 @@
         {{ $frag = readFile (printf "static%s" .) }}
     {{ end }}
     
-    {{ $json := dict "name" .name "style" .style "vert" $vert "frag" $frag "dark_opacity" .dark_opacity "dark_image" .dark_image "light_opacity" .light_opacity "light_image" .light_image  | jsonify}}
+    {{ $json := dict "name" .name "style" .style "fps" .fps "vert" $vert "frag" $frag "dark_opacity" .dark_opacity "dark_image" .dark_image "light_opacity" .light_opacity "light_image" .light_image  | jsonify}}
 
     {{ if eq $index 0 }}
         {{ $datas = printf "%s%s" $datas $json }}
@@ -26,6 +26,7 @@
 
 <script src="https://threejs.org/build/three.min.js"></script>
 <script type="text/javascript">
+
     var seed = Math.random();
     var backgroundData = randomBackground("{{ $datas }}"); 
 
@@ -45,18 +46,20 @@
     var mouse = {x:0, y:0};
 
     $(document).ready(function() 
-    {
+    {        
         createRenderer(backgroundData);
         createCanvas(backgroundData);
 
         var themeButton = document.getElementsByClassName('btn-toggle-mode')[0];
         themeButton.addEventListener('click', () => updateTheme(backgroundData));
+        themeButton.addEventListener('click', () => updateInitial(backgroundData));
 
         setCanvas(backgroundData);
         updateTheme(backgroundData);
         updateSize();
 
-        animate();
+        updateInitial(backgroundData);
+        update();
     });
 
     
@@ -174,11 +177,25 @@
         uniforms.u_mouse.value.y = mouse.y;
     }
 
-    function animate() 
+    let interval;
+    let delta;
+    function updateInitial(data)
     {
-        window.requestAnimationFrame(animate);
+        interval = 1 / data.fps;
+        delta = interval;
+    }
+    function update() 
+    {
+        window.requestAnimationFrame(update);
 
-        render();
+        delta += clock.getDelta();
+
+        if(delta > interval)
+        {
+            render();
+
+            delta = delta % interval;
+        }
     }
     function render() 
     {

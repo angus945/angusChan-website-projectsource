@@ -3,6 +3,7 @@
         "name":"none",
         "style":"",
         
+        "fps": 0,
         "shader":"",
 
         "dark_opacity": 0.0,
@@ -15,6 +16,7 @@
         "name":"watercolor-a", 
         "style":"background image-basis",
 
+        "fps": 1,
         "shader":"/background/colorBlend.frag",
 
         "dark_opacity": 0.2, 
@@ -27,6 +29,7 @@
         "name":"watercolor-b",
         "style":"background image-basis",     
 
+        "fps": 1,
         "shader":"/background/sandbox.frag",  
 
         "dark_opacity": 0.2,
@@ -39,6 +42,7 @@
         "name":"watercolor-c",
         "style":"background image-basis",     
 
+        "fps": 1,
         "shader":"/background/sandbox.frag",  
 
         "dark_opacity": 0.5,
@@ -51,6 +55,7 @@
         "name":"sandbox",
         "style":"background image-basis",     
 
+        "fps": 30,
         "shader":"/background/sandbox.frag",  
 
         "dark_opacity": 0.5,

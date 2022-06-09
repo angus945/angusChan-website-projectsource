@@ -16,7 +16,7 @@ defaultContentLanguage = "en" # For HTML page, now support: en, zh-hans, zh-hant
 summaryLength = 100 # Custom summary length, add <!--more--> in post file to custom split point
 paginate = 10
 
-# googleAnalytics = "UA-000000000-0" # Set your Google Analytics UA here
+googleAnalytics = "G-LTVT6WYDT4" # Set your Google Analytics UA here
 
 [outputFormats]
 [outputFormats.SearchIndex]
@@ -45,7 +45,7 @@ sourceURL = "https://github.com/angus945/angus945.github.io"
 # Use CloudFlare Workers to accelerate the Google Analytics
 # If you are using this please comment the googleAnalytics above
 # Check https://github.com/SukkaW/cloudflare-workers-async-google-analytics for more details
-googleAnalyticsTid = "G-LTVT6WYDT4"
+# googleAnalyticsTid = "G-LTVT6WYDT4"
 # googleAnalyticsRoute = "https://*.*.workers.dev/"
 
 likerID = "chanangus"
@@ -160,6 +160,10 @@ tag = "tags"
     name = "Twitter"
     url = "https://twitter.com/angus9456"
     weight = 2
+    [[menu.link]]
+    name = "巴哈姆特"
+    url = "https://home.gamer.com.tw/homeindex.php?owner=angus945"
+    weight = 3
 
 [build]
 noJSConfigInAssets = true

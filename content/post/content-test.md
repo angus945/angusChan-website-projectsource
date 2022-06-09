@@ -9,7 +9,7 @@ og: "/siteimage/gears.gif"
 
 resources: "/common/"
 
-listable: [all, recommand]
+# listable: [all, recommand]
 
 background: [watercolor-b] 
 
@@ -88,10 +88,9 @@ void main()
 
 上色 <c> 註解 </c> 區塊
 
-{{< content/comment >}}
+<p><c>
 上色，註解整段
-{{</ content/comment >}}
-
+</c></p>
 
 ## 原生模板功能測試
 
