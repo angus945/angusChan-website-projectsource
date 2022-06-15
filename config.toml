@@ -33,7 +33,7 @@ post = "/:section/:filename/" # Custom post links, e.g. "/:year/:month/:title/"
 
 [params]
 author = "AngusChan"                # You can also set author in post front matter individually
-subTitle = "subTitle"
+subTitle = "Stay Hungry, Stay Foolish"
 defaultTheme = "dark"              # default theme when first visit (auto|dark|light)
 
 # recommand count in home page

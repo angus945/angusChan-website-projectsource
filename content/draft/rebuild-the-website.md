@@ -1,5 +1,5 @@
 ---
-title: "【開發日誌】個人網站重建日誌"
+title: "【開發日誌】個人網站重建"
 date: 2022-06-08
 lastmod: 2022-06-08
 
@@ -15,7 +15,7 @@ tags: [website, hugo]
 # og: "/post/about-learning/featured.jpg"
 
 ## when calling "resources" shortcode, well link to static folder with this path 
-# resources: /common/
+resources: /devlog/rebuild-the-website/
 
 ## customize page background
 # background: [watercolor-A] 
@@ -26,175 +26,203 @@ tags: [website, hugo]
 
 <!--more-->
  
-## 舊版
+## 網站重建 -
 
-第一次製作時的[開發日誌]({{< ref "devlog/build-the-fistsite" >}})
+去年為了想要新的空間放置文章，所以初次接觸網頁，從頭學習 HTML, CSS, JS，並用 Hugo 網頁生成器製作出自己的網站
 
-一樣是用 Hugo
+但因為忙著處理備審 沒什麼時間 所以做好之後 才發幾篇文章 就被放置了
 
-### 架構混亂
+而且使用的時候發現一些缺陷 與其花時間修 乾脆就重建吧
 
-### 資源混雜
+### 問題分析 -
 
-不熟悉網頁 修修改改
+防止重蹈覆轍 釐清舊版網站的問題
 
-## 重新開始
+**分類模式**
 
-一樣從現有的模板開始修改 
+當時的文章分類格式
 
-這次挑了一個可以切換黑白主題 的極簡模板 fuji
+不知道新文章要放哪
 
-https://themes.gohugo.io/themes/hugo-theme-fuji/
+Blog, Notes, Tutorials
 
-### 文章分類 -
+因為改變學習的方式 更加「教學型」的筆記要放在 Notes, 還是 Tutorials？
 
-首先先確認需求
+當時也寫了一些非學習領域的文章 關於學習之類的自學心得文章 
 
-第一次做的時候因為不了解需求
+最適合的分類應該是在 blog，但因為我也會發
 
-資料夾混亂 
+學習、開發日誌類的日誌，可能包括遊戲開發、技術日誌，如果放在 Blog 的話會讓這個分類混雜太多種內容
 
-先定好文章的分類格式
+這次重建也是要 重新尋找一個好的分類方法
 
-比較符合我的 分類
+**資源混雜** 
 
-日誌 Devlog
+除了分類以外 網頁的專案資料夾混亂也是一個原因 或甚至可以說是主要原因
 
-開發、學習日誌 分享過程 資源 但沒有很深的技術內容
+去年初學時因為也 不熟悉網頁 還有 HUGO 
 
-學習 Learn
+模板修修改改 最後留下一堆 多餘或是有缺陷的系統
 
-筆記、教學之類 更多細節的文章
+系統使用不易 函式命名
 
-文章 Post
+## 重新開始 -
 
-其他個人文章 分享想法 自學
+因為我不是網頁專業，也不是主修設計的，更沒有學過任何後端知識，因此這次重建與初次製作往暫時一樣，會使用現成的資源進行開發。
 
-### 資源鑲入 -
+目的也不是學習前端本身，與其大費周章從頭規劃界面和排版，不如修改現成的模板，再把自己的專業結合進去，才能有效發揮自己的專長
 
-圖文並茂的文章
+因此所以這次會樣是透過 Hugo 建立網站，在 github page 上託管網站 
 
-Hugo 雖然有內建的圖片嵌入？
+然後 把一些 「有趣」 的功能也加進網站專案框架
 
-但是使用上還是麻煩 需要輸入圖片的完整位置
+重複的部份就省略了 可以參考舊版文章的 [開發日誌]({{< ref "devlog/build-the-fistsite" >}})
 
-但是我習慣用資料夾分類好 所以每次都輸入完整路徑會很麻煩
+初學資源可以參考以下
 
-為了更方便的嵌入 圖片、音效等等的資源
+HTML - [HTML - Build a Website | Tutorial](https://www.youtube.com/watch?v=Ny1g1eQHnCI&list=PLLAZ4kZ9dFpMSXUYwxDFOvyxlssug29Fu)
 
-舊的網站框架我是根據 文章位置自動抓資料夾 
+CSS - [CSS - Style Your Website | Tutorial](https://www.youtube.com/watch?v=WZ2uqGkHoR0&list=PLLAZ4kZ9dFpNO7ScZFr-WTmtcBY3AN1M7)
 
-但這樣有個缺點就是每篇文章都得建立一個獨立的資源資料夾
+Javascript - [Javascript - Programming Language | Tutorial](https://www.youtube.com/watch?v=_jlPywA4dKs&list=PLLAZ4kZ9dFpPQbcrA-SzALJeFm23tPrAI)
 
-如果再系列文章裡會很麻煩 (像距離場教學)
+Hugo - [Hugo - Static Site Generator | Tutorial](https://www.youtube.com/watch?v=qtIqKaDlqXo&list=PLLAZ4kZ9dFpOnyRlyS-liKL5ReHDcj4G3)
 
-我現在改成在文章的設置裡可以設置資源路徑 
+### 模板選擇 +
 
-文章調用 鑲入的時候就會根據 文章設置的
+舊版網頁的樣式雖然我也蠻喜歡的，但缺點就是背景一片死白，晚上看的時候眼睛很痛，所以這次改用了可以切換黑白主題的極簡模板 [fuji](https://themes.gohugo.io/themes/hugo-theme-fuji/)，可以透過畫面右下方的按鈕切換明暗模式，如此一來晚上看的時候就沒那麼刺眼了。
 
-多篇文章可以共用一個資源資料夾
+{{< resources/image "fuji-theme.jpg" "80%" "引用自主題的預覽圖" >}}
 
-資源鑲入 
+為了擴展功能我也翻了模板的原始碼，似乎是和一個叫 scss 的階層式樣式表有關。與 CSS 不同，這種樣式表允許透過變數指定色彩等數值。但具體的運作原理我也不清楚，我只有摸到足夠讓我擴展內容的程度而已，總之這是一個蠻理想的模板～
 
-音效鄉入
+```scss
+body {
+  background-color: var(--color-bg);
+  color: var(--color-font);
 
-圖片鄉入
+  @include link-1();
+}
+```
 
-著色器也是這樣
+### 文章分類 +
 
-### 內容上色 -
+Hugo 建立的的網站結構是與資料夾格式相同的，因此當文章資料夾沒有取好名稱就可能引發網站內容的分類危機。第一次做的時候就是因為連自己的需求都還不夠了解，草率分類才導致新文章都不知道該怎麼放。因此這次開始前首先要做的就是確認好真正的需求。
 
-習慣用文字上色
++ **日誌 Devlog**  
+  專案開發與學習日誌，通常是用於紀錄與分享自己的學習過程，盡量讓內容以有趣為主，不會有太具體的實做與技術細節。
 
-用橘色 <h> 強調內容 </h>
++ **學習 Learn**  
+  通常是學習筆記與教學之類的文章，會有更多實做細節，一方面加深印象填補知識空缺，另一方面也是為了回饋網路社群，學習資源的整理也會分享在這。
 
-<p><c>
-綠色備註
-</c></p>
++ **文章 Post**  
+  其他個人文章，分享自己對各種事情的經歷與看法，例如自學歷程、學習感想之類的。
 
-原本的架構裡我是透過 hugo 的 shortcode 進行上色
+其實當初也不是真的草率分類，而是因為處於轉型階段，寫作的格式也尚未確定，才導致預想與實際不符。但有了這一年的寫作經驗後我也更清楚自己的需求了，上述的分類方式才比較符合我的文章類型。
 
-但是它光是 但是要調用上色函式太麻煩了 讓我文章原始碼很難讀 編輯起來也很麻煩
+### 資源嵌入 +
 
-研究一下發現 html 是可以自訂 tag 的
+圖文並茂是文章吸引目光的要點之一，適當的插入圖片能夠幫助讀者帶入情境，在技術文章搭配直觀圖片也是輔助理解的重要手段。
 
-所以就訂了 `<h>` 當 強調
+雖然我在舊版網站中也製作了一個資源嵌入的函式，能夠讓我在文章中插入指定的資源。它會根據文章網址自動抓取對應路徑上的資源，雖然乍聽之下挺方便的，不需要手動指定整個路徑。但實際用過後才發現，由於 Hugo 的網頁結構與資料夾相同，因此每篇文章都得建立獨立的資源資料夾來放嵌入資源，如果在系列文章裡會很麻煩。
 
-`<c>` 當作註解
+因此新網站我改成需要在文章設置中手動設置一次路徑，後續調用嵌入函式時就會根據相對路徑進行尋找，如此一來就能避免大量的資源資料夾了。
 
-雖然我不喜歡原始檔裡有 html 原始碼 但至少比晚整的 css 設置 和 hugo 函式簡單多了
++ **圖片嵌入**  
+  {{< resources/image "resources-image.jpg" "80%" "可以設定圖片的註解" >}}
 
-### 著色器嵌入 - 
++ **音效嵌入**  
+  {{< resources/audio "resources-audio.mp3" >}}
 
-這次重建也增加了一個重要的新功能 著色器嵌入
++ **資源嵌入**  
+  {{< resources/assets "" "可以連接到網頁的儲存庫，分享專案原始碼之類的" >}}
 
-從我看到 [The Book of Shaders](https://thebookofshaders.com/) 這個網站後就很有興趣了
+### 內容上色 +
 
-只不過第一次製作網站的時候 對各種 都還不熟悉 
+除了嵌入圖片外，我也其慣透過文字上色來強調某些內容。雖然 markdown 格式能夠直接接收 `html` 與 `css` ，<span style="color:red">但要插入完整標籤與樣式表還是太麻煩了</span>。
 
-這次重建比較有經驗了 就找一些關於 webgl 的資料
+```html
+<span style="color:red">但要插入完整標籤與樣式表還是太麻煩了</span>
+```
 
-(雖然還是拿別人的函式庫來用拉)
+我也有嘗試透過 hugo 函式進行上色，但那樣反而比 html 還難讀，所以也放棄了。這次重作的時候我也花時間研究了一下 markdown 文字上色的方法，發現其實 html 是可以自訂 tag 的，所以我就訂了單字 <h>  h  </h> 當做強調重點、單字 <c>  c  </c> 當作註解。
 
-Patricio Gonzalez Vivo 提供的網頁著色器函式庫。
 
-就是 The Book of Shaders 使用的那個 
+```html
+所以我就訂了單字 <h>  h  </h> 當做強調重點、單字 <c>  c  </c> 當作註解
+```
 
-https://github.com/patriciogonzalezvivo/glslCanvas
+雖然我還是不喜歡文章原始檔裡有 html 原始標籤，但至少比完整的 css 設置或 hugo 函式好多了。
 
-嵌入 fragment shader 變得很容易
+### 著色器嵌入 +
 
-我也可以先透過 vscode 的插件 [glsl-canvas](https://marketplace.visualstudio.com/items?itemName=circledev.glsl-canvas) 預覽著色器
+除了常規的內容嵌入與上色外，這次重建我也幫網站增加了一個重要的新功能：著色器嵌入。
 
-透過資源嵌入 在網頁上載入
+初學習著色器時，我看到了一個很有趣的互動式教學網站 [The Book of Shaders](https://thebookofshaders.com/)，網站中所有的著色器都是實時渲染的，可以根據讀者的動作即時反應。而網站官方也有公開它們使用的嵌入[函式庫](https://github.com/patriciogonzalezvivo/glslCanvas
+)供人使用，只需要用 js 引用後就可以方便的嵌入互動元素。
 
-### 互動式內容 -
+於是我就透過這個函式庫，在整合進自己的資源嵌入函式後，就能夠隨意添加有趣的內容了。
 
-單純渲染著色器還是太單調了，如果沒辦法 和人互動的話 和放圖片沒兩樣
+{{< resources/shader "300 300" "resources-shader.frag" >}}{{</ resources/shader >}}
 
-於是我也想辦法 添加了 可改變數值的 silder 
+比較麻煩的是用來放著色器腳本的資料夾沒辦法即時更新，預覽起來有點麻煩，但還好 vscode 有一個不錯的插件 [glsl-canvas](https://marketplace.visualstudio.com/items?itemName=circledev.glsl-canvas) ，可以在編輯器裡預覽 glsl shader 運行起來的樣子，用於初步除錯。
 
-和改變向量的 vector picker
+### 互動式內容 +
 
-把參數傳遞進著色器的變數裡
+雖然實時渲染的內容很有趣，但如果無法與讀者互動的話其實和放圖沒兩樣。於是我也想半法添加了互動內容，能夠讓讀者對渲染內容進行一定程度的操控。
 
-然後用 css 把它們修飾的好看一點
+webgl 渲染的時候可以透過 js 變數傳遞給著色器的 uniform 變數，利用這點我也擴展了自己的嵌入函式的功能，添加了幾種類型的變數輸入：
 
-就能讓讀者加深印象
+**一維浮點 - float silder**
 
-雖然 Patricio Gonzalez Vivo 也有提供網頁編輯器的函式庫 [GlslEditor](https://github.com/patriciogonzalezvivo/glslEditor)
+{{< resources/shader "300 300" "resources-shader.frag" >}}
+float u_colorR 0 1 0.5,
+float u_colorG 0 1 0.5,
+float u_colorB 0 1 0.5
+{{</ resources/shader >}}
 
-能夠讓讀者直接在網頁上修改程式碼 
- 
-但是整個編輯器還是太肥了，會讓網頁載入更耗時 
+**一維整數 - int silder**
 
-而且要合併進 hugo 的框架也
+{{< resources/shader "300 300" "resources-shader.frag" >}}
+int u_shape 0 2 0
+{{</ resources/shader >}}
 
-所以放棄了 沒必要用到那麼複雜的內容
+**二維浮點 - vector picker**
+{{< resources/shader "300 300" "resources-shader.frag" >}}
+vector u_position -1 -1 1 1 0 0
+{{</ resources/shader >}}
 
-### 程式框修正 -
+{{< resources/assets "resources-shader.frag" "> 想看這個著色器的原始碼可以點我 <" >}}
 
-模板提供的預設程式匡沒有標題
+透過 Hugo 的 json 打包功能 [jsonify](https://gohugo.io/functions/jsonify/) 在網站建置時會將變數資料透過 json 的格式傳入 html data 的欄位中，並生成輸入用的 html 元素。
+
+當讀者載入網站的時候，負責初始化著色器的 js 腳本便會搜索一遍所有著色器內容，將 html 事件與 shader 的變數輸入連接上，達成動態修改參數的功能。如果讀者在修改參數時能夠即時展現結果，能更有效的加深印象。
+
+除了著色器嵌入外，函式庫的提供者還有另一個系統能夠直接嵌入整個著色器編輯器 [GlslEditor](https://github.com/patriciogonzalezvivo/glslEditor) 能夠讓讀者直接在網頁上修改程式碼。
+
+{{< resources/image "glsl-editor.gif" "80%" "圖片引用自 GlslEditor" >}}
+
+但是嵌入整個編輯器還是太肥了，會讓網頁載入更耗時，而且還要合併進自己的嵌入框架也沒那麼容易，所以就放棄那麼複雜的內容了。 
+
+### 程式框修正 +
+
+因為我的學習領域會碰到不少程式碼，文章也會需要嵌入範例程式，雖然程式匡的格式模板已經有提供了，不過原本的樣式是沒有標題的。
 
 ```
 default code block
 ```
 
-尤其我的文章內容可能混雜不只一種語言 怕會混亂
+但我的文章內容可能混雜不只一種語言，怕讀者看到可能混亂。為了修正這點，我原本嘗試研究 hugo 的 markdown to html 編譯，或是找 css 格式有沒有方法直接幫程式匡添加標題，但沒有找到。
 
-原本嘗試研究 hugo 的 markdown to html 編譯，或是找 css 格式有沒有半法直接添加標題
+於是最後我直接修改 hugo 生成網頁時的模板，利用 hugo 提供的 Regex 搜索函式直接抓出所有 html 程式匡，硬插了 `<span>` 和 `<hr>` 上去。搭拉，程式匡標題完成～
 
-但找不到
+```hugo
+{{ $codeblocks := findRE "<code class=\"language-(.*)\">(.|\n)*?</code>" $content }}
+```
 
-最後只好直接修改網頁生成的模板 html
+Regex 真的是神器，現在我只要編寫文章時有在 markdown 的 code block 上添加語言類別就能自動顯示標題了。
 
-直接對生成過後的 html 原始碼修改，硬加標題上去
-
-之前研究編譯器的時候有學到 Regex，直接找 coge tag，然後用字串分割抓出語言
-
-然後 把 語言插入 code block 在加上一個 hr 就完成標題了
-
-效果卓越
+{{< resources/image "code-block.jpg" >}}
 
 ```cs
 void function()
@@ -210,11 +238,11 @@ fragment()
 }
 ```
 
-這樣閱讀起來就輕鬆多了
+如此一來讀者在閱讀時也能輕鬆許多，不用額外備註或是靠內容差異去猜語言了。
 
-不用靠語法差異去猜語言
+### 推薦清單 -
 
-### 主頁面 -
+從舊版網站
 
 簡單的介紹之後 推薦文章
 
@@ -230,29 +258,21 @@ fragment()
 
 然後顯示
 
-### 滾動條修正 -
+### 滾動條修正 +
 
-之前的網站因為嫌滾動條很丑 所以直接用 css 隱藏了
+因為覺得網頁右側的滾動條很丑，所以我在舊版網站裡直接透過 css 將它隱藏了。但是後來收到回饋說沒有滾動條在閱讀長篇文章的時候難以辨識當前進度，並且也沒辦法快速捲動，因此這次我決定保留滾動條，但想辦法修成好看的樣式。
 
-但後來收到回饋說 沒有滾動條在閱讀長篇文章的時候 難以辨識 當前進度
+在 chrome 中我使用的是 overlay 的格式，讓滾動條覆蓋在頁面上就不需要醜醜的欄位了。但因為 firefox 不兼容這種樣式，因此我只能把把欄位改細，顏色改淺一點讓它看起來沒那麼丑而已。
 
-而且沒辦法快速捲動 
-
-所以這次 我決定保留滾動條，但想辦法修成好看的樣式
-
-Firefox 和 chrome 的樣式不兼容
-
-chrome 可以使用 overlay 的滾動條，這樣就不會讓最右側有醜醜的捲動欄位
-
-但 firefox 不支援 overlay ，所以只能把欄位改細，顏色改淺一點而已
-<!-- https://mail.google.com/mail/u/0/#search/comment/FMfcgzGkZkRcSJXXdJrMVjSMpZxSjxGg -->
-
+{{< resources/image "website-scrollbar.jpg" >}}
 
 ### 動態背景 -
 
-為了要更大的控制權 所以背景不是用 文內嵌入的函式庫
+雖然能夠調整網頁的黑白樣式，但是單色背景看起來還是太乾了。就算讓背景放圖片也不夠有趣，因此我也把著色器的腦筋動到背景上了，我想透過著色器渲染整個網頁的背景。
 
-而是用 three.js 
+雖然文章嵌入的函式庫很方便，也能直接用在背景渲染上，但因為他的方便也導致使用者對他的掌控度沒那麼高，如果想要對一些細節做調整反而困難。
+
+因次背景的著色器我決定用另一個函式庫 three.js，雖然設置起來更加複雜，但也能讓我微調更多細節，材質屬性、模型（如果有）以及渲染幀數等等，
 
 使用一個覆蓋全畫面的 canvas 進行繪製
 
@@ -268,21 +288,24 @@ chrome 可以使用 overlay 的滾動條，這樣就不會讓最右側有醜醜�
 
 需要花一些時間調整參數就是了
 
-## 感謝
+## 感謝閱讀
 
-### 對比
+### 成果對比
+
+主題的預覽網頁，也是模板最初的樣子
 
 https://github.dsrkafuu.net/hugo-theme-fuji/
 
-### 待做  
+### 待做清單
 
-google analysis
 
-壞掉ㄌ
-
+留言板
 
 firebase ?
 
 尚未製作
+
+<!-- https://mail.google.com/mail/u/0/#search/comment/FMfcgzGkZkRcSJXXdJrMVjSMpZxSjxGg -->
+
 
 

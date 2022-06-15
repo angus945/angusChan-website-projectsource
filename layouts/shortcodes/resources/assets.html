@@ -6,6 +6,8 @@
 
 {{ $assetURL := printf "%s/tree/main%s%s" $asset $resources $path }}
 
-<a href="{{ $assetURL }}" target="_blank">
-    {{ $text }}
-</a>
+<p>
+    <a href="{{ $assetURL }}" target="_blank">
+        {{ $text }}
+    </a>
+</p>
