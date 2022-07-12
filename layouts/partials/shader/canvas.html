@@ -14,11 +14,13 @@
 {{ $datas := "" | string }}
 {{ $inputs := split .input "," }}
 
+{{/*  {{ $inputs }}  */}}
+
 {{ range $index, $element := $inputs }}
 
     {{ $tokens := split . " " }}
-    {{ $type := index $tokens 0 }}
-    {{ $name := index $tokens 1 }}
+    {{ $type := replaceRE "(\\s)" ""  (index $tokens 0) }}
+    {{ $name := replaceRE "(\\s)" ""  (index $tokens 1) }}
 
     {{ $json := jsonify }}
     
@@ -55,8 +57,8 @@
         
         {{ range $index, $element := $inputs }}
         {{ $tokens := split . " " }}
-        {{ $type := index $tokens 0 }}
-        {{ $name := index $tokens 1 }}
+        {{ $type := replaceRE "(\\s)" ""  (index $tokens 0) }}
+        {{ $name := replaceRE "(\\s)" ""  (index $tokens 1) }}    
 
         <div id="{{ $name }}" class="shader-input-field"> 
             <div id="text" style="display:flex; justify-content:space-between">

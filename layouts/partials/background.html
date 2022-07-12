@@ -12,7 +12,7 @@
         {{ $frag = readFile (printf "static%s" .) }}
     {{ end }}
     
-    {{ $json := dict "name" .name "style" .style "fps" .fps "vert" $vert "frag" $frag "dark_opacity" .dark_opacity "dark_image" .dark_image "light_opacity" .light_opacity "light_image" .light_image  | jsonify}}
+    {{ $json := dict "name" .name "style" .style "fps" .fps "speed" .speed "vert" $vert "frag" $frag "dark_opacity" .dark_opacity "dark_image" .dark_image "light_opacity" .light_opacity "light_image" .light_image  | jsonify}}
 
     {{ if eq $index 0 }}
         {{ $datas = printf "%s%s" $datas $json }}
@@ -179,10 +179,12 @@
 
     let interval;
     let delta;
+    let speed;
     function updateInitial(data)
     {
         interval = 1 / data.fps;
         delta = interval;
+        speed = data.speed;
     }
     function update() 
     {
@@ -201,8 +203,11 @@
     {
         if(renderer == null) return;
         
-        uniforms.u_time.value += clock.getDelta();
-        renderer.render( scene, camera );
+        uniforms.u_time.value += delta * speed;
+        renderer.render(scene, camera);
+
+        // console.log(uniforms.u_time.value);
+        // console.log(clock.getDelta());
     }
 </script>
 

@@ -4,6 +4,7 @@
         "style":"",
         
         "fps": 0,
+        "speed": 0,
         "shader":"",
 
         "dark_opacity": 0.0,
@@ -16,7 +17,8 @@
         "name":"watercolor-a", 
         "style":"background image-basis",
 
-        "fps": 1,
+        "fps": 5,
+        "speed": 0.01,
         "shader":"/background/colorBlend.frag",
 
         "dark_opacity": 0.2, 
@@ -29,8 +31,9 @@
         "name":"watercolor-b",
         "style":"background image-basis",     
 
-        "fps": 1,
-        "shader":"/background/sandbox.frag",  
+        "fps": 5,
+        "speed": 0.01,
+        "shader":"/background/colorBlend.frag",
 
         "dark_opacity": 0.2,
         "dark_image" : "/background/watercolor-darkblue.jpg",
@@ -40,28 +43,30 @@
     },
     {
         "name":"watercolor-c",
-        "style":"background image-basis",     
+        "style":"background image-basis",    
 
-        "fps": 1,
-        "shader":"/background/sandbox.frag",  
+        "fps": 5,
+        "speed": 0.01,
+        "shader":"/background/colorBlend.frag",
 
         "dark_opacity": 0.5,
         "dark_image" : "/background/watercolor-deepblue.jpg",
 
-        "light_opacity": 0.3,
+        "light_opacity": 0.5,
         "light_image" : "/background/watercolor-skyblue.jpg"
     },
     {
-        "name":"sandbox",
+        "name":"sandbox", 
         "style":"background image-basis",     
 
         "fps": 30,
-        "shader":"/background/sandbox.frag",  
+        "speed": 0.05, 
+        "shader":"/background/colorBlend.frag",
 
-        "dark_opacity": 0.5,
+        "dark_opacity": 0.5,  
         "dark_image" : "/background/watercolor-deepblue.jpg",
 
-        "light_opacity": 0.3,
+        "light_opacity": 0.5,
         "light_image" : "/background/watercolor-skyblue.jpg"
     }
 

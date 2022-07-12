@@ -34,12 +34,21 @@
         var sandbox = new GlslCanvas(canvas);
 
         var fields = container.getElementsByClassName("shader-input-field");
-        var datas = JSON.parse(input.dataset.inputs);
 
-        for(var i = 0; i < fields.length; i ++)
-        {
-            setInput(sandbox, fields[i], datas[i]);
-        }
+        //try
+        //{
+            var datas = JSON.parse(input.dataset.inputs);
+
+            for(var i = 0; i < fields.length; i ++)
+            {
+                setInput(sandbox, fields[i], datas[i]);
+            }
+        //}
+        //catch
+        //{
+        //    console.log(`wrong data: ${input.dataset.inputs}`)
+        //}
+
     };
     function setInput(sandbox, field, data)
     {

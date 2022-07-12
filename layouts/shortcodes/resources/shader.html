@@ -4,7 +4,12 @@
 {{ $vert := os.ReadFile "static/shader/baseVert.vert" | string }}
 {{ $frag := os.ReadFile (printf "%s%s%s" "static" $resources (.Get 1)) }}
 
-{{ $input := replace .Inner "\n" "" }}
+{{/*  {{ $input }}  */}}
+{{ $input := .Inner }}
+{{ $input = trim $input "\n" }}
+{{ $input = trim $input "\u0009\u000A\u000D" }}
+
+{{/*  {{ $input }}  */}}
 
 {{ with $input }}
     {{ partial "shader/canvas" (dict "size" $size "vert" $vert "frag" $frag "input" $input) }}

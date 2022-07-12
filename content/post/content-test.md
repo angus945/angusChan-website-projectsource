@@ -11,7 +11,7 @@ resources: "/common/"
 
 # listable: [all, recommand]
 
-background: [watercolor-b] 
+background: [watercolor-c]  
 
 ---
 
