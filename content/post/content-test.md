@@ -20,7 +20,7 @@ background: [watercolor-c]
 <!--more-->
 
 ### hi
-
+<!-- 
 ```cs
 print("hi");
 ```
@@ -31,14 +31,14 @@ print("hi");
 
 ```
 print("hi");
-```
+``` -->
 
 ## 自定義功能測試
 
 ### 測試著色器嵌入
 
 測試一般 Shader 嵌入
-{{< resources/shader "300 300" "sandboxShader.glsl" >}}
+{{< resources/shader "500 500" "sandboxShader.glsl" >}}
 {{</ resources/shader >}}
 
 測試 Float Silder
