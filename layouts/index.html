@@ -64,15 +64,17 @@
 
 
 <script>
-    const datas = shuffle(JSON.parse("{{ $datas }}"));
+    const datas = JSON.parse("{{ $datas }}");
 
     const count = "{{ $count }}";
     
-    $(document).ready(function() {
+    $(document).ready(function() 
+    {
+        let pointers = random(datas.length, count);
+        
         for(var i = 0; i < count; i ++)
         {
-            var data = datas[i];
-            console.log(data);
+            var data = datas[pointers[i]];
 
             var board = document.getElementById("list-" + i);
             
@@ -120,7 +122,18 @@
         }
       
         return array;
-      }    
+    }
+    
+    function random(range, count)
+    {
+        let pointers = Array.from({length: range}, (item, index) => index);
+
+        pointers = shuffle(pointers);
+        pointers = pointers.slice(0, count);
+        pointers = pointers.sort();
+
+        return pointers;
+    }
     
 </script>
 
