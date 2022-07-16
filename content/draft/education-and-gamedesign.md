@@ -21,7 +21,7 @@ resources: /post/education-and-gamedesign/
 # background: static/shader/sandboxShader.glsl
 
 ## listout with recommand, new and all pages
-listable: [recommand, new, all]
+# listable: [recommand, new, all]
 
 ---
 
