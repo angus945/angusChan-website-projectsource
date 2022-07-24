@@ -79,6 +79,10 @@ og = "/siteImage/head.png"                                          # This will 
 ## customize page background
 background = ["watercolor-a", "watercolor-b", "watercolor-c"] 
 
+# customize display
+show-title = true
+show-meta = true
+
 # Posts shown in homepage
 mainSections = ["post"]
 
@@ -86,8 +90,8 @@ mainSections = ["post"]
 # bgmImageChart = "000000"
 
 # License
-license = "CC BY-NC-SA 4.0"
-licenseLink = "http://creativecommons.org/licenses/by-nc-sa/4.0/"
+license = "About"
+licenseLink = "https://angus945.github.io/about/"
 
 # Comments
 # utterances, see: https://utteranc.es/

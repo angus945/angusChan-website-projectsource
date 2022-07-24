@@ -1,18 +1,20 @@
 {{ define "main" }}
 <article>
-    <!-- post meta -->
-    <h2 class="post-item post-title">
-        <a href="{{ .Permalink }}">{{ .Title }}</a>
-    </h2>
-    <div class="post-item post-meta">
-        {{ partial "post-meta.html" . }}
-    </div>
+    {{ if eq (.Param "show-title") true }}
+        <h2 class="post-item post-title">
+            <a href="{{ .Permalink }}">{{ .Title }}</a>
+        </h2>
+    {{ end }}
+    {{ if eq (.Param "show-meta") true }}
+        <div class="post-item post-meta">
+            {{ partial "post-meta.html" . }}
+        </div>
+    {{ end}}
     <!-- post main content -->
     <div class="post-content markdown-body">
         {{ $content := .Content }}
         {{ $content := partial "content/color-replace.html" (dict "Content" $content ) }} 
         {{ $content := partial "content/code-block.html" (dict "Content" $content ) }} 
-
         {{ $content | safeHTML }}
     </div>
 </article>

@@ -1,4 +1,30 @@
+---
+title: " "
+date: 
+lastmod:  
 
+draft: true
+
+description:
+tags: []
+
+## image for preview
+# feature: 
+
+## image for open graph
+# og: "/post/about-learning/featured.jpg"
+
+## when calling "resources" shortcode, well link to static folder with this path 
+# resources: /common/
+
+## customize page background
+# background: [watercolor-A] 
+
+## listout with recommand, new and all pages
+# listable: [recommand, all]
+---
+
+<!--more-->
 【學習日誌】工具化和地形繪製修正
 
 一樣接續上篇【學習日誌】物件筆刷和地形筆刷

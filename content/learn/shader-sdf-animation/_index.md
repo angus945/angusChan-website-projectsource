@@ -2,7 +2,7 @@
 title: "距離場的數學原理以及圖形繪製方法"
 date: 2021-07-27
 
-draft: false
+draft: true
 
 description: "從頭解說距離場的數學原理，並教妳們如何使用距離場繪製圖形"
 tags: [shader]
