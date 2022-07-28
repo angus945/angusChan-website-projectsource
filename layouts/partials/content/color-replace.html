@@ -5,6 +5,8 @@
 {{ $content := replace $content " </h> " "</h>" }}
 {{ $content := replace $content " <c> " "<c>" }}
 {{ $content := replace $content " </c> " "</c>" }}
+{{ $content := replace $content " <r> " "<r>" }}
+{{ $content := replace $content " </r> " "</r>" }}
 
 {{ return $content }}
 
