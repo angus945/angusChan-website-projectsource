@@ -29,13 +29,13 @@ listable: [recommand, all]
 
 <!--more-->
 
-## 條件判斷 +
+## 條件判斷 
 
 雖然 GPU 特化後的硬體架構使其能利用多核心並行的方式完成大量計算，但也相對不擅長進行如條件判斷等複雜行為，若想在著色器當中使用條件式將受到更大的侷限或付出更高的成本。著色器有三種方法能達成判斷條件的效果：靜態分支、動態分支與數學判斷。
 
-### 靜態分支 +
+### 靜態分支 
 
-靜態分支 (Static Branch)，指的是在編譯時進行的條件判斷，編譯器在產生程序會直接將不符合條件的分支排除，讓最終結果只留下符合條件的內容。靜態分支的編寫方式為預處理關鍵字 `#` 加上條件式，如 `#if` `#else`  `#ifdef` 等等，並透過 `#endif` 表示判斷範圍的尾端。
+靜態分支 (Static Branch)，指的是在編譯時進行的條件判斷， <h> 編譯器在產生程序時會直接將不符合條件的分支排除 </h> ，讓最終結果只留下符合條件的內容。靜態分支的編寫方式為預處理關鍵字 `#` 加上條件式，如 `#if` `#else`  `#ifdef` 等等，並透過 `#endif` 表示判斷範圍的尾端。
 
 ```hlsl
 #if 
@@ -45,7 +45,7 @@ listable: [recommand, all]
 #endif
 ```
 
-除此之外，如果編寫一般的條件式但使用編譯後固定的常量作為條件 (compile-time constant value)，編譯器檢測到也會自動將它視為靜態分支判斷，排除不符合條件的內容。
+除此之外，如果編寫一般的條件式但 <h> 使用編譯後固定的常量作為條件 (compile-time constant value)  </h> ，編譯器檢測到也會自動將它視為靜態分支判斷，排除不符合條件的內容。
 
 ```hlsl
 static const float version = 0;
@@ -65,9 +65,9 @@ fixed4 frag (v2f i) : SV_Target
 
 {{< resources/image "compile-and-showcode.jpg" >}}
 
-靜態分支的主要優點是不會有任何實時運行上的負面影響，因為判斷工作已經在編譯時完成了，同時因為直接排除無用分支的原因，也會減低編譯後的程序大小。而它最主要的缺點就是能做到的工作比較侷限，如果想要在運行時根據條件改變某些效果就無法達成。
+靜態分支的優點是不會有任何實時運行上的負面影響，因為判斷工作已經在編譯時完成了，同時由於排除無用分支的原因，還會減低編譯後的程序大小。而它最主要的缺點就是能做到的工作比較侷限，如果想要在運行時根據條件改變某些效果就無法達成。
 
-靜態分支通常會用在為特定硬體、版本以及環境編譯的著色器中，畢竟遊戲環境不會在遊玩中產生變動。（總不可能 NS 玩一玩突然變 PS5 吧）
+靜態分支通常會 <h> 用在為特定硬體、版本以及環境編譯的著色器中 </h> ，畢竟遊戲環境不會在遊玩中產生變動，總不可能 NS 玩一玩突然變 PS5 吧？
 
 ```hlsl
 #if SHADER_TARGET < 30
@@ -78,9 +78,9 @@ fixed4 frag (v2f i) : SV_Target
 #endif
 ```
 
-### 動態分支 +
+### 動態分支 
 
-動態分支 (Dynamic Branch)，指的是在著色器運行時進行的條件判斷，能根據即時條件獲得不同結果，編寫方式和一般的判斷式相同。
+動態分支 (Dynamic Branch)，指的是在著色器運行時進行的條件判斷，能 <h> 根據即時條件獲得不同結果 </h> ，編寫方式和一般的判斷式相同。
 
 ```hlsl
 if(condition)
@@ -101,13 +101,13 @@ else
 > Branching based on non-uniform variables means that the GPU must either perform different operations at the same time (and therefore break parallelism), or “flatten the branch” and maintain parallelism by performing the operations for both branches and then discarding one result. Branching based on uniform variables means that the GPU must flatten the branch. Both of these approaches result in reduced GPU performance.
 
 
-無論何者都會對效能產生負面影響，並且 GPU 在遇到分支時必須為最壞的情況預留暫存器 (Register) 空間，假如不同分支的計算成本差距過大，當在它在執行低成本計算時就會浪費那些預留的空間，這也是動態分支的缺點之一。
+無論何者都會對效能產生負面影響，並且 GPU 在遇到分支時 <h> 必須為最壞的情況預留暫存器 (Register) 空間 </h> ，假如不同分支的計算成本差距過大，當在它在執行低成本計算時就會浪費那些預留的部份，這也是動態分支的缺點之一。
 
 此外，視條件內容也會再將動態分支進行細分：
 
 **uniform variable**
 
-使用 uniform 變數作為條件的判斷式，並且條件的所有分支成本相近。因為 unifrom 是全域只讀的，所以相同條件的判斷式基本都會走在相同分支上，而分支成本相近的話也不會浪費太多暫存器空間。如此一來，即使是動態分支計算環境還是相對穩定，是比較理想的使用情況。
+使用 uniform 變數作為條件的判斷式，並且條件的所有分支成本相近。因為 unifrom 是全域只讀的，所以相同條件的判斷式基本都會走在同一條分支上，而分支成本相近的話也不會浪費太多暫存器空間。如此一來，即使是動態分支計算環境還是相對穩定，是比較理想的使用情況。
 
 ```hlsl
 uniform bool u_Condition;
@@ -136,7 +136,7 @@ if(value > filter)
 }
 ```
 
-動態分支的優點是允許在運行時使用動態變數即時判斷，讓使用者能做到的事情更多。會使用的情況就是需要判斷式但無法編寫成靜態分支的時後，例如在計算著色器進行的視錐剔除 (GPU Culling)。
+動態分支的優點是允許在運行時使用動態變數即時判斷，讓使用者能做到的事情更多。會使用的情況就是 <h> 需要判斷式但無法編寫成靜態分支的時後 </h> ，例如在計算著色器進行的視錐剔除 (GPU Culling)。
 
 ```hlsl
 void CullingKernal (uint3 id : SV_DispatchThreadID)
@@ -152,7 +152,7 @@ void CullingKernal (uint3 id : SV_DispatchThreadID)
 
 ```
 
-### 數學判斷 +
+### 數學判斷 
 
 數學判斷，利用函式或乘法計算達成的判斷效果。最常見的是透過 `step(edge, value)` 函式來開關效果，這個函式會在 value > edge 時回傳 1，反之 0，只要將效果強度乘上函式輸出就能達成開關功能。
 
@@ -168,9 +168,9 @@ float result = lerp(resultA, resultB, step(edge, value));
 
 數學判斷的優點是，有時候條件就是動態的變數，直接寫成計算式反而比條件簡潔。但缺點是沒用到的部份也會進行計算，而且判斷條件稍微複雜就會很難維護 （如 else if ）。
 
-雖然數學判斷與扁平化效果類似，但也不要把硬把判斷式轉換成數學，大多情況下這會是負優化，該用判斷式的時候就是去用，要優化編譯器會幫你完成的。
+雖然數學判斷與扁平化效果類似，但也 <r> 不要硬把判斷式轉換成數學，大多情況下這會是負優化 </r> ，該用判斷式的時候就是去用，要優化編譯器會幫你完成的。
 
-數學判斷比較常用在特效類的計算上，尤其是具有距離場性質的計算，通常一個著色器特效都是用好幾層複合計算疊加出來的，溶解效果就是一個經典且簡單的例子。
+數學判斷比較常用在特效類的計算上，尤其是 <h> 具有距離場性質的判斷 </h>，通常一個著色器特效都是用好幾層複合計算疊加出來的，溶解效果就是一個經典且簡單的例子。
 
 ```hlsl
 fixed4 frag (v2f i) : SV_Target
@@ -186,11 +186,11 @@ fixed4 frag (v2f i) : SV_Target
 
 {{< resources/image "math-dissolve.gif" "50%" >}}
 
-## 變體著色器 +
+## 變體著色器 
 
-變體著色器 (Shader Variant)，由 Unity 引擎提供的一種特殊方法，能讓我們在不使用動態分支的情況下開關與切換著色器效果的功能。利用不同的關鍵字分割著色器區塊，在編譯時透過靜態分支編譯出多個版本的變體著色器，如此一來切換變體就能改變著色器效果了。
+變體著色器 (Shader Variant)，由 Unity 引擎提供的一種特殊方法，能讓我們 <h> 在不使用動態分支的情況下開關與切換著色器效果的功能 </h> 。利用不同的關鍵字分割著色器區塊，在編譯時透過靜態分支編譯出多個版本的變體著色器，如此一來切換變體就能改變著色器效果了。
 
-### 變體關鍵字 +
+### 變體關鍵字 
 
 關鍵字有兩種類別 `multi_compile` 與 `shader_feature`，筆記中統一使用 `shader_feature`，有差異的部份會再進行補充。
 
@@ -223,7 +223,7 @@ fixed4 frag (v2f i) : SV_Target
 
 <!-- So shader_feature makes most sense for keywords that will be set on the materials, while multi_compile for keywords that will be set from code globally. -->
 
-### 變體內容 +
+### 變體內容 
 
 宣告完關鍵字後就需要實做變體內容，透過靜態分支關鍵字 `#ifdef`，或是 `#if defined()` 定義屬於關鍵字的範圍，可以透過 `#else` 定義所有情況外的分支（如關閉的效果），或是有宣告多個變體關鍵字也可以用 `#elif` 關鍵字判斷。
 
@@ -248,7 +248,7 @@ void function()
 
 當著色器編譯時，編譯器就會生成出多個版本的變體，而使用者就可以在運行時透過開關關鍵字切換變體，達成接近動態分支的條件效果。
 
-### 切換變體 +
+### 切換變體 
 
 宣告與定義完變體關鍵字後，使用者就可以根據需求切換要使用變體。變體切換有兩種方法，屬性切換與程式切換。
 
@@ -273,7 +273,7 @@ Properties
 
 {{< resources/image "keyword-debug.jpg" >}}
 
-Unity 的預設著色器 Standard 就是利用屬性切換變體，一些特殊的計算只有放入對應的貼圖時才會啟用（如法線貼圖）。要注意屬性切換是由編輯器執行的，因此只有編輯界面的操作才會切換變體，讓程式調用 `material.SetFloat` 等函式是無法改變變體的。
+Unity 的預設著色器 Standard 就是利用屬性切換變體，一些特殊的計算只有放入對應的貼圖時才會啟用（如法線貼圖）。要注意 <h> 屬性切換是由編輯器執行的，因此只有編輯界面的操作才會切換變體 </h> ，讓程式調用 `material.SetFloat` 等函式是無法改變變體的。
 
 同理，就算你在運行時把 Standard 中的 Normal Map 移除，這個材質還是會進行法線計算，即使沒有任何效果。
 
@@ -282,8 +282,8 @@ Unity 的預設著色器 Standard 就是利用屬性切換變體，一些特殊�
 如果想透過程式切換變體，可以用調用函式 `EnableKeyword` 與 `DisableKeyword` 來開關特定關鍵字。要注意 <r> 切換時並不會自動關閉其他 Keyword </r> ，需要手動調用函式關閉才行。
 
 ```cs
-material.EnableKeyword("Keyword");
-material.DisableKeyword("Keyword");
+material.EnableKeyword(enableKeyword);
+material.DisableKeyword(disableKeyword);
 ```
 
 除了對特定的材質球開關以外，也可以用全域的方式進行設定，所有宣告過關鍵字的著色器都會一次修改。可以用在全局視覺設定上，如草木材質的頂點晃動等等。
@@ -293,15 +293,15 @@ Shader.EnableKeyword("ANIM_SHAKE");
 CommandBuffer.EnableShaderKeyword("ANIM_SHAKE");
 ```
 
-### 優點缺點 +
+### 優點缺點 
 
-變體著色器的主要優點為不用動態分支也能達成切換效果的功能，但缺點是編譯時會生出一拖拉庫變體著色器，可能減慢編譯速度、增加檔案大小與提高實時的記憶體用量。此外，它還是無法達成「真正」的動態判斷，只能用在開關與切換類的條件判斷上。
+變體著色器的主要優點為不用動態分支也能達成切換效果的功能，但缺點是編譯時會生出一拖拉庫變體著色器，可能 <h> 減慢編譯速度、增加檔案大小與提高實時的記憶體用量 </h> 。此外，它還是無法達成「真正」的動態判斷，只能用在開關與切換類的條件判斷上。
 
 <p><c>
 註：Unity 官方把有一大堆變體的著色器叫做 "mega shaders"，引擎預設的 Standard Shader 就屬於這類。沒什麼特別的，因為聽起來很酷所以特別說一下。
 </c></p>
 
-### 建置設定 +
+### 建置設定 
 
 如果透過 `shader_feature` 生成變體的話，專案建置還需要進行額外設定才能運作。在資料夾右鍵 > Create > Shader > Shader Variant Collection 建立出著色器變體合集，並進行設置。
 
@@ -313,9 +313,9 @@ CommandBuffer.EnableShaderKeyword("ANIM_SHAKE");
 
 {{< resources/image "shader-variant-loading.jpg" >}}
 
-## 實作範例 +
+## 實作範例 
 
-### 開關輪廓 +
+### 開關輪廓 
 
 簡單的範例，使用變體功能做出能開關外輪廓的著色器。首先，宣告各種模式的關鍵字。使用 `#pragma shader_feature` 定義兩種效果的名稱，`_OUTLINE_DEFAULT, _OUTLINE_WOBBLE` 以及底線的空白關鍵字。
 
@@ -356,16 +356,16 @@ Properties
 }
 ```
 
-雖然範例相當簡陋但應該足夠展示完整的應用方法了，任何更進階的延伸都是用相同的邏輯編寫的，效果開關、全局光照或細節等級都可以
+雖然範例相當簡陋但也足夠展示應用方法了，任何更進階的延伸都是用相同的邏輯編寫的，效果開關、全局光照或細節等級都可以
 利用這種方式切換。
 
 {{< resources/image "example-result.jpg" >}}
 
 {{< resources/assets "VariantExampleShader.shader" ">範例程式省略了無關的部份，點我觀看完整腳本<" >}}
 
-## 感謝閱讀 ++
+## 感謝閱讀 
 
-當初在各種作法間苦惱了許久，不曉得概用判斷式還是數學計算比較恰當，後來查詢到 Shader Feature 這項功能後才研究出比較適合的方法。
+當初在各種做法之間苦惱了許久，不曉得概用判斷式還是數學計算比較恰當，後來查詢到 Shader Feature 這項功能後才研究出比較適合的方法。
 
 雖然達成目標了，但還是覺得對各種作法的差異還不夠理解，所以找時間查了條件判斷的細節與變體著色器的資料，並把資料和實驗的結果整合寫進這篇筆記，讓我對各種情況下適合的解決方法更有概念了。
 
@@ -373,7 +373,7 @@ Properties
 
 {{< outpost/likecoin >}}
 
-### 參考資料 ++
+### 參考資料 
 
 題外話：這好像是我第一次那麼認真讀官方文檔
 
