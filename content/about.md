@@ -51,7 +51,7 @@ HI，我是一位遊戲開發者，擅長的工具為 Unity Engine 與 C#
 
 除非有獨立說明，否則網站內容 <h> 只要符合以下條件即可自由轉載 </h> 。
 
-1. 文章開頭必須添加轉載備註，格式如下：
+1. 文章開頭必須添加轉載備註，請保持以下的格式：
 
 > 文章作者：樂小呈 (AngusChan)  
 原文網址：[https://angus945.github.io/learn/compute-shader/compute-shader-basis/](https://angus945.github.io/learn/compute-shader/compute-shader-basis/)  
