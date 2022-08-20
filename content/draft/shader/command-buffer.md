@@ -1,5 +1,5 @@
 ---
-title: "【筆記】使用命令緩衝區擴展內置管線"
+title: "【筆記】用命令緩衝區擴展內置管線"
 date: 
 lastmod: 
 
@@ -27,6 +27,8 @@ tags: []
 用 Unity CommandBuffer 擴展 Bulit-in 管線
 
 <!--more-->
+
+如何對特定目標進行後處理
 
 Graphics API
 
@@ -68,4 +70,6 @@ Graphics.ExecuteCommandBuffer(commantBuffer);
 BuiltinRenderTextureType.CameraTarget
 
 
+---
 
+https://blog.csdn.net/puppet_master/article/details/72669977
