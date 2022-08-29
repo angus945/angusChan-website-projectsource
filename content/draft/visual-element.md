@@ -135,11 +135,23 @@ container.Add(label);
 
 ### 添加元素 -
 
-所有繼承自 VisualElement 的元素都能透建構函式建立
+如果想在界面上添加其他元素，只需要透過建構函式建立繼承自 VisualElement 類別 
 
-VisualElement container = new VisualElement();
+CreateGUI() 會在
 
-所有元素都得加入 rootVisualElement 才能正確繪製
+`rootVisualElement` 指的是視窗的視覺樹根部，就會像枝葉一樣從根部延伸，引擎繪製視窗時就會依據
+
+```cs
+public void CreateGUI()
+{
+    Label label = new Label("Label Element");
+
+    rootVisualElement.Add(label);
+}
+```
+
+{{< resources/image "add-label.jpg" >}}
+
 
 除此之外元素也能夠嵌套
 
@@ -149,34 +161,29 @@ Add
 Insert
 在指定位置插入元素
 
-有許多種
+有許多種元素可以使用，包括一般界面的 Label, Button, Image, Toggle，與編輯器界面的 IntegerField, ObjectField。
 
-Label, Button, Image, Toggle
+特殊的排版元素 verticle spiter?
 
-IntegerField, ObjectField
+注意：筆記後面都會省略 rootVisualElement
 
-### 監聽事件 -
+### 監聽事件 +
 
-Visual Element 能夠進行事件監聽
+每個視覺物件都具有事件監聽的功能，只需要使用 `RegisterCallback<T>()` 函式進行註冊即可，任何 EventBase 下的事件類別都能進行監聽，包括 MouseMoveEvent, MouseDownEvent 等常用事件，當事件被觸發時也會回傳對應的參數進註冊函式。
 
 ```cs
-public void RegisterCallback<TEventType>(EventCallback<TEventType> callback, TrickleDown useTrickleDown = TrickleDown.NoTrickleDown) where TEventType : EventBase<TEventType>, new();
+Button button = new Button();
+button.RegisterCallback<MouseMoveEvent>((MouseMoveEvent e) =>
+{
+    Debug.Log(e.mousePosition);
+});
 ```
 
-任何 EventBase 下的事件類別都能進行監聽，包括 MouseMoveEvent, MouseDownEvent
-
-```
-visualElement.RegisterCallback<MouseMoveEvent>()
-visualElement.RegisterCallback<MouseDownEvent>()
-```
-
-註：這種用泛型類別註冊事件的方法有點意思，找時間也可以研究下
-
-
-對於具有輸入性質的 也有特殊的事件
+而具有輸入性質的編輯器元素也有對輸入參數進行監聽的事件，可以透過函式 `RegisterValueChangedCallback()` 進行註冊，當參數發生變動時便會觸發並將相關資訊傳入函式。
 
 ```cs
 ObjectField objectField = new ObjectField();
+objectField.objectType = typeof(UnityEngine.Object);
 objectField.RegisterValueChangedCallback((ChangeEvent<UnityEngine.Object> e) =>
 {
     Debug.Log(e.previousValue);
@@ -184,18 +191,17 @@ objectField.RegisterValueChangedCallback((ChangeEvent<UnityEngine.Object> e) =>
 });
 ```
 
-### 擴展功能 -
+<p><c>
+註：用泛型註冊事件的方法我還是第一次看到，有點意思。
+</c></p>
 
-能夠輕易定義自己的元素
+### 擴展元素 +
 
-繼承 visual element
-
-例如帶有按鈕的物件欄位
+如果想設計自己的元素重複使用，也只需要繼承 VisualElement 即可。假設我需要一個帶有按鈕的物件輸入匡，只需要繼承 ObjectField 然後添加生成按鈕的功能即可。
 
 ```cs
-public class ButtonObjectView : ObjectField
+public class ObjectFieldWidthButton : ObjectField
 {
-    public ButtonObjectView(string label) : base(label) { }
     public void AddButton(string text, Action onClick)
     {
         Button button = new Button(onClick);
@@ -206,88 +212,103 @@ public class ButtonObjectView : ObjectField
 }
 ```
 
-TODO 圖
+而添加自訂元素時也與一般的視覺物件相同，透過建構函式生成。
 
-### 排版樣式 -
+```cs
+ObjectFieldWidthButton fieldWidthButton = new ObjectFieldWidthButton();
+fieldWidthButton.objectType = typeof(UnityEngine.Object);
+fieldWidthButton.AddButton("Button A", () => Debug.Log("ButtonA Clicked"));
+fieldWidthButton.AddButton("Button B", () => Debug.Log("ButtonB Clicked"));
+```
+
+{{< resources/image "field-width-Button.jpg" >}}
+
+### 排版樣式 +
 
 **程式指定**
 
-visualElement.style
+透過程式直接指定 `visualElement.style` 中的參數調整樣式，基本的樣式表 (style sheet) 屬性都能在這邊指定，包括元素長寬、顏色與對齊方法等。
 
-比較侷限 有些樣式不知道怎麼改
-
-```
+```cs
 Label title = new Label("Tittle");
 title.style.color = Color.red;
+title.style.fontSize = 30;
+title.style.alignSelf = Align.Center;
 ```
 
-透過 flex 並排子元素
+{{< resources/image "sytle-code-title.jpg" >}}
 
-```
-style.flexDirection
+而樣式屬性也能一定程度的對子元素進行排版，例如改變 `FlexDirection` 讓子元素用並排的方式排列。
+
+```cs
+VisualElement container = new VisualElement();
+container.style.flexDirection = FlexDirection.Row;
+
+container.Add(new Label("Label A"));
+container.Add(new Label("Label B"));
+container.Add(new Label("Label C"));
+container.Add(new Label("Label D"));
 ```
 
+{{< resources/image "style-code-flex.jpg" >}}
+
+程式指定是最較簡單的排版方法，但許多細節調整還是沒那麼方便。
 
 **樣式表指定**
 
-相當強大的功能
+第二種方式是透過 Unity 提供的樣式文件 Unity Style Sheet (USS) 進行編輯，使用方式與網頁的階層式樣式表 (CSS) 大相逕庭，包括指定元素類型的 selector 與包裝樣式的 class，能夠修改元素的大小、排列、顏色等樣式屬性。
 
-載入樣式表
-
-Unity Style Sheet (USS)
-
-```uss
-.title-text 
+```css
+Label 
 {
     font-size: 20px;
-    -unity-text-align: upper-center;
     -unity-font-style: bold;
-    color: rgb(255, 0, 0);
+    color: rgb(68, 138, 255);
+}
+.align-center 
+{
+    -unity-text-align: upper-center;
 }
 ```
 
+透過 `AssetDatabase` 函式庫載入樣式文件，並添加至視覺物件的樣式列表中，樣式文件載入後便會自動使用 selector 指定的屬性，或你也可以透過 `AddToClassList()` 函式指定樣式 class，載入的樣式表也會往子元素傳遞。
+
 ```cs
-StyleSheet styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Research/VisualTree/Editor/UIElementsStyle.uss");
+StyleSheet styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Editor/UIToolkitWindow.uss");
 rootVisualElement.styleSheets.Add(styleSheet);
-```
 
-```cs
 Label title = new Label("Tittle");
-title.AddToClassList("title-text");
+title.AddToClassList("align-center");
 ```
 
-點到為止
-參考  Unity Style Sheets - The Basics  
-https://www.youtube.com/watch?v=c3sSyoiekz4
+{{< resources/image "style-sheed.jpg" >}}
 
-**編輯器排版**
+透過 USS 文件編輯樣式能更有效的架構與重用屬性，除了有更大的彈性以外也比直接在程式中寫死參數好維護，更多細節可以參考官方文檔 [Style UI with USS](https://docs.unity3d.com/Manual/UIE-USS.html)。
 
-UI Builder 
+<!-- https://docs.unity3d.com/Manual/UIE-USS.html -->
 
-Window > UI > UI Builder 
+<!-- 參考  [Unity Style Sheets - The Basics](https://www.youtube.com/watch?v=c3sSyoiekz4)   -->
+<!-- https://www.youtube.com/watch?v=c3sSyoiekz4 -->
 
-2019.4 與 2020 版本需要透過 Packge Manager 導入
-2021 開始為內建工具
+**視覺化排版**
 
-https://docs.unity3d.com/Packages/com.unity.ui.builder@1.0/manual/images/UIBuilderAnnotatedMainWindow.png
-引用
+最後也是最強大的功能便是 Unity 提供的圖像化界面編輯器 UI Builder。透過 Window > UI Toolkit > UI Builder 可以開啟編輯切面。2019.4 與 2020 版本需要透過 Packge Manager 導入，而在 2021 版開始之後為內置工具，不需要而外動作即可使用。
 
-集合了大量編輯工具
+{{< resources/image "style-builder" "80%" "圖片引用自 Unity 教學文檔" >}}
 
-更多細節請參考官方教學文檔
+點擊與拖曳即可添加元素、調整版面，所見即所得的開發工具能顯著降低設計難度與提高開發效率，同時還能透過 UXML (Unity XML, Unity Extensible Markup Language ) 擴展自訂標籤，讓使用者繼承 VisualElement 的自訂義元素也能在編輯器中使用。
 
-https://docs.unity3d.com/Packages/com.unity.ui.builder@1.0/manual/index.html
+更多細節請參考官方教學文檔 [Unity UI Builder](https://docs.unity3d.com/Packages/com.unity.ui.builder@1.0/manual/index.html)，這裡一樣點到為止。
 
-UXML 自訂標籤
+<!-- https://docs.unity3d.com/Packages/com.unity.ui.builder@1.0/manual/index.html -->
 
-(Unity Extensible Markup Language)
+### 參考範例 +
 
+最後，Unity 還有提供內建的範例模板供開發者參考，只需要透過 Window > UI Toolkit > Semples 開啟範例視窗就有所有元素的列表與程式碼可以參考。
 
-### 參考範例 -
+{{< resources/image "ui-toolkit-sample-a" >}}
 
-Unity 還有提供內建的範例模板供開發者參考
-
-Window > UI > UIElements Semple
+{{< resources/image "ui-toolkit-sample-b" >}}
 
 
 ## 總結 -
@@ -314,9 +335,13 @@ Visual Element
 + 如果只是要簡單的功能 就殺雞用牛刀了
 <!-- Optional https://youtu.be/uZmWgQ7cLNI -->
 
-官方也有使用對象的建議
+官方也有對各種 UI 系統的對比文檔 [Comparison of UI systems in Unity](https://docs.unity3d.com/Manual/UI-system-compare.html) ，當中包括了使用對象的建議。
+
+{{< resources/image "roles-and-skill-sets.jpg" >}}
 
 用 IMGUI 做複合工具真的要命
+
+<!-- https://docs.unity3d.com/Manual/UI-system-compare.html -->
 
 
 總之 希望能幫上各位
