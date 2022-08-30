@@ -24,15 +24,13 @@ resources: /learn/unity/editor-visual-element/
 # listable: [recommand, all]
 ---
 
-因為要深入研究工具的開發方法
-
-這篇文章是自定義編輯器視窗 - 視覺物件的學習筆記
+為了研究更高效率的自製工具開發，所以接觸到了 Unity 的 UI Toolkit 這套界面開發工具，它使用與普遍常見的 `CustomEditor` 函式庫截然不同的架構，能夠以「物件」的形式繪製與架構界面，大幅提高整體維護性與效率。這篇文章是 Unity 工具開發，視覺物件的學習筆記。
 
 <!--more-->
 
-## 自訂工具 -
+## 自訂工具 +
 
-需要有基本的 Unity Custom Editor 知識
+在學習遊戲開發一段時間後，可能會開始有自製工具的需求，而 Unity 也為此提供了幾個選項供開發者選擇，筆記的開頭就帶過兩種 Unity 工具開發的主要方法。
 
 ### 即時模式 +
 
@@ -119,7 +117,7 @@ container.Add(label);
 
 ## 建立視窗 +
 
-透過右鍵 > Create > UI Toolkit > Editor Window 生成預設的範例界面。
+視窗可以透過右鍵 > Create > UI Toolkit > Editor Window 生成預設的範例界面，或是自行建立腳本後讓類別繼承 `EditorWindow`。
 
 {{< resources/image "create-window.jpg" "80%" >}}
 
@@ -133,13 +131,9 @@ container.Add(label);
 
 {{< resources/image "default-window.jpg" >}}
 
-### 添加元素 -
+### 添加元素 +
 
-如果想在界面上添加其他元素，只需要透過建構函式建立繼承自 VisualElement 類別 
-
-CreateGUI() 會在
-
-`rootVisualElement` 指的是視窗的視覺樹根部，就會像枝葉一樣從根部延伸，引擎繪製視窗時就會依據
+如果想建立其他元素，只需要透過建構函式建立繼承自 VisualElement 的類別即可。建立完畢後若想讓元素顯示在視窗界面上，就需要將其添加至 `rootVisualElement` 當中。`CreateGUI()` 函式會在視窗「準備好」的時候調用，是比較適當的元素建立時機，但實際上可以在任何時候產生視覺物件。
 
 ```cs
 public void CreateGUI()
@@ -152,20 +146,24 @@ public void CreateGUI()
 
 {{< resources/image "add-label.jpg" >}}
 
+視覺物件使用的是名為視覺樹 (Visual Tree) 的層次結構，而 `rootVisualElement` 指的是結構的最根部，也就是視窗本身。當物件被添置其中後視窗便會繪製。有許多種元素可以使用，包括一般界面的 `Label`, `Button`, `Image`, `Toggle`，與編輯器界面的 `IntegerField`, `ObjectField`，以及特殊的排版元素 verticle spiter 等。
 
-除此之外元素也能夠嵌套
+除此之外，樹狀結構的特性也允許視覺物件也嵌套，可以透過 `new VisualElement()` 建立空的物件作為容器，利用嵌套的方式包裝其他視覺物件。
 
-Add
-直接加入元素在最後
+```cs
+VisualElement container = new VisualElement();
 
-Insert
-在指定位置插入元素
+container.Add(new Label());
+container.Add(new Toggle());
 
-有許多種元素可以使用，包括一般界面的 Label, Button, Image, Toggle，與編輯器界面的 IntegerField, ObjectField。
+rootVisualElement.Add(container);
+```
 
-特殊的排版元素 verticle spiter?
+最基本的物件建立方法如上，目前為止效果與一般的 CustomEditor 相同。
 
-注意：筆記後面都會省略 rootVisualElement
+<p><h>
+注意：筆記後面範例將省略 `rootVisualElement.Add()` 的步驟，請自行添加。
+</h></P>
 
 ### 監聽事件 +
 
@@ -310,45 +308,44 @@ title.AddToClassList("align-center");
 
 {{< resources/image "ui-toolkit-sample-b" >}}
 
+## 經驗總結 +
 
-## 總結 -
+第一次嘗試製作複雜的編輯器是在山鴉行動中的裝備編輯器，為了方便編輯裝備的各種效果，我弄了一套完整的編輯介面能修改觸發條件、效果冷卻和特效之類的。
 
-第一次嘗試 
+{{< resources/image "operation-raven-equip-editor.jpg" >}}
 
-從山鴉的編輯器
+我當時還弄了一套能分割視窗範圍的函式庫，但即使如此建立在 IMGUI 的程式碼還是很難維護，還好當時完成後就沒有麼需要修改了。
 
-裝備編輯器 敵人編輯器
+這也只是各種嘗試開發的工具的其中一項而已，在接觸到 UI Toolkit 之後才發覺浪費了一堆時間在 IMGUI 上，不是說這套系統不好，而是它本身就不是為了開發複合工具使用的，所以才這樣。
 
+### 對比差異 +
 
+最後再做個簡單對比，比較 IMGUI 與 Visual 的優缺點與適用情況。
 
-總覺的浪費了大半輩子在 IMGUI 上
+**IMGUI**  
++ 容易學習，適合入門 Custom Editor
++ 簡單快速，一行一個元素，但難以開發複合功能的編輯工具
++ 適合用在簡單的自定義資料結構上，可以參考 [Optional Variables - Unity Tips](https://youtu.be/uZmWgQ7cLNI)
 
-### 對比 -
+**Visual Element**  
++ 排版難易度低，圖形界面與樣式表能顯著降低設計難度。
++ 易於擴展與維護，但系統複雜度略高，需要一點時間學習
++ 適合開發更複雜的編輯器，對建議自製工具有更高需求的人使用
 
-IMGUI  
-+ 簡單快速，一行一個元素，但難以擴展和維護
-+ 適合用在簡單的自訂工具，快速添加按鈕，
-
-Visual Element  
-+ 易於擴展與排版
-+ 建立複合功能編輯器視窗與自訂工具
-+ 如果只是要簡單的功能 就殺雞用牛刀了
 <!-- Optional https://youtu.be/uZmWgQ7cLNI -->
 
-官方也有對各種 UI 系統的對比文檔 [Comparison of UI systems in Unity](https://docs.unity3d.com/Manual/UI-system-compare.html) ，當中包括了使用對象的建議。
+官方也有對各種 UI 系統的對比文檔 [Comparison of UI systems in Unity](https://docs.unity3d.com/Manual/UI-system-compare.html)，當中包括了使用對象的建議。
 
 {{< resources/image "roles-and-skill-sets.jpg" >}}
-
-用 IMGUI 做複合工具真的要命
 
 <!-- https://docs.unity3d.com/Manual/UI-system-compare.html -->
 
 
-總之 希望能幫上各位
+總之，希望這篇筆記能幫各位更了解 UI Toolkit 這個方便的界面工具。
 
 {{< outpost/likecoin >}}
 
-### 參考
+### 參考資料
 //
 
 [Unity UI Elements - The Basics](https://youtu.be/EfEAr0meBho)
