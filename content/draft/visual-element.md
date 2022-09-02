@@ -28,8 +28,6 @@ resources: /learn/unity/editor-visual-element/
 
 <!--more-->
 
-<!-- TODO Query? -->
-
 ## 自訂工具 +-
 
 在使用 Unity 開發遊戲一段時間後，可能會開始有「自製工具」的需求，無論是更簡潔的自定義界面，還是集合式的資料編輯器，都能有效的輔助我們開發遊戲。而 Unity 引擎當然針對這些需求提供了幾項選擇給開發者，筆記的開頭就先帶過兩種工具開發的主要方法。
@@ -319,6 +317,17 @@ title.AddToClassList("align-center");
 
 <!-- https://docs.unity3d.com/Packages/com.unity.ui.builder@1.0/manual/index.html -->
 
+### 搜索元素 +-
+
+<!-- https://docs.unity3d.com/Manual/UIE-UQuery.html -->
+
+UI Toolkit 也有提供方便的元素搜索功能 - UQuery，能夠讓使用者透過名子或其他條件，在視覺樹中快速取得目標元素。透過函式 `Query<T>()` 即可搜索元素，泛型輸入指定元素類別。透過搜索的方式就不需要在函式之間傳遞元素，對於將排版和邏輯分離的架構有相當大的幫助。
+
+```cs
+UQueryBuilder<Label> labels = rootVisualElement.Query<Label>();
+labels.ForEach(n => n.text = "query loop");
+```
+
 ### 參考範例 +-
 
 最後，Unity 還有提供內建的範例模板供開發者參考，只需要透過 Window > UI Toolkit > Semples 開啟範例視窗就有所有元素的列表與程式碼可以參考。
@@ -327,19 +336,17 @@ title.AddToClassList("align-center");
 
 {{< resources/image "ui-toolkit-sample-a.jpg" >}}
 
-## 經驗總結 +
+## 經驗總結 +-
 
-第一次嘗試製作複合編輯器是在山鴉行動的專案中，為了方便編輯裝備的各種效果，我弄了一套完整的編輯介面能修改觸發條件、效果冷卻和特效之類的。
+第一次嘗試製作複合編輯器是在專案《山鴉行動》當中，為了方便編輯玩家裝備的效果，我製作出一套編輯面板能快速修改觸發條件、效果冷卻和特效之類的內容。
 
 {{< resources/image "operation-raven-equip-editor.jpg" >}}
 
-當時為了提高為維護性還弄出用於分割視窗範圍的函式庫，但即使如此建立在 IMGUI 的程式碼還是很難維護，還好當時完成後就沒有麼需要修改了。
+雖然這套系統的功能還算完善，但建立在 IMGUI 框架下的程式碼還是相當難維護，在這之後我嘗試開發的許多工具也都有相同的困擾。還好現在注意到 UI Toolkit 這套系統了，能夠以物件的方式繪製界面真的是很方便的事，相見恨晚阿。
 
-這也只是各種嘗試開發的工具的其中一項而已，在接觸到 UI Toolkit 之後才發覺浪費了一堆時間在 IMGUI 上，不是說這套系統不好，而是它本身就不是為了開發複合工具使用的，所以才這樣。
+### 對比差異 +-
 
-### 對比差異 +
-
-最後再做個簡單對比，比較 IMGUI 與 Visual 的優缺點與適用情況。
+當然，雖然以我現在的需求來看 UI Toolkit 是更好的系統，但也不代表 IMGUI 一無是處，它們有各自的優缺點，所以最後再做個簡單對比，列出 IMGUI 與 Visual 的優缺點與適用情況。
 
 **IMGUI**  
 + 容易學習，適合入門 Custom Editor
@@ -347,20 +354,19 @@ title.AddToClassList("align-center");
 + 適合用在簡單的自定義資料結構上，可以參考 [Optional Variables - Unity Tips](https://youtu.be/uZmWgQ7cLNI)
 
 **Visual Element**  
-+ 排版難易度低，圖形界面與樣式表能顯著降低設計難度。
++ 排版難易度低，圖形界面與樣式表能顯著降低設計難度
 + 易於擴展與維護，但系統複雜度略高，需要一點時間學習
 + 適合開發更複雜的編輯器，對建議自製工具有更高需求的人使用
 
 <!-- Optional https://youtu.be/uZmWgQ7cLNI -->
 
-官方也有對各種 UI 系統的對比文檔 [Comparison of UI systems in Unity](https://docs.unity3d.com/Manual/UI-system-compare.html)，當中包括了使用對象的建議。
+官方也有對各種 UI 系統的對比文檔 [Comparison of UI systems in Unity](https://docs.unity3d.com/Manual/UI-system-compare.html)，當中包括了使用對象的建議，可以根據內容評斷自己適合何者。
 
 {{< resources/image "roles-and-skill-sets.jpg" >}}
 
 <!-- https://docs.unity3d.com/Manual/UI-system-compare.html -->
 
-
-總之，希望這篇筆記能幫各位更了解 UI Toolkit 這個方便的界面工具。
+總之，希望這篇筆記能幫各位更了解 UI Toolkit 的各項重點，感謝各位的閱讀。
 
 {{< outpost/likecoin >}}
 
