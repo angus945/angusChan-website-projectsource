@@ -1,6 +1,6 @@
 ---
 title: "【筆記】視覺物件與工具開發"
-date: 
+date: 2022-09-03
 lastmod: 
 
 draft: true
@@ -24,21 +24,19 @@ resources: /learn/unity/editor-visual-element/
 # listable: [recommand, all]
 ---
 
-為了能用更高的效率開發自製工具，我接觸到了 Unity 的另一套介面系統 - UI Toolkit。它的架構與 `CustomEditor` 函式庫截然不同，能夠以「物件」的形式繪製與設計界面元素，大幅提高整體維護性與效率。這篇文章是 Unity 工具開發，視覺物件的學習筆記。
+為了能更高效的進行工具開發，我接觸到 Unity 引擎中的另一套介面系統 - UI Toolkit，它的架構與 `CustomEditor` 函式庫截然不同，能夠以「物件」的形式繪製與設計界面元素，大幅提高整體維護性與效率。這篇文章是如何使用 Unity Visual Element 的基礎筆記。
 
 <!--more-->
 
-## 自訂工具 +-
+## 自訂工具 ++
 
-在使用 Unity 開發遊戲一段時間後，可能會開始有「自製工具」的需求，無論是更簡潔的自定義界面，還是集合式的資料編輯器，都能有效的輔助我們開發遊戲。而 Unity 引擎當然針對這些需求提供了幾項選擇給開發者，筆記的開頭就先帶過兩種工具開發的主要方法。
+開發者們在使用 Unity 一段時間後可能會有「自製工具」的需求，無論是更簡潔的自定義界面，還是集合式的資料編輯器，都能有效的輔助我們開發遊戲。而 Unity 當然也針對這些需求提供了幾項選擇，筆記的開頭就先帶過兩種工具開發的主要方法。
 
-### 即時模式 +-
+### 即時模式 ++
 
-<!-- https://docs.unity3d.com/cn/current/Manual/GUIScriptingGuide.html -->
+說到自定義編輯器，開發者們最先接觸到的通常是命名空間 `UnityEditor` 底下的 `GUI` `Editor` `Layout` 系列函式，這是由一套用於工具開發的獨立系統，全稱為「即時模式 GUI」 (Immediate Mode GUI System)。
 
-說到自定義編輯器，Unity 開發者最先接觸到的通常是命名空間 `UnityEditor` 底下的 `GUI` `Editor` `Layout` 系列函式，這是由一套作為開發工具使用的獨立系統，全稱為「即時模式 GUI」 (Immediate Mode GUI System)。
-
-名稱中的「即時」直接解釋了這套系統的特性，因為他是以「一行命令，一個元素」的模式運行的。假設我希望在編輯視窗中添加按鈕，只需要在 `OnGUI()` 函式中調用 `GUILayout.Button()` 即可。
+名稱中的「即時」直接解釋了這套系統的特性，因為他是以「一行命令，一個元素」的模式運行的。假設我希望在編輯視窗中添加按鈕，只需要在 `OnGUI()` 函式中調用 `GUILayout.Button()` 即可，當函式被執行時界面就會自動產生出對應元素。
 
 ```cs
 void OnGUI()
@@ -52,11 +50,11 @@ void OnGUI()
 
 {{< resources/image "summary-imgui.jpg" "100%" >}}
 
-除了按鈕以外還有各種界面元素，包括整數輸入、浮點滑桿、文字匡與下拉選單等，都能用一行命令完成繪製，是相當便捷且容易學習的系統。
+除了按鈕以外還有各種元素，包括整數輸入、浮點滑桿、文字匡與下拉選單等，都能用一行命令完成，是相當便捷且容易學習的系統。
 
-而他的缺點也十分明顯，由於這種逐行執行命令的模式更傾向於「程序導向」(procedure-oriented) 而非「物件導向」 (object-oriented)，導致使用 IMGUI 開發的工具都相當難維護、重用與擴展。
+而他的缺點也十分明顯，由於這種線性執行命令的模式更傾向於「程序導向」(procedure-oriented) 而非「物件導向」 (object-oriented)，導致使用 IMGUI 開發的工具都相當難維護、重用與擴展。
 
-除此之外，在 IMGUI 中進行排版更是一大惡夢，若不使用自動排版就得手動計算每個元素的 Rect，導致程式碼變得冗長又難讀，嘗試使用過 IMGUI 開發複雜工具的人應該會很有感觸。
+除此之外，在 IMGUI 中進行排版更是一大惡夢，若不使用自動排版命令就得手動計算每個元素的 Rect，導致程式碼變得冗長又難讀，嘗試使用過 IMGUI 開發複雜工具的人應該會很有感觸。
 
 ```cs
 Rect buttonRect = new Rect(10, 10, 50, 20);
@@ -77,13 +75,13 @@ input = EditorGUI.IntField(inputRect, input);
 註：如果學過網頁前端的話，大概像只靠標籤屬性的絕對位置與長寬雕刻整個界面，不是不行，但沒人會想這樣做。
 </c></p>
 
-### 視覺物件 +-
+### 視覺物件 ++
 
-為了應對 IMGUI 的各項缺點，Unity 提供了另一套更完善的介面工具 - [UI Toolkit](https://docs.unity3d.com/Manual/UIElements.html)。與線性的 IMGUI 不同，UI Toolket 會透過不同「視覺物件」(Visual Element) 建立出樹狀的界面結構「視覺樹」(Visual Tree)。
+為了應對 IMGUI 的各項缺點，Unity 提供了另一套更完善的介面工具 - [UI Toolkit](https://docs.unity3d.com/Manual/UIElements.html)。與線性的 IMGUI 不同，UI Toolket 會透過不同「視覺物件」(Visual Element) 建立出樹狀的界面結構「視覺樹」(Visual Tree)，透過一個個獨立物件的形式構建出整個界面。
 
 {{< resources/image "summary-visualtree.jpg" "80%" "引用自 Unity 文檔示意圖" >}}
 
-視覺物件的函式庫在命名空間 `UnityEngine.UIElements` 與 `UnityEditor.UIElements` 底下，如果要建立新的元素，只要透過建構函式建立繼承自 `class VisualElement` 的物件，並添加至編輯器的 `rootVisualElement` 即可。
+視覺物件的函式在命名空間 `UnityEngine.UIElements` 與 `UnityEditor.UIElements` 底下，如果要建立新的元素，只要透過建構函式建立繼承自 `VisualElement` 的物件，並添加至編輯器的 `rootVisualElement` 即可。
 
 ```cs
 Label label = new Label("Label Element");
@@ -95,7 +93,7 @@ rootVisualElement.Add(button);
 
 {{< resources/image "summary-visualelement.jpg" >}}
 
-由於視覺物件是以「物件」的形式存在的，因此只要添加一次後就會自動繪製，直至使用者將其移除。而它的好處也相當明顯，由於物件能將屬性封裝在其中，使其維護性大大提昇，樹狀的結構也能在一定程度上讓子元素繼承屬性，利用「容器」的性質進行排版，省去繁瑣的調整工作。
+視覺物件是以「物件」的形式存在的，因此只要添加一次就能自動繪製，直至使用者將其移除。而它的好處也相當明顯，由於物件能將屬性封裝在其中，使其維護性大大提昇，樹狀的結構也能在一定程度上讓子元素繼承屬性，利用「容器」的性質進行排版，省去繁瑣的調整工作。
 
 ```cs
 VisualElement container = new VisualElement();
@@ -109,33 +107,25 @@ container.Add(label);
 
 除此之外還能透過繼承、泛型等方法提昇擴展與重用性，因此與 IMGUI 相比，視覺物件還是更適合用於複合型的工具開發。
 
-<p><c>
-註：我也是寫這篇筆記的過程才意識到 IMGUI 是程序導向，畢竟物件導向真的太「理所當然」了，都忘記之前也是先從程序導向開始學的。
-</p></c>
+## 建立視窗 ++
 
-<!-- https://docs.unity3d.com/Manual/UIE-VisualTree.html -->
-
-## 建立視窗 +-
-
-CustomEditor 有許多資源可以參考了，因此這篇筆記會把重點放在更冷門的視覺物件上，接著就逐步解析視覺物件的各項重點。
-
-首先建立一個編輯器視窗，可以透過資料夾右鍵 > Create > UI Toolkit > Editor Window 生成預設的範例界面，或是自行建立腳本後讓類別繼承 `EditorWindow`。
+CustomEditor 的已經有相當充足的學習資源了，因此這篇筆記會把重點放在更冷門的視覺物件上，逐步解析各項使用重點。首先，建立一個編輯器視窗，可以透過資料夾右鍵 > Create > UI Toolkit > Editor Window 生成預設的範例界面，或是自行建立腳本後讓類別繼承 `EditorWindow`。
 
 {{< resources/image "create-window.jpg" "80%" >}}
 
 {{< resources/image "create-window-panel.jpg" >}}
 
 <p><c>
-註：UXML 是用於進階的界面開發，後面會稍微帶過，這篇筆記不會對其進行深入。
+註：UXML 可以用於進階的界面開發，但超出筆記的範圍所以只在後面帶過。
 </c></p>
 
-生成完畢後資料夾就會出現預設的腳本，他的界面看起來會像這樣。筆記會從頭講過一次，自行研究後可以刪除預設腳本的內容。
+生成完畢後就會有預設的腳本和視窗出現，看起來會像這樣。筆記會從頭講過一次，自行研究後可以刪除預設腳本的內容。
 
 {{< resources/image "default-window.jpg" >}}
 
-### 添加元素 +-
+### 添加元素 ++
 
-由於視覺物件是「物件」，所以需要先透過建構函式實例化才能對其進行操作。`CreateGUI()` 函式會在視窗「準備好」的時候調用，是比較適當的元素建立時機，但實際上可以在任何時候產生視覺物件。
+由於視覺物件是「物件」，所以需要透過實例化建立才能進行操作。`CreateGUI()` 函式會在視窗「準備好」的時候調用，是比較適當的元素建立時機，但實際上可以在任何時候產生視覺物件。
 
 ```cs
 public void CreateGUI()
@@ -144,7 +134,7 @@ public void CreateGUI()
 }
 ```
 
-視覺物件使用的是名為視覺樹 (Visual Tree) 的層次結構，而 `rootVisualElement` 指的是結構的最根部，也就是「視窗」本身。若想讓元素繪製在視窗界面上，就需要將其添加至 `rootVisualElement` 當中。
+視覺物件使用名為視覺樹 (Visual Tree) 的層次結構，而 `rootVisualElement` 指的是結構的最根部，也就是「視窗」本身。若想讓元素繪製在視窗上就需要將它添加進 `rootVisualElement` 當中，只要透過 `Add()` 函式進行即可。
 
 ```cs
 public void CreateGUI()
@@ -157,10 +147,10 @@ public void CreateGUI()
 
 {{< resources/image "add-label.jpg" >}}
 
-只要是繼承自 `VisualElement` 的物件都能用相同的方法建立與繪製，包括一般界面的 `Label`, `Button`, `Image`, `Toggle`，與編輯器界面的 `IntegerField`, `ObjectField` 等等。
+只要是繼承自 `VisualElement` 的物件都能用相同的方法建立，包括一般界面的 `Label`, `Button`, `Image`, `Toggle`，與編輯器界面的 `IntegerField`, `ObjectField` 等等。
 
 
-除此之外，樹狀結構的特性也允許視覺物件也嵌套，可以透過 `new VisualElement()` 建立空的物件作為容器，利用嵌套的方式包裝其他視覺物件。
+除此之外，樹狀結構的特性也允許進行物件嵌套。可以透過 `new VisualElement()` 建立空的物件作為容器，利用嵌套的方式包裝多個物件在其中。
 
 ```cs
 VisualElement container = new VisualElement();
@@ -171,11 +161,13 @@ container.Add(new Toggle());
 rootVisualElement.Add(container);
 ```
 
+目前為止的效果與 IMGUI 相同，但這只是最基本的使用方法而已。
+
 <p><h>
-注意：筆記後面範例將省略 `rootVisualElement.Add()` 的步驟，請自行添加。
+注意：筆記後面範例將省略 rootVisualElement.Add() 的步驟，請自行添加。
 </h></P>
 
-### 監聽事件 +-
+### 監聽事件 ++
 
 事件監聽，或者說「觀察者模式」(Observer Pattern) 是物件導向中最重要的模式之一，它能夠大幅降低程式碼耦合，用單向連接的方式提高維護性。而視覺物件當然也有相關功能可以使用，只要調用 `RegisterCallback<T>()` 函式進行註冊即可。
 
@@ -187,13 +179,13 @@ button.RegisterCallback<MouseMoveEvent>((MouseMoveEvent e) =>
 });
 ```
 
-任何 `EventBase` 下的事件類別都能進行監聽，包括 `MouseMoveEvent`, `MouseDownEvent` 等常用事件，當事件被觸發時也會回傳對應的參數進註冊函式。
+任何 `EventBase` 下的事件類別都能進行監聽，包括 `MouseMoveEvent`, `MouseDownEvent` 等常用事件，事件被觸發時便會將相對應的參數進函式中。
 
 <p><c>
 註：用泛型註冊事件的方法我還是第一次看到，有點意思。
 </c></p>
 
-而具有輸入性質的元素也有相對應的事件監聽，可以透過函式 `RegisterValueChangedCallback()` 進行註冊，當參數發生變動時便會自動觸發。
+而具有輸入性質的元素也有對應的監聽方法，可以透過函式 `RegisterValueChangedCallback()` 進行註冊，當參數發生變動時便會觸發。
 
 ```cs
 ObjectField objectField = new ObjectField();
@@ -205,9 +197,9 @@ objectField.RegisterValueChangedCallback((ChangeEvent<UnityEngine.Object> e) =>
 });
 ```
 
-### 擴展元素 +-
+### 擴展元素 ++
 
-如果想設計自己的元素進行重用，也只需要繼承 `VisualElement` 即可。假設我需要一個帶有按鈕的物件輸入匡，只要繼承 `ObjectField` 然後添加生成按鈕的功能即可。
+如果想設計自己的元素進行重用，只需要繼承 `VisualElement` 即可。假設我想要一個帶有按鈕的物件輸入匡，只要繼承 `ObjectField` 後添加生成按鈕的功能即可。
 
 ```cs
 public class ObjectFieldWidthButton : ObjectField
@@ -233,27 +225,13 @@ fieldWidthButton.AddButton("Button B", () => Debug.Log("ButtonB Clicked"));
 
 {{< resources/image "field-width-Button.jpg" >}}
 
-<!-- 因為這些需求太客製化了，所以只能用簡單的範例，不過其他的任何自訂元素都是用同樣的原理， -->
+### 排版樣式 ++
 
-### 排版樣式 +-
+排版也是自製工具中重要的一環，好的界面能快速有效的呈現訊息，並對使用者操作做出回饋，而 UI Toolkit 大致有三種方法可以選擇。
 
-排版也是自製工具中重要的一環，好的界面能快速有效的呈現訊息，並對使用者操作做出回饋，而在視覺物件中大致有三種排版方法可以選擇。
+**_程式碼指定_**
 
-**程式指定**
-
-透過程式直接指定 `visualElement.style` 中的參數，基本的樣式表屬性 (style sheet) 都能在這邊指定，包括元素長寬、顏色與對齊方法等。而樣式屬性也能一定程度的對子元素進行排版，例如改變 `FlexDirection` 讓子元素用並排的方式排列。
-
-
-<!-- ```cs
-Label title = new Label("Tittle");
-title.style.color = Color.red;
-title.style.fontSize = 30;
-title.style.alignSelf = Align.Center;
-```
-
-{{< resources/image "sytle-code-title.jpg" >}} -->
-
-<!-- TODO Fix example -->
+透過程式直接指定 `visualElement.style` 中的參數，基本的樣式表屬性 (style sheet) 都能在這邊指定，包括元素長寬、顏色與對齊方法等。而這些屬性也能一定程度的影響子元素，例如改變 `FlexDirection` 讓就能讓子原素並排。
 
 ```cs
 VisualElement container = new VisualElement();
@@ -267,13 +245,14 @@ container.Add(new Label("Label D"));
 
 {{< resources/image "style-code-flex.jpg" >}}
 
-程式指定是最較簡單的排版方法，但許多細節調整還是沒那麼方便。
+程式指定是最較簡單的排版方法，但相對有許多細節沒那麼好調整。
 
-**樣式表指定**
+**_樣式表指定_**
 
-第二種方式是透過 Unity 提供的樣式文件 Unity Style Sheet (USS) 進行編輯，使用上與網頁的階層式樣式表 (CSS) 相似，能夠透過 selector 指定特定元素或用 class 包裝樣式的參數，修改元素的大小、排列、顏色等樣式屬性。
+第二種方式是透過 Unity 提供的樣式文件 Unity Style Sheet (USS) 進行編輯，使用上與網頁的階層式樣式表 (CSS) 相似，能夠透過 selector 指定元素或用 class 包裝樣式的參數，修改元素的大小、排列、顏色等樣式屬性。
 
 ```css
+//uss
 Label 
 {
     font-size: 20px;
@@ -286,7 +265,7 @@ Label
 }
 ```
 
-文件可以透過 `AssetDatabase` 系列的函式載入，而添加至視覺物件的樣式列表後就有效果了，selector 會自動分配屬性參數，也可以透過 `AddToClassList()` 函式指定樣式 class。樣式表資料也會往子元素傳遞。
+只要透過 `AssetDatabase` 系列函式載入文件並添加至物件的樣式列就有效果了，selector 會自動分配屬性參數，也可以透過 `AddToClassList()` 函式指定樣式 class。樣式表資料也會往子元素傳遞。
 
 ```cs
 StyleSheet styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Editor/UIToolkitWindow.uss");
@@ -298,28 +277,20 @@ title.AddToClassList("align-center");
 
 {{< resources/image "style-sheed.jpg" >}}
 
-透過 USS 文件編輯能更有效的架構與重用屬性，除了有更大的彈性以外也比寫在程式碼中好維護，更多細節可以參考官方文檔 [Style UI with USS](https://docs.unity3d.com/Manual/UIE-USS.html)。
+透過 USS 文件編輯能更有效的架構與重用屬性，除了彈性大以外也不需要重複編譯程序，更多細節可以參考官方文檔 [Style UI with USS](https://docs.unity3d.com/Manual/UIE-USS.html)。
 
-<!-- https://docs.unity3d.com/Manual/UIE-USS.html -->
+**_視覺化排版_**
 
-<!-- 參考  [Unity Style Sheets - The Basics](https://www.youtube.com/watch?v=c3sSyoiekz4)   -->
-<!-- https://www.youtube.com/watch?v=c3sSyoiekz4 -->
-
-**視覺化排版**
-
-最後也是最強大的功能便是圖像化界面編輯器 - UI Builder。透過 Window > UI Toolkit > UI Builder 可以開啟編輯視窗。2019.4 與 2020 版本需要透過 Packge Manager 導入，而在 2021 版開始之後為內置工具，不需要而外動作即可使用。
+最強大的排版工具是圖形編輯器 - UI Builder。透過 Window > UI Toolkit > UI Builder 可以開啟編輯視窗。2019.4 與 2020 版本需要透過 Packge Manager 導入，而在 2021 版開始之後為內置工具，不需要而外動作即可使用。
 
 {{< resources/image "style-builder.jpg" "80%" "圖片引用自 Unity 教學文檔" >}}
 
-點擊與拖曳即可添加元素、調整版面，所見即所得的開發工具能顯著提高設計與開發效率，還能透過 UXML (Unity XML, Unity Extensible Markup Language ) 擴展標籤，讓使用者製作的自訂義元素也能透過 UI Builder 編輯。
+點擊與拖曳即可添加元素、調整版面，所見即所得的工具能顯著提高設計與開發效率，還能透過 UXML (Unity XML, Unity Extensible Markup Language ) 擴展標籤，讓使用者在 UI Builder 中使用自訂義元素。
 
-更多細節請參考官方教學文檔 [Unity UI Builder](https://docs.unity3d.com/Packages/com.unity.ui.builder@1.0/manual/index.html)，這裡一樣點到為止。
+更多細節請參考官方教學文檔 [Unity UI Builder](https://docs.unity3d.com/Packages/com.unity.ui.builder@1.0/manual/index.html)，筆記這裡一樣點到為止。
 
-<!-- https://docs.unity3d.com/Packages/com.unity.ui.builder@1.0/manual/index.html -->
 
-### 搜索元素 +-
-
-<!-- https://docs.unity3d.com/Manual/UIE-UQuery.html -->
+### 搜索元素 ++
 
 UI Toolkit 也有提供方便的元素搜索功能 - UQuery，能夠讓使用者透過名子或其他條件，在視覺樹中快速取得目標元素。透過函式 `Query<T>()` 即可搜索元素，泛型輸入指定元素類別。透過搜索的方式就不需要在函式之間傳遞元素，對於將排版和邏輯分離的架構有相當大的幫助。
 
@@ -328,25 +299,25 @@ UQueryBuilder<Label> labels = rootVisualElement.Query<Label>();
 labels.ForEach(n => n.text = "query loop");
 ```
 
-### 參考範例 +-
+### 參考範例 ++
 
-最後，Unity 還有提供內建的範例模板供開發者參考，只需要透過 Window > UI Toolkit > Semples 開啟範例視窗就有所有元素的列表與程式碼可以參考。
+最後，Unity 還有提供內建的範例模板供開發者參考，只需要透過 Window > UI Toolkit > Semples 開啟範例視窗就有所有元素的列表與程式碼可以參考。如果需要尋找特定元素，或是範例程式碼的話都可以翻翻看列表。
 
 {{< resources/image "ui-toolkit-sample-b.jpg" >}}
 
 {{< resources/image "ui-toolkit-sample-a.jpg" >}}
 
-## 經驗總結 +-
+## 經驗總結 ++
 
-第一次嘗試製作複合編輯器是在專案《山鴉行動》當中，為了方便編輯玩家裝備的效果，我製作出一套編輯面板能快速修改觸發條件、效果冷卻和特效之類的內容。
+我第一次製作複合編輯器是在專案《山鴉行動》當中，為了方便編輯玩家裝備的效果，我製作出一套編輯面板能快速修改觸發條件、效果冷卻和特效之類的內容。
 
 {{< resources/image "operation-raven-equip-editor.jpg" >}}
 
 雖然這套系統的功能還算完善，但建立在 IMGUI 框架下的程式碼還是相當難維護，在這之後我嘗試開發的許多工具也都有相同的困擾。還好現在注意到 UI Toolkit 這套系統了，能夠以物件的方式繪製界面真的是很方便的事，相見恨晚阿。
 
-### 對比差異 +-
+### 對比差異 ++
 
-當然，雖然以我現在的需求來看 UI Toolkit 是更好的系統，但也不代表 IMGUI 一無是處，它們有各自的優缺點，所以最後再做個簡單對比，列出 IMGUI 與 Visual 的優缺點與適用情況。
+當然，雖然以現在的需求來看 UI Toolkit 是更好的系統，但也不代表 IMGUI 一無是處，它們有各自的優缺點，所以最後再做個簡單對比，列出 IMGUI 與 Visual 的優缺點與適用情況。
 
 **IMGUI**  
 + 容易學習，適合入門 Custom Editor
@@ -356,27 +327,40 @@ labels.ForEach(n => n.text = "query loop");
 **Visual Element**  
 + 排版難易度低，圖形界面與樣式表能顯著降低設計難度
 + 易於擴展與維護，但系統複雜度略高，需要一點時間學習
-+ 適合開發更複雜的編輯器，對建議自製工具有更高需求的人使用
++ 適合開發更複雜的編輯器，建議對自製工具有更高需求的人使用
 
-<!-- Optional https://youtu.be/uZmWgQ7cLNI -->
 
-官方也有對各種 UI 系統的對比文檔 [Comparison of UI systems in Unity](https://docs.unity3d.com/Manual/UI-system-compare.html)，當中包括了使用對象的建議，可以根據內容評斷自己適合何者。
+官方也有各種 UI 系統的對比文檔 [Comparison of UI systems in Unity](https://docs.unity3d.com/Manual/UI-system-compare.html)，當中包括了使用對象的建議，可以根據內容評斷自己適合何者。
 
 {{< resources/image "roles-and-skill-sets.jpg" >}}
-
-<!-- https://docs.unity3d.com/Manual/UI-system-compare.html -->
 
 總之，希望這篇筆記能幫各位更了解 UI Toolkit 的各項重點，感謝各位的閱讀。
 
 {{< outpost/likecoin >}}
 
-### 參考資料
-//
+### 參考資料 ++
+
+[Immediate Mode GUI (IMGUI)](https://docs.unity3d.com/2021.3/Documentation/Manual/GUIScriptingGuide.html)
+
+[The Visual Tree](https://docs.unity3d.com/Manual/UIE-VisualTree.html)
 
 [Unity UI Elements - The Basics](https://youtu.be/EfEAr0meBho)
-https://docs.unity3d.com/Packages/com.unity.ui@1.0/api/UnityEngine.UIElements.html
-https://docs.unity3d.com/Packages/com.unity.ui@1.0/api/UnityEditor.UIElements.html
-https://docs.unity3d.com/Manual/UI-system-compare.html
 
-https://youtu.be/c3sSyoiekz4?list=PL0yxB6cCkoWImQ8wa74V913mqlK_KTy3I
+[UnityEngine.UIElements](https://docs.unity3d.com/Packages/com.unity.ui@1.0/api/UnityEngine.UIElements.html)
+
+[UnityEditor.UIElements](https://docs.unity3d.com/Packages/com.unity.ui@1.0/api/UnityEditor.UIElements.html)
+
+[Style UI with USS](https://docs.unity3d.com/Manual/UIE-USS.html)
+
+[Unity Style Sheets - The Basics](https://www.youtube.com/watch?v=c3sSyoiekz4)  
+
+[UI Builder](https://docs.unity3d.com/Packages/com.unity.ui.builder@1.0/manual/index.html)
+
+[UQuery](https://docs.unity3d.com/Manual/UIE-UQuery.html)
+
+[Optional Variables - Unity Tips 2020.1](https://youtu.be/uZmWgQ7cLNI)
+
+[Comparison of UI systems in Unity](https://docs.unity3d.com/Manual/UI-system-compare.html)
+
+
 
