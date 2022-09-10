@@ -6,7 +6,7 @@ lastmod: 2022-09-09T08:42:11+08:00
 draft: true
 
 description:
-tags: []
+tags: [unity, dataDriven]
 
 ## image for preview
 # feature: 
@@ -15,13 +15,13 @@ tags: []
 # og: "/post/about-learning/featured.jpg"
 
 ## when calling "resources" shortcode, well link to static folder with this path 
-# resources: /devlog/unity/text-processing/
+resources: /devlog/unity/text-processing/
 
 ## customize page background
 # background: [watercolor-A] 
 
 ## listout with recommand, new and all pages
-# listable: [recommand, all]
+listable: [recommand, all]
 ---
 
 開發了一套文字（文本）資料處理系統，能從 Google Sheet 下載文件並解析的自動化系統。並實做出一鍵下載、解析並生成本地化文件的文本更新系統，分享一下。 學習日誌
@@ -156,13 +156,58 @@ public IEnumerator ParsingRoutine()
 
 如果把本地化文件的解析和生成寫進去會不好維護 而且也不好重用
 
-於是考慮後 我把流程拆成三個獨立步驟，
+於是考慮後 我決定做一套更通用的文件處理系統，把原本的資料讀取拆成多個步驟完成
 
-文本處裡系統
+### 系統框架
 
-下載
-解析
-寫入
+透過抽象類別建立框架，建立出資料處裡的接口，接收原始資料並在處理完畢後回傳。由於處裡過程可能是非同步的，所以使用 Ienumerator 與 CallBack 作為函式
+
+```cs
+public abstract class TextProcessNode : ScriptableObject
+{
+    public abstract IEnumerator ProcessingRoutine(ProcessingData[] input, Action<ProcessingData[]> onFinishedCallback);
+}
+```
+
+透過多個處理節點，一步一步從原始資料加工
+
+```cs
+public class DataProcessList : ScriptableObject
+{
+    [SerializeField] TextProcessNode[] processNodes;
+
+    public IEnumerator ParsingRoutine(Action<ProcessingData[]> onFinishedCallback)
+    {
+        ProcessingData[] parsingDatas = new ProcessingData[0];
+
+        for (int i = 0; i < processNodes.Length; i++)
+        {
+            yield return processNodes[i].ProcessingRoutine(parsingDatas, (datas) =>
+            {
+                parsingDatas = datas;
+            });
+        }
+
+        onFinishedCallback?.Invoke(parsingDatas);
+    }
+}
+```
+
+### 資料下載
+
+一樣是 GAS 的資料下載，不過這次只會下載標準 json 後就直接傳出
+
+{{< resources/image "node-gas-access.jpg" >}}
+
+### 文本解析
+
+{{< resources/image "node-localization.jpg" >}}
+
+### 文本生成
+
+寫入資料
+
+{{< resources/image "node-file-write.jpg" >}}
 
 ### 多語言
 
