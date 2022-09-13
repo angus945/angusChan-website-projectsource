@@ -36,9 +36,9 @@ listable: [recommand, all]
 
 這篇不是筆記 所以會省略一些實做和技術細節 參考資料都會補充在底部 有興趣的可以自行深入
 
-### GAS 
+### GAS -
 
-查詢了不少檔案轉換的資料，基本上所有的資料都指向 Google Apps Script 這套外掛系統
+查詢了不少檔案轉換的資料，基本上所有的資料都指向 Google Apps Script 這套外掛系統。
 
 <!-- https://www.google.com/search?client=firefox-b-d&q=google+excel+to+json -->
 
@@ -46,15 +46,11 @@ listable: [recommand, all]
 
 {{< resources/image "apps-script.jpg" >}}
 
-這是一套能編寫腳本並在 Google Sheet 上運行的外掛，能讓使用者對試算表進行讀取寫入或是添加擴充功能
+這是一套能編寫腳本並在 Google Sheet 上運行的系統，能讓使用者對試算表進行讀取、寫入或是添加工具列功能功能。
 
-這些都是其次 竟然能從 Unity 直接連結 Google Sheet
-
-文章有時會省略基本內容 完全沒有基礎的人建議從影片開始 因此我也先跟著這部教學 學了基本的部份
+除此之外，GAS 還能將函式接口發佈到網路上，讓 Unity 腳本調用進行資料傳輸。我參考這部影片進行學習，了解基本內容之後就依樣畫葫蘆，寫了一套讀取文本並打包成 json 的腳本
 
 {{< youtube SfRXsiuzbCI >}}
-
-了解基本內容之後就依樣畫葫蘆，寫了一套讀取文本並打包成 json 的腳本
 
 ```ts
 function getJson(id, name)
@@ -88,17 +84,15 @@ function getJson(id, name)
 }
 ```
 
-運行後會得到 標準的 Json 陣列資料（不過沒有換行，這是為了文章刻意改的）
+當函式運行後會得到標準的 Json 陣列資料（不過沒有換行，這是為了文章刻意改的）
 
 {{< resources/image "standard-json.jpg" >}}
 
-### 下載文件
+### 下載文件 -
 
-我很愛拿 ScriptableObject 當作令牌化的（Token）輔助工具用，所以我也根據需求把 GAS 下載弄成這樣
+我很愛拿 ScriptableObject 製作輔助工具，它存在於資料夾的特性以及自定義編輯器的擴展性， 所以我也根據需求把 GAS 下載弄成令牌。
 
-建立出 Token 後，輸入 Excel ID，分頁（註1）索引，以及文件寫入的本地位置
-
-因為資料下載是非同步的，所以需要使用 Coroutine 執行
+建立出 Token 後，輸入 Excel ID，分頁（註1）索引，以及文件寫入的本地位置就能下載了。因為資料下載是非同步的，所以需要使用 Coroutine 執行。
 
 ```cs
 public IEnumerator ParsingRoutine()
@@ -126,13 +120,13 @@ public IEnumerator ParsingRoutine()
 }
 ```
 
-透過編輯器腳本（註2）一鍵執行 如此一來 就能直接在 Unity 下載文件了 只需要事先建立好訪問令牌
+透過編輯器腳本（註2）一鍵執行 如此一來 就能直接在 Unity 下載文件了。只需要事先建立好訪問令牌，之後文件更改時只要按個按鈕就能更新資料。
 
 {{< resources/image "gas-access-token.jpg" >}}
 
 {{< resources/image "gas-access-token-write.jpg" >}}
 
-只能一下載一個分頁太不方便了，所以也製作了批次下載的令牌
+只能一下載一個分頁太不方便了，所以也製作了批次下載的令牌。
 
 {{< resources/image "gas-access-collection.jpg" >}}
 
@@ -144,11 +138,9 @@ public IEnumerator ParsingRoutine()
 
 ## 系統重構
 
-下載功能達成了 但還有本地化文件生成的需求
+下載功能達成了，但還有本地化文件生成的需求。我希望將不同語言的內容分割進不同資料夾中， 而不是全部擠在同一份文件裏（註3）。
 
-我希望將不同語言的內容分割進不同資料夾中 而不是全部擠在同一份文件（註3）
-
-如果把本地化文件的解析和生成寫進去會不好維護 而且也不好重用
+如果把本地化文件的解析和生成寫進去會不好維護 而且也不好重用，
 
 於是考慮後 我決定做一套更通用的文件處理系統，把原本的資料讀取拆成多個步驟完成
 
