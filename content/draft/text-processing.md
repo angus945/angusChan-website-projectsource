@@ -136,13 +136,15 @@ public IEnumerator ParsingRoutine()
 
 註2：正常情況下編輯器是無法執行 Coroutine 的，我使用了 `Unity.EditorCoroutines.Editor` 擴充函式庫。
 
-## 系統重構
+## 系統重構 -
 
 下載功能達成了，但還有本地化文件生成的需求。我希望將不同語言的內容分割進不同資料夾中， 而不是全部擠在同一份文件裏（註3）。
 
 如果把本地化文件的解析和生成寫進去會不好維護 而且也不好重用，於是考慮後 我決定做一套更通用的文件處理系統，把原本的資料讀取拆成多個步驟完成
 
 ### 系統框架 -
+
+使用處理節點的概念，用不同的節點組合出
 
 透過抽象類別建立框架，建立出資料處裡的接口，接收原始資料並在處理完畢後回傳。由於處裡過程可能是非同步的，所以使用 Ienumerator 與 CallBack 作為抽像函式的框架。
 
@@ -177,7 +179,7 @@ public class DataProcessList : ScriptableObject
 }
 ```
 
-### 資料下載
+### 資料下載 -
 
 一樣是 GAS 的資料下載，不過這次只會下載標準 json 後就直接傳出
 
@@ -185,21 +187,27 @@ public class DataProcessList : ScriptableObject
 
 ### 文本解析
 
+根據傳入的資訊，分割出表格標題與內容，並產生出不同語言的多國字表檔案輸出。
+
 {{< resources/image "node-localization.jpg" >}}
 
-### 文本生成
+### 文本生成 -
 
-寫入資料
+最後，只要使用 IO 將文本寫入資料夾，就完成多語言檔案的生成了。
 
 {{< resources/image "node-file-write.jpg" >}}
-
-### 多語言
 
 {{< resources/image "progess-list.jpg" >}}
 
 {{< resources/image "localization-files.jpg" >}}
 
 註3：為了方便外部擴充，我放在不加密的 StreamingAssets，原理和多語言 mod 相同
+
+## 感謝閱讀
+
+只是一個簡單的學習日誌，分享
+
+### 參考資料
 
 <!-- https://www.youtube.com/watch?v=SfRXsiuzbCI -->
 
