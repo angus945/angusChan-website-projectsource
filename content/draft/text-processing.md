@@ -1,5 +1,5 @@
 ---
-title: "【日誌】文字、文本自動化處理"
+title: "【日誌】文本、資料自動化處理"
 date: 2022-09-09T08:42:11+08:00
 lastmod: 2022-09-09T08:42:11+08:00
 
@@ -24,21 +24,32 @@ resources: /devlog/unity/text-processing/
 listable: [recommand, all]
 ---
 
-開發了一套文字（文本）資料處理系統，能從 Google Sheet 下載文件並解析的自動化系統。並實做出一鍵下載、解析並生成本地化文件的文本更新系統，分享一下。 學習日誌
+分享一下自己研究的資料處理系統，能在 Unity 中一鍵下載 Google 試算表資料並解析、生成多語言文件。
 
 <!--more-->
 
 ## 需求判斷 -
 
-因為山鴉專案需要有更有效率的文本管理，雖然曾經做過多語言本地化的系統，使用效果不盡人意，加上想深入研究資料驅動，所以我打算重新研究一次。
+為了讓山鴉專案更有效的管理文本，
 
-專案的多語言文本是寫在 Google 試算表 (Google Sheet) 上的，雖然直接導出 xlsx 使用，但我覺得不夠方便，所以尋找了一些自訂輸出方法的資料參考。
+又研究了新的多語言系統，
+
+
+，雖然曾經做過多語言本地化的系統，使用效果不盡人意，加上想深入研究資料驅動，所以我打算重新研究一次。
+
+專案的多語言文本是寫在 Google 試算表上的，
+
+雖然直接導出 xlsx 使用，
+
+但我覺得不夠方便，
+
+所以尋找了一些自訂輸出方法的資料參考。
 
 這篇不是筆記 所以會省略一些實做和技術細節 參考資料都會補充在底部 有興趣的可以自行深入
 
-### GAS -
+### 外掛系統 +
 
-查詢了不少檔案轉換的資料，基本上所有的資料都指向 Google Apps Script 這套外掛系統。
+我查了不少檔案轉換的資料，基本上所有方向都指引我找到 Google Apps Script 這套外掛系統。
 
 <!-- https://www.google.com/search?client=firefox-b-d&q=google+excel+to+json -->
 
@@ -46,101 +57,33 @@ listable: [recommand, all]
 
 {{< resources/image "apps-script.jpg" >}}
 
-這是一套能編寫腳本並在 Google Sheet 上運行的系統，能讓使用者對試算表進行讀取、寫入或是添加工具列功能功能。
+這是一套能編寫腳本並在 Google Sheet 上運行的系統，能讓使用者讀取、寫入試算表資料或添加工具列功能，更重要的是 GAS 還能將函式接口發佈到網路上，讓 Unity 腳本調用。
 
-除此之外，GAS 還能將函式接口發佈到網路上，讓 Unity 腳本調用進行資料傳輸。我參考這部影片進行學習，了解基本內容之後就依樣畫葫蘆，寫了一套讀取文本並打包成 json 的腳本
-
-{{< youtube SfRXsiuzbCI >}}
-
-```ts
-function getJson(id, name)
-{
-  var app = SpreadsheetApp.openById(id);
-  var sheet = app.getSheetByName(name);
-
-  var datas = sheet.getDataRange();
-
-  var table = "";
-  var headers = datas.getValues()[0];
-  // Logger.log(headers);    
-  for(var row = 1; row < datas.getNumRows(); row++)
-  {
-    var items = datas.getValues()[row];
-    var fields = "";
-
-    for(var column = 0; column < datas.getNumColumns(); column++)
-    {
-      if(column > 0) fields += ",";
-      fields += `"${headers[column]}":"${items[column]}"`;
-    }
-
-    if(row > 1) table += ",";
-    table += `{${fields}}`;
-  }
-
-  // Logger.log(table);
-
-  return `[${table}]`;
-}
-```
-
-當函式運行後會得到標準的 Json 陣列資料（不過沒有換行，這是為了文章刻意改的）
+總之，在了解基本內容之後就寫了一套讀取文本並打包成 json 的腳本，能夠讀取試算表資料並建立 key value table 的 Json 陣列資料（不過沒有換行，這是為了文章刻意改的）。
 
 {{< resources/image "standard-json.jpg" >}}
 
-### 下載文件 -
+<!-- {{< resources/assets "GASTableDownload.gs" "點我觀看資料下載腳本" >}} -->
 
-我很愛拿 ScriptableObject 製作輔助工具，它存在於資料夾的特性以及自定義編輯器的擴展性， 所以我也根據需求把 GAS 下載弄成令牌。
+<!-- {{< youtube SfRXsiuzbCI >}}   -->
 
-建立出 Token 後，輸入 Excel ID，分頁（註1）索引，以及文件寫入的本地位置就能下載了。因為資料下載是非同步的，所以需要使用 Coroutine 執行。
+### 下載文件 +
 
-```cs
-public IEnumerator ParsingRoutine()
-{
-    WWWForm form = new WWWForm();
-    form.AddField("id", excelID);
-    form.AddField("index", sheetIndex);
-
-    using (UnityWebRequest www = UnityWebRequest.Post(postURL, form))
-    {
-        yield return www.SendWebRequest();
-
-        if (www.result != UnityWebRequest.Result.Success)
-        {
-            Debug.Log(www.error);
-        }
-        else
-        {
-            string data = www.downloadHandler.text;
-
-            Debug.Log(data);
-            Debug.Log("download complete!");
-        }
-    }
-}
-```
-
-透過編輯器腳本（註2）一鍵執行 如此一來 就能直接在 Unity 下載文件了。只需要事先建立好訪問令牌，之後文件更改時只要按個按鈕就能更新資料。
+我很愛拿 ScriptableObject 製作輔助工具，存在於資料夾的特性真的很方便，所以我把它當作資料下載的接口使用。只要建立物件、輸入 Excel ID、分頁索引與檔案寫入的位置就完成了一個 Unity 與 GoogleSheet 的資料下載接口。
 
 {{< resources/image "gas-access-token.jpg" >}}
 
-{{< resources/image "gas-access-token-write.jpg" >}}
+現在只要從資料夾物件按個按鈕，就能從 GoogleSheet 下載並更新本地文件了。
 
-只能一下載一個分頁太不方便了，所以也製作了批次下載的令牌。
+<p><c>
+註：因為資料下載是非同步的，所以得由 Ienumerator 函式執行，但編輯器無法執行 Coroutine ，所以我使用了 EditorCoroutines 插件進行輔助。
+</c></p>
 
-{{< resources/image "gas-access-collection.jpg" >}}
+## 系統重構 +
 
-註1：為了方便資料維護，Google Sheet 有多重分頁的功能，能在一個文件底下建立不同的分頁。
-{{< resources/image "google-sheets.jpg" >}}
+資料下載的功能完成了，但還有本地化文件的需求，我不想讓所有語言的內容擠在同一份文件裏，所以想要將它們分割進各自的資料夾中存放。
 
-
-註2：正常情況下編輯器是無法執行 Coroutine 的，我使用了 `Unity.EditorCoroutines.Editor` 擴充函式庫。
-
-## 系統重構 -
-
-下載功能達成了，但還有本地化文件生成的需求。我希望將不同語言的內容分割進不同資料夾中， 而不是全部擠在同一份文件裏（註3）。
-
-如果把本地化文件的解析和生成寫進去會不好維護 而且也不好重用，於是考慮後 我決定做一套更通用的文件處理系統，把原本的資料讀取拆成多個步驟完成
+雖然可以直接修改下載街口，讓它用不同的方法生成文件，但為了維護與重用性我重構成一套更通用的資料處理系統，把原本的資料讀取拆成多個步驟完成。
 
 ### 系統框架 -
 
