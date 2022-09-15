@@ -87,9 +87,9 @@ listable: [recommand, all]
 
 ### 系統框架 -
 
-使用處理節點的概念，用不同的節點組合出
+我將完整的資料處理過程拆分成一個個的「處理節點」，透過每個節點分工的方式，將接受資料處理完畢後向外傳出給下一個節點，如此一來就能大幅提升系統的重用性了。
 
-透過抽象類別建立框架，建立出資料處裡的接口，接收原始資料並在處理完畢後回傳。由於處裡過程可能是非同步的，所以使用 Ienumerator 與 CallBack 作為抽像函式的框架。
+透過抽象類別建立框架，建立出資料處裡的接口。由於處裡過程可能是非同步的，所以使用 Ienumerator 與 CallBack 作為抽像函式的框架。
 
 ```cs
 public abstract class TextProcessNode : ScriptableObject
@@ -97,6 +97,7 @@ public abstract class TextProcessNode : ScriptableObject
     public abstract IEnumerator ProcessingRoutine(ProcessingData[] input, Action<ProcessingData[]> onFinishedCallback);
 }
 ```
+
 
 透過多個處理節點，一步一步從原始資料加工
 
