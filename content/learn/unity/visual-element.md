@@ -6,7 +6,7 @@ lastmod:
 draft: false
 
 description:
-tags: [unity, customEditor]
+tags: [unity, custom-editor]
 
 ## image for preview
 # feature: 

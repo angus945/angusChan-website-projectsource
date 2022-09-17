@@ -6,7 +6,7 @@ lastmod:
 draft: false
 
 description: 個人網站的重建過程分享
-tags: [website, Hugo]
+tags: [website, hugo]
 
 ## image for preview
 # feature: 

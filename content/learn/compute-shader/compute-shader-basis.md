@@ -6,7 +6,7 @@ date: 2022-06-03
 draft: false
 
 description: 計算著色器初學指南
-tags: [computeShader]
+tags: [compute-shader]
 
 ## image for preview
 # feature: "/learn/shader/compute-shader-basis/thread-group-id.jpg"

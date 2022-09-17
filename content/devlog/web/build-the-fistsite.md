@@ -6,7 +6,7 @@ lastmod: 2022-06-24
 draft: false
 
 description: "從頭學習前端和使用 Hugo 建立網站的過程"
-tags: [website]
+tags: [website, hugo]
 
 ## image for preview
 # feature: 

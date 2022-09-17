@@ -6,7 +6,7 @@ lastmod:
 draft: true
 
 description:
-tags: [computeShader]
+tags: [compute-shader]
 
 ## image for preview
 # feature: 
