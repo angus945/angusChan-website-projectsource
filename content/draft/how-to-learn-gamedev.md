@@ -114,16 +114,21 @@ flappy bird
 movedown 
 自己寫 或使用組件
 
+跌落功能完成後，讓他跳，這也是一個複合問題 
 點擊網上飛還可以拆更細
 點擊
-mouse click 
+unity mouse click 
+_____ button click
 
-往上飛
+往上飛跳耀
+查到的方法不一定適用
 jump 
 fly up
 push up 
 
+
 玩家的持續移動
+
 
 接下來是水管
 不斷在路徑上生成
@@ -133,6 +138,7 @@ push up
 改變高度
 
 攝影機跟隨
+camera follow 
 
 到這裡基本元素都已經構建完成
 交互規則
@@ -141,6 +147,7 @@ push up
 加分開始做 判斷位置 碰撞箱
 
 死亡 碰撞箱
+collision 
 
 最後就構建出完整的遊戲了
 所有無論多複雜的遊戲 都會像這樣 進行拆解
