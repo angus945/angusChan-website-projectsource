@@ -119,33 +119,53 @@ Json 適合格式固定的資料，如本地化字表文件 缺點是格式訂�
 排除特殊手法以外 (反編譯等等)
 能否支援模組開發 直接取決於開發者 (程式的能力)
 
-## 實作範例
+## 實作範例 -
 用 System.IO 與 System.XML 和 MoonSharp
 不細部解釋內容 只提供一個簡單的方向
 
-
 動態載入資料
-File.ReadAllText();
+`string[] streamingFolders = Directory.GetDirectories(Application.streamingAssetsPath);`
+`string content = File.ReadAllText();`
+`byte[] data = File.ReadAllByte();`
 
 使用 XML 定義
 XMLSerializer
+https://www.notion.so/XML-0c1dd25445e04bd49ae9ce763f66374b
+
+泛型序列化
+```cs
+public static T ConvertNode<T>(XmlNode node) where T : class
+{
+    MemoryStream stm = new MemoryStream();
+
+    StreamWriter stw = new StreamWriter(stm);
+    stw.Write(node.OuterXml);
+    stw.Flush();
+
+    stm.Position = 0;
+
+    XmlSerializer ser = new XmlSerializer(typeof(T));
+    T result = (ser.Deserialize(stm) as T);
+
+    return result;
+}
+```
 
 並用 Lua 附加行為
 new Script()
-DoString
-
-
-
+script.DoString(code);
+https://www.notion.so/Lua-3d1dc05ae4fd4affa7f4c139691c7e6f
 
 ---
+
+## 結語 -
 
 https://ecampusontario.pressbooks.pub/gamedesigndevelopmenttextbook/chapter/game-modifications-player-communities/
 https://www.techopedia.com/definition/3841/modification-mod
 
+提供一個方向
 
-進階資料
-
-http://gameprogrammingpatterns.com/prototype.html
+### 更進一步 -
 
 原型模式 Prototype
 
@@ -153,19 +173,9 @@ http://gameprogrammingpatterns.com/prototype.html
 
 位元組碼 Bytecode
 
-
 正規語言 Formal Language
 
+正規表示式 (Regular expression)
 
-
-
-
-
-
-
-
-
-
-
-
+http://gameprogrammingpatterns.com/prototype.html
 
