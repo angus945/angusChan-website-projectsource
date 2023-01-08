@@ -31,23 +31,30 @@ showToc: false
 
 ---
 
-<!--more-->
+## 關於樂小呈
 
-# 關於樂小呈
-
-HI，我是一位遊戲開發者，擅長的工具為 Unity Engine 與 C#
-
-有三年的遊戲程式經驗，正在努力學習電腦圖學與著色器技術中 :D
+HIHI 我是一位遊戲開發者，學習遊戲開發五年，擅長的工具為 Unity Engine 與 C#，夢想是成為技術美術 (Technical Artist)，正在努力學習電腦圖學與著色器技術中 :D
 
 聯絡信箱 angus9456@gmail.com
 
-# 關於這個網站
+### 技能樹
+
+```Unity Engine
+- GamePlay Programming (C#)
+- Data Driven Programming (Streaming Assets, XML, Lua)
+- Tool Development (Custom Editor, UI Toolkit)
+- Shader Programming (ShaderLab, HLSL, Compute Shader)
+```
+
+工作許可：暫無，正在體驗大學生活中 :D
+
+## 關於這個網站
 
 這裡是我在[巴哈小屋](https://home.gamer.com.tw/homeindex.php?owner=angus945)之外的另一個空間。相較於巴哈，此處會以專業向的內容為主，包括開發日誌、學習筆記以及個人文章等，所有內容都會盡可能解釋的淺顯易懂，將以教致學作為作為文章的寫作方針。目標是打造出像 [The Book of Shaders](https://thebookofshaders.com/) 一樣有趣的互動內容，希望能向讀者們分享學習樂趣。
 
 網站的背景是透過 GLSL 實時渲染的，每次重新整理都會有變化歐～
 
-## 轉載規則
+### 轉載規則
 
 除非有獨立說明，否則網站內容 <h> 只要符合以下條件即可自由轉載 </h> 。
 
@@ -66,7 +73,7 @@ HI，我是一位遊戲開發者，擅長的工具為 Unity Engine 與 C#
 
 4. 只有本站中提供的社群帳號為官方承認的分身，請將所有未承認帳號的都視為轉載者
 
-## 特別感謝
+### 特別感謝
 
 感謝 [Hugo](https://gohugo.io/) 網頁生成器以及 [Fuji-v2](https://themes.gohugo.io/themes/hugo-theme-fuji/) 提供的網頁模板。
 
