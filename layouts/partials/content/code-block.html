@@ -9,17 +9,13 @@
     {{ $language := trim $language "\"" }}
     {{ $language := replace $language "language-" "" }}
     
-    {{/*  {{ with $language }}  */}}
-        {{ $title := printf "<span>%s</span><hr style='margin-top:5px; margin-bottom:0px'>" $language }}
-        {{ $codeblock := printf "%s\n%s" $title . }}
-        {{ $content = replace $content . $codeblock }}
-    {{/*  {{ end }}  */}}
+    {{ $title := printf "<span>%s</span><hr style='margin-top:5px; margin-bottom:0px'>" $language }}
+    {{ $codeblock := printf "%s\n%s" $title . }}
+    {{ $content = replace $content . $codeblock }}
 
-
-    {{ $codeblock }}1
+    {{ $codeblock }}
     <hr>    
-    {{/*  {{ $language }}  */}}
-    {{/*  {{ . }}  */}}
+
 {{ end }}
 
 {{ return $content }}

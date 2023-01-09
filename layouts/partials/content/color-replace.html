@@ -1,12 +1,29 @@
 
-{{ $content := .Content }}
+{{ $result := .Content }}
 
-{{ $content := replace $content " <h> " "<h>" }}
-{{ $content := replace $content " </h> " "</h>" }}
-{{ $content := replace $content " <c> " "<c>" }}
-{{ $content := replace $content " </c> " "</c>" }}
-{{ $content := replace $content " <r> " "<r>" }}
-{{ $content := replace $content " </r> " "</r>" }}
+{{/*  {{ $tagElements := findRE "<[h.c.r]>(.|\n)*?</[h.c.r]>" $result }}
 
-{{ return $content }}
+{{ range $tagElements | uniq }}
+    {{ $tagElement := . }}
+    
+    {{ $perflix := index (findRE "<[h.c.r]>" $tagElement) 0 }}
+    {{ $content := replaceRE "<[h.c.r]>|</[h.c.r]>" "" $tagElement }}
+    {{ $suffix := index (findRE "</[h.c.r]>" $tagElement) 0 }}
+
+    {{ $tagElement := printf "<p>%s%s%s</p>" $perflix $content $suffix }}
+
+    {{ $result = replace $result . $tagElement }}
+    {{/*  {{ $tagElement }}
+    
+{{ end }}  
+*/}}
+
+{{ $result := replace $result " <h> " "<h>" }}
+{{ $result := replace $result " </h> " "</h>" }}
+{{ $result := replace $result " <c> " "<c>" }}
+{{ $result := replace $result " </c> " "</c>" }}
+{{ $result := replace $result " <r> " "<r>" }}
+{{ $result := replace $result " </r> " "</r>" }}
+
+{{ return $result }}
 

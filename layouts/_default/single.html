@@ -13,6 +13,7 @@
     <!-- post main content -->
     <div class="post-content markdown-body">
         {{ $content := .Content }}
+        {{/*  {{ partial "content/color-replace.html" (dict "Content" $content ) }}   */}}
         {{ $content := partial "content/color-replace.html" (dict "Content" $content ) }} 
         {{ $content := partial "content/code-block.html" (dict "Content" $content ) }} 
         {{ $content | safeHTML }}
