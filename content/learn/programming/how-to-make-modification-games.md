@@ -3,7 +3,7 @@ title: "【筆記】如何讓遊戲支援模組開發"
 date: 
 lastmod: 
 
-draft: true
+draft: false
 
 description: 
 tags: [unity, game-develop, programming, data-driven, modification]
@@ -15,13 +15,13 @@ tags: [unity, game-develop, programming, data-driven, modification]
 # og: "/post/about-learning/featured.jpg"
 
 ## when calling "resources" shortcode, well link to static folder with this path 
-resources: /learn/modification-games/
+resources: /learn/how-to-make-modification-games/
 
 ## customize page background
 # background: [watercolor-A] 
 
 ## listout with recommand, new and all pages
-# listable: [recommand, all]
+listable: [recommand, all]
 ---
 
 還記得去年閱讀 Game Programming Patterns 時就接觸到「資料驅動」這項遊戲程式的關鍵知識，但還是拖了好一陣子才開始深入研究。而本篇筆記的課題「遊戲模組」就是他的一個應用。
@@ -30,19 +30,15 @@ resources: /learn/modification-games/
 
 <!--more-->
 
-## 資料驅動 -
+## 資料驅動 +
 
 相信接觸遊戲領域的各位已經相當熟悉「遊戲模組」一詞了，所以我就不再贅述，直接進入正題吧，首先：
 
 **資料驅動 Data Driven Programming 是什麼？**
 
-簡單來說，這是一種透過「輕量的資料結構」來實做一系列「複雜行為與邏輯」的程式設計手法。
+簡單來說，這是一種透過「輕量的資料結構」來實做一系列「複雜行為與邏輯」的程式設計手法，我們使用字串與整數建構並驅動遊戲運作，而不是透過程式將設計寫死，目的在於升修改彈性與降低設計門檻。
 
-，使用字串與整數建構並驅動遊戲運作，而不是透過程式將設計寫死，目的在於升修改彈性與降低設計門檻。
-
-而它與遊戲模組的關聯便在 還間接提供了玩家擴展內容的手段。
-
-但要完全解釋內容會花太多時間，所以這裡就將與模組關聯的內容整理成三大重點，提供各位進一步研究的起點。
+它除了讓開發者能更有效率的設計遊戲，還間接提供了玩家擴展內容的手段。但要完全解釋內容會花太多時間，所以這裡就將與模組關聯的內容整理成三大重點，提供各位進一步研究的起點。
 
 <c>
 註：不要和資料導向 (Data Oriented Design) 搞混了，查資料時可能會同時出現，但兩者沒有直接關係。
@@ -54,7 +50,7 @@ resources: /learn/modification-games/
 
 因此模組運作的第一個前提是，開發者必須提供一個方法...或簡單點的說：一個資料夾位置，讓玩家能在其中自由改動資料。Unity 引擎中可以透過 Streaming Assets 與 System.IO 來達成效果，只要玩家將模組內容放特定進資料夾，遊戲在運行時就能讀取並將內容添加至遊戲裡面。
 
-<!-- TODO 插入示意圖 -->
+{{ resources/image "streaming-asset.jpg" }}
 
 Steam 強大的工作坊其實也不是甚麼黑魔法，它只是幫你把模組資料「下載」到特定位置上而已，其餘的載入、解析等工作都是遊戲自身要完成的。
 
@@ -338,7 +334,7 @@ public class GameEntity : MonoBehaviour
 
 ```
 
-### 難題思考 -
+### 難題思考 +
 
 大功告成！
 
@@ -356,7 +352,7 @@ public class GameEntity : MonoBehaviour
 
 模組資料夾的層次結構與命名規範是我們首先要思考的問題。
 
-<!-- TODO 資料夾示意圖 -->
+{{< resources/image "thinking-folder.jpg" "80%" "Noita, One Step from Eden 與 Rimworld 的模組資料夾結構" >}}
 
 **定義格式**
 
@@ -364,7 +360,7 @@ public class GameEntity : MonoBehaviour
 
 定義文件的規範與格式也是一個要思考的問題。
 
-<!-- TODO XML 示意圖 -->
+{{< resources/image "thinking-define.jpg" "80%" "One Step from Eden 中的各種定義檔、角色、動畫與道具" >}}
 
 **衝突應對**
 
@@ -378,15 +374,13 @@ public class GameEntity : MonoBehaviour
 
 檔案管理器、資料檢視器、報錯系統與開發者模式等等，分析引擎是怎麼幫助我們製作遊戲的，並開發輔助玩家創作的工具，減低模組開發時會受到的阻礙。
 
+{{< resources/image "thinking-devtool.jpg" "80%" "Rimworld 的報錯視窗" >}}
+
 **效能優化**
 
-我們製作遊戲時會因為效能考量對使用資源進行限制，
+我們製作遊戲時會因為效能考量對使用資源進行限制，但情況放到模組上就沒那麼簡單了，雖然還是能限制資源的規格，但還是無法直接管控模組使用的資源。
 
-雖然可以限制資源的規格，但還是無法直接管控模組
-
-如何盡可能的提升模組載入與運行效率
-
-要如何優化大量的模組資料，載入與釋放資源
+如何管理大量資源，提升模組載入與運行效率？避免記憶體被未用資源佔滿，或是運行時的各種 GC 問題導致效能低落？
 
 **目標為何**
 
@@ -396,28 +390,33 @@ public class GameEntity : MonoBehaviour
 
 無論如何最後都得回到需求上，並思考你願意付出多少成本完成這項偉大工作。
 
-## 感謝閱讀 -
+## 感謝閱讀 +
 
-提供一個方向
+雖然這篇筆記的重點是模組開發，但其中的知識並不會被用法侷限，即使不讓玩家改動內容，資料驅動也是相當重要的開發知識，它除了讓企劃人員能更方便的改動設計，不需要經過程式，也是發布後擴充 DLC 與進行熱更新的好方法。
 
-即使不讓玩家擴充 也是
+幾個月前就該完成的筆記，拖到現在不好意思了，入學讀書真的是很花時間的事。總之，希望這篇筆記能讓你們有所啟發，感謝閱讀 :D
 
-### 更進一步 -
+{{< resources/assets "example" "> 範例中的完整腳本與資源在這 <" >}}
 
-提供一些關鍵字，讓各位能更進一步研究與學習。
+{{< outpost/likecoin >}}
 
-+ 資料驅動 Data Driven
+### 更進一步 +
 
-+ 原型模式 Prototype
+最後，再讓我提供一些關鍵字，讓各位能進一步了解資料驅動。
 
-+ 類型物件 Type Object
+**原型模式** [Prototype](http://gameprogrammingpatterns.com/prototype.html)  
+設計資料模板來生產大量物件，並透過繼承方法重用資料
 
-+ 位元組碼 Bytecode
+**類型物件** [Type Object](http://gameprogrammingpatterns.com/type-object.html)  
+創造一個類別來允許靈活地創造新「類型」，類別的每個實例都代表不同的物件類型
 
-+ 正規表示式 (Regular expression)
+**位元組碼** [Bytecode](http://gameprogrammingpatterns.com/bytecode.html)  
+將行為轉變為虛擬的機器指令，為數據賦予靈活性
 
+**正規表示式** [Regular Expression](https://en.wikipedia.org/wiki/Regular_expression)
+魔法般的字串搜索工具，能給你資料解析產生卓越的幫助
 
-### 參考資料 -
+### 參考資料 +
 
 [Game modifications](https://ecampusontario.pressbooks.pub/gamedesigndevelopmenttextbook/chapter/game-modifications-player-communities/)
 
@@ -425,6 +424,6 @@ public class GameEntity : MonoBehaviour
 
 [Creating A Moddable Unity Game](https://www.turiyaware.com/blog/creating-a-moddable-unity-game)
 
-[Streaming Assets](https://docs.unity3d.com/Manual/StreamingAssets.html)
+[Unity Manual - Streaming Assets](https://docs.unity3d.com/Manual/StreamingAssets.html)
 
-[ImageConversion](https://docs.unity3d.com/ScriptReference/ImageConversion.html)
+[Unity Manual - ImageConversion](https://docs.unity3d.com/ScriptReference/ImageConversion.html)

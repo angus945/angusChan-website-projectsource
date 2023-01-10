@@ -1,0 +1,53 @@
+[sidebarToc]
+    other = "目錄"
+
+[sidebarPages]
+    other = "頁面"
+
+[sidebarTags]
+    other = "標籤"
+
+[sidebarLinks]
+    other = "連結"
+
+[sidebarBangumiChart]
+    other = "番劇"
+
+[footerPoweredFront]
+    other = "網站使用 "
+
+[footerPoweredEnd]
+    other = " 構建而成"
+
+[postMetaNoTag]
+    other = "無標籤"
+
+[postMetaWordCount]
+    other = "約 {{.Count}} 字"
+
+[postMetaReadingTime]
+    other = "{{.Count}} 分鐘"
+
+[postCopyrightFront]
+    other = "尊重著作權，轉載規則請見 "
+
+[postCopyrightEnd]
+    other = " 。"
+
+[postComment]
+    other = "查看評論"
+
+[archivesTotalPages]
+    other = "文章總數："
+
+[tagsCurrentTag]
+    other = "包含 {{ .Title }} 標籤的文章："
+
+[searchSuccess]
+    other = "[NUM] 項結果 (搜尋時間 [TIME] 毫秒)"
+
+[searchNotFound]
+    other = "未找到結果"
+
+[searchFailed]
+    other = "無法獲取索引"
