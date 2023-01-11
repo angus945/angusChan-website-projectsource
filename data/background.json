@@ -49,7 +49,7 @@
         "speed": 0.01,
         "shader":"/background/colorBlend.frag",
 
-        "dark_opacity": 0.5,
+        "dark_opacity": 0.2,
         "dark_image" : "/background/watercolor-deepblue.jpg",
 
         "light_opacity": 0.3,
