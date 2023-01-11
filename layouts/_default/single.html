@@ -19,6 +19,8 @@
         {{/*  {{ partial "content/code-block.html" (dict "Content" $content ) }}   */}}
 
         {{ $content | safeHTML }}
+
+        {{ partial "socialshare.html" . }}
         
     </div>
 </article>
@@ -33,6 +35,7 @@
         </p>
     </blockquote>
 </div>
+
 {{ end }}
 {{ if and (.Site.Params.disqusJSApi) (ne .Params.showComments false) }}
 {{ partial "comment-disqusjs.html" . }}

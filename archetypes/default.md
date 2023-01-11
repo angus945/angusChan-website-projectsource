@@ -8,6 +8,8 @@ draft: true
 description:
 tags: []
 
+socialshare: true
+
 ## image for preview
 # feature: 
 

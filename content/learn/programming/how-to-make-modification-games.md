@@ -448,7 +448,7 @@ public class GameEntity : MonoBehaviour
 
 雖然這篇筆記的重點是模組開發，但當中的知識不會被用法侷限，即使不讓玩家改動內容，資料驅動也是相當重要的開發技能，它除了讓企劃人員能更方便的改動設計，也是發布後擴充 DLC 與進行熱更新的好方法。
 
-幾個月前就該完成的筆記，拖到現在不好意思了，入學讀書真的是很花時間的事。總之，希望這篇筆記能讓你們有所啟發，感謝閱讀 :D
+幾個月前就該完成的筆記，拖到現在不好意思了，入學讀書真的是很花時間的事。總之，希望這次的內容也能讓各位有所啟發，感謝閱讀 :D
 
 {{< resources/assets "example" "> 範例中的完整腳本，與範例的模組資料都在這 <" >}}
 
@@ -462,8 +462,6 @@ public class GameEntity : MonoBehaviour
 
 [Game Programming Patterns - Bytecode](http://gameprogrammingpatterns.com/bytecode.html)  
 
-[Microsoft Docs - .Net Regular Expressions](https://learn.microsoft.com/zh-tw/dotnet/standard/base-types/regular-expressions)
-
 [Open Library - Game modifications](https://ecampusontario.pressbooks.pub/gamedesigndevelopmenttextbook/chapter/game-modifications-player-communities/)
 
 [Techopedia - Modification](https://www.techopedia.com/definition/3841/modification-mod)
@@ -473,3 +471,13 @@ public class GameEntity : MonoBehaviour
 [Unity Manual - Streaming Assets](https://docs.unity3d.com/Manual/StreamingAssets.html)
 
 [Unity Manual - ImageConversion](https://docs.unity3d.com/ScriptReference/ImageConversion.html)
+
+[Microsoft Docs - XmlType](https://learn.microsoft.com/zh-tw/dotnet/api/system.xml.serialization.xmlattributes.xmltype?view=net-7.0)
+
+[Microsoft Docs - XmlElement](https://learn.microsoft.com/zh-tw/dotnet/api/system.xml.xmlelement?view=net-7.0)
+
+[Microsoft Docs - XmlAttribute](https://learn.microsoft.com/zh-tw/dotnet/api/system.xml.serialization.xmlattributes.xmlattribute?view=net-7.0)
+
+[Microsoft Docs - .Net Regular Expressions](https://learn.microsoft.com/zh-tw/dotnet/standard/base-types/regular-expressions)
+
+[MoonSharp - Getting Started](https://www.moonsharp.org/getting_started.html)
