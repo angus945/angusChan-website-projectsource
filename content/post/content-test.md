@@ -35,6 +35,34 @@ print("hi");
 
 ## 自定義功能測試
 
+```monster.lua
+function awake()
+	print("hello from script a");
+end
+```
+
+```lua.monster
+function awake()
+	print("hello from script a");
+end
+```
+
+```cs.monster
+class Monster
+{
+    int hp;
+    float speed;
+}
+```
+
+```cs
+class Monster
+{
+    int hp;
+    float speed;
+}
+```
+
 ### 測試著色器嵌入
 
 測試一般 Shader 嵌入

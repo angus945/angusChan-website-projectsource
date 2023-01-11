@@ -3,17 +3,28 @@
 {{ $codeblocks := findRE "<code class=\"language-(.*)\">(.|\n)*?</code>" $content }}
 
 {{ range $codeblocks | uniq }}
-    {{/*  {{ . }}  */}}
 
     {{ $language := index (findRE "\"language-(.*)\"" .) 0}}
     {{ $language := trim $language "\"" }}
-    {{ $language := replace $language "language-" "" }}
     
-    {{ $title := printf "<span>%s</span><hr style='margin-top:5px; margin-bottom:0px'>" $language }}
-    {{ $codeblock := printf "%s\n%s" $title . }}
+    {{ $header := replace $language "language-" "" }}
+
+    {{ $split := split $header "." }}
+
+    {{ if eq (len $split) 2  }}
+        {{ $name := index $split 1 }}
+        {{ $format := index $split 0 }}
+        {{ $header = printf "%s.%s" $name $format }}
+        2
+    {{ else }}
+        {{ $header = index $split 0 }}
+    {{ end }}
+
+    {{ $blockTitle := printf "<span>%s</span><hr style='margin-top:5px; margin-bottom:0px'>" $header }}
+    
+    {{ $codeblock := printf "%s\n%s" $blockTitle . }}
     {{ $content = replace $content . $codeblock }}
 
-    {{ $codeblock }}
     <hr>    
 
 {{ end }}

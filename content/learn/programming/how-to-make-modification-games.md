@@ -1,6 +1,6 @@
 ---
 title: "【筆記】如何讓遊戲支援模組開發"
-date: 
+date: 2023-01-11
 lastmod: 
 
 draft: false
@@ -24,61 +24,61 @@ resources: /learn/how-to-make-modification-games/
 listable: [recommand, all]
 ---
 
-還記得去年閱讀 Game Programming Patterns 時就接觸到「資料驅動」這項遊戲程式的關鍵知識，但還是拖了好一陣子才開始深入研究。而本篇筆記的課題「遊戲模組」就是他的一個應用。
+還記得去年閱讀 [Game Programming Patterns](https://gameprogrammingpatterns.com/) 時就接觸到「資料驅動」這項遊戲程式的關鍵知識，但還是拖了好一陣子才開始深入研究。
 
-這次的內容是關於遊戲模組的運作原理，以及如何在 Unity 中使用 IO、XML 與 Lua 進行實做。
+本篇筆記的課題「遊戲模組」就是他的一個應用，這次將解釋遊戲模組的運作原理，以及如何在 Unity 中使用 IO、XML 與 Lua 進行實做。
 
 <!--more-->
 
-## 資料驅動 +
+## 資料驅動 +-
 
-相信接觸遊戲領域的各位已經相當熟悉「遊戲模組」一詞了，所以我就不再贅述，直接進入正題吧，首先：
+相信在遊戲領域的各位已經相當熟悉「模組」一詞了，還是直接進入正題吧，首先：
 
-**資料驅動 Data Driven Programming 是什麼？**
+**資料驅動 Data Driven 是什麼？**
 
-簡單來說，這是一種透過「輕量的資料結構」來實做一系列「複雜行為與邏輯」的程式設計手法，我們使用字串與整數建構並驅動遊戲運作，而不是透過程式將設計寫死，目的在於升修改彈性與降低設計門檻。
+簡單來說，這是一種透過「輕量的資料結構」來描述「複雜行為與邏輯」的程式設計手法，透過預先規範好的格式，將字串與整數映射到對應行為的實做上，而非用程式將設計寫死，目的在於升修改彈性與降低設計門檻。
 
-它除了讓開發者能更有效率的設計遊戲，還間接提供了玩家擴展內容的手段。但要完全解釋內容會花太多時間，所以這裡就將與模組關聯的內容整理成三大重點，提供各位進一步研究的起點。
+它除了我們能更有效率的開發遊戲，還間接提供了玩家擴展內容的手段，但將細節解釋完會太花時間，所以這裡就將與模組關聯的部份整理成三大重點，提供深入研究的起點。
 
 <c>
 註：不要和資料導向 (Data Oriented Design) 搞混了，查資料時可能會同時出現，但兩者沒有直接關係。
 </c>
 
-### 資料讀取 +
+### 資料讀取 +-
 
-通常遊戲在製作完成並建置後，當中所使用的資源便會被引擎打包加密，而內容也在此時被「固定」了，常規的手段無法再對其進行修改。而若我們希望玩家開發模組，就應該讓他們有更好的方法修改遊戲內容。
+通常在遊戲做完並輸出後，當中使用的資源都會被引擎打包加密，這也代表內容在此時被「固定」了，無法透過常規的手段修改。因此，模組運作的第一個前提就是開發者必須提供方法...或更直白的說「一個資料夾位置」，讓玩家能自由改動其中的資料。
 
-因此模組運作的第一個前提是，開發者必須提供一個方法...或簡單點的說：一個資料夾位置，讓玩家能在其中自由改動資料。Unity 引擎中可以透過 Streaming Assets 與 System.IO 來達成效果，只要玩家將模組內容放特定進資料夾，遊戲在運行時就能讀取並將內容添加至遊戲裡面。
+以 Unity 為例，我們可以透過 `StreamingAssets` 達成效果，這是一個不會在輸出後被加密的資料夾，只要遊戲運行時使用 `System.IO` 手動讀取檔案，就能使用由玩家添加的更多「遊戲內容」。
 
-{{ resources/image "streaming-asset.jpg" }}
+{{< resources/image "streaming-asset.jpg" >}}
 
-Steam 強大的工作坊其實也不是甚麼黑魔法，它只是幫你把模組資料「下載」到特定位置上而已，其餘的載入、解析等工作都是遊戲自身要完成的。
+Steam 強大的「工作坊」系統也不是什麼神奇的黑魔法，它只是幫你把模組資料「下載」到特定位置上而已，其餘的載入與解析都是遊戲自身要完成的。
 
 <c>
-註：Steam 模組的預設資料夾在 C:\Program Files (x86)\Steam\steamapps\workshop\content\gameID 當中，我實做時就從中找了不少參考研究。
+註：Steam 模組的預設資料夾在 C:\Program Files (x86)\Steam\steamapps\workshop\content\gameID，我實做時就從中找了不少參考研究，有興趣可以多去挖寶。
 </c>
 
-### 格式定義 +
+### 格式定義 +-
 
-即使有了第一項前提，也不代表玩家隨便扔資料進去都能運作，我們必須為模組規範好要使用的「資料格式」長怎樣才行。假設我們想定義一個怪物，首先要思考他的屬性有哪些，可能包括文字資訊、行為參數與視覺的呈現方法等。
+有了第一項前提也不代表隨便扔的資料都能運作，我們必須為模組規範好要使用的「定義檔」的格式長怎樣才行。假設我們想定義一隻怪物，首先要思考他的屬性有哪些，可能包括文字資訊、行為參數與視覺的呈現方法等。
 
-在釐清需求以後，就要設計出一套能包含所有必須資料的「模板」，建議以能兼具修改性與易讀性的文字文件作為資料格式，例如 txt 檔：
+根據需求設計出一套能包含所有必備資料的「模板」，以能兼具修改性與易讀性的「文字文件」作為資料格式，以 txt 檔為例：
 
-```monster.txt
-Name: Monster
-Descripe: a example Monster !!
+```txt.template
+Name:
+Descripe:
 
-Health: 10
-Speed: 1
-Attack: 2
+Health:
+Speed:
+Attack:
 
-Sprite: sprites/monster.png
-Sound: sounds/monster.mp3
+Sprite:
+Sound:
 ```
 
-文字文件的好處就是任何工具都能開啟，如此一來玩家只要根據這套模板，修改成自己想要的樣子後，放入特定資料夾就能為遊戲添加一個新的怪物資料了。
+有了模板之後，玩家只要把它修改成自己想要的樣子，再把檔案放入指定的位置就能為遊戲添加一筆新的怪物資料了。
 
-```zombie.txt
+```txt.zombie
 Name: Zombie
 Descripe: Zombie monster !!
 
@@ -90,36 +90,80 @@ Sprite: sprites/zombie.png
 Sound: sounds/errrrr.mp3
 ```
 
-而遊戲則要根據設定的格式解析檔案，將它轉換成遊戲中所使用的物件資料。資料格式可簡單可複雜，簡單就像上面的範例，能夠改變參數與外觀，而複雜的則允許修改邏輯與行為，取決與你的需求與技術許可。
+而最後，遊戲要根據我們設定的格式「解析」檔案，將文字檔轉換成遊戲真正使用的物件資料。格式的複雜度取決於需求，簡單的就像範例那樣修改參數與外觀，而複雜可能允許改變邏輯與行為。
 
-雖然檔案類型只要 txt 就足夠了，但還是建議用其他更具修改信的格式除存，例如 XML 與 Json。 
+雖然檔案類型只要 txt 就足夠了，但還是建議用其他更容易閱讀、修改與解析的格式儲存，例如 XML 與 Json。 
 
-<!-- XML 適合定義複雜資料結構，還可以自己編寫輸入提示 缺點是資料龐大 解析速度較慢
-Json 適合格式固定的資料，如本地化字表文件 缺點是格式訂好就比較難擴展  -->
+```json.zombie
+"Define": 
+{
+    "name": "Zombie",
+    "Descripe": "Zombie monster !!",
+    
+    "Health": 2,
+    "Speed": 3,
+    "Attack": 1,
 
-### 擴展行為 +
+    "Sprite": "sprites/zombie.png",
+    "Sound": "sounds/errrrr.mp3"
+}
+```
 
-雖然以上兩者就能達成基本的模組效果，但修改範圍還是很受限制，因為遊戲程式仍然是在建置後被固定的，很難在現有框架下擴展行為與邏輯，因此我們的最後一步就是要讓玩家也能自己「寫程式」。
+### 擴展行為 +-
 
-擴展程式可以是直譯或編譯語言，直譯的優點是易讀且方便修改，遊戲只要載入文字就能夠運行，而編譯的優點則是效能與穩定性，但需要用特殊的編譯檔進行儲存，兩者各有優缺，視你想達到的目標而定。
+雖然有前兩者就能達成模組效果，但修改範圍仍被限制在我們提供的模板中，如果希望玩家能創造更多令人驚豔的內容，就得提供他們自行「擴展」行為與邏輯的手段。但要擴展行為與邏輯就很難不接觸到「程式」了，所以了遊戲的核心程式以外，我們也得讀取並運行由玩家編寫的程式碼。
 
-程式的擴展有有許多現成資源可以使用，例如直譯的 Lua 與編譯的 Dll 檔案，當然也可以手刻一個虛擬機去跑自製程式語言，但無論何者仍需要由開發者提供一個載入與調用外部程式的接口。
+```json.smartZombie
+"Define": 
+{
+    "name": "Smart Zombie",
+    "Descripe": "Zombie monster with AI !!!!",
+    
+    // other perperity ...
 
-總結以上幾點，在排除反編譯等特殊手法以後，遊戲能否支援模組開發將取決於開發者的意願以及能力。所以接下來就進入實做環節，提供各位在 Unity 中實現效果的範例參考。
+    "Bevavior": "scripts/monsterAI.lua",
+}
+```
 
-## 實作範例 +
+假設現在允許玩家編寫怪物移動、攻擊與死亡的行為，我們可以像定義格式那樣「規定」行為的擴展方式，讓玩家能在範圍內修改怪物行為，並在運行時的對應時間觸發。
 
-範例中的環境為 Unity，但邏輯都是通用的，可以自行轉換適合的環境與工具使用。文章會對關鍵要素進行解釋，但不會過多深入單一部份。
+```lua.monsterAI
+function move()
+	-- move behavior
+end
 
-接下來將使用 [System.IO](https://learn.microsoft.com/zh-tw/dotnet/api/system.io?view=net-7.0) 與 [StreamingAssets](https://docs.unity3d.com/Manual/StreamingAssets.html) 進行資料載入，透過 [System.XML](https://learn.microsoft.com/zh-tw/dotnet/api/system.xml?view=net-7.0) 與 [XML](https://en.wikipedia.org/wiki/XML) 設計資料定義的格式，和 [MoonSharp](https://www.moonsharp.org/) 插件與 [Lua](https://en.wikipedia.org/wiki/Lua_(programming_language)) 達成行為擴展方法。
+function attack()
+	-- attack behavior
+end
+
+function dead()
+	-- dead behavior
+end
+```
+
+當然也可以讓玩家自訂行為的觸發時機，讓擴展性再次提升，但無論如何都需要由開發者提供一個載入與調用外部程式的接口，才能運行這些內容。
+
+程式擴展也有許多現成資源可用，例如直譯的 Lua 語言與編譯的 .dll 檔，當然也可以手刻一個虛擬機去跑自製語言...如果你想的話。
+
+總結以上幾點，排除反編譯等特殊手法以後，遊戲能否允許模組將取決於開發者的意願以及能力，接下來就進入實做環節，提供各位在 Unity 中實現效果的範例參考。
+
+## 實作範例 +-
+
+範例使用的環境為 Unity，但邏輯都是通用的，可以自行轉換至適合的環境與工具中。文章會對使用到的關鍵要素進行解釋，但不會過多深入單一的工具的用法與原理，請自行研究細節。
+
++ 使用 [System.IO](https://learn.microsoft.com/zh-tw/dotnet/api/system.io?view=net-7.0) 讀取 [StreamingAssets](https://docs.unity3d.com/Manual/StreamingAssets.html) 達成資料載入
+
++ 使用 [XML](https://en.wikipedia.org/wiki/XML) 定義資料格式並透過 [System.XML](https://learn.microsoft.com/zh-tw/dotnet/api/system.xml?view=net-7.0) 解析
+
++ 使用 [MoonSharp](https://www.moonsharp.org/) 插件運行 [Lua](https://en.wikipedia.org/wiki/Lua_(programming_language)) 腳本達成行為擴展方法
 
 範例使用的美術資源為 [0x72_DungeonTilesetII_v](https://0x72.itch.io/dungeontileset-ii)
 
 ### 定義實體 +
 
-首先我們要定義一個遊戲實體，它可以是怪物、道具或場景物件，但這邊先以通用物件做範例，它的屬性有辨識 ID、使用圖像以及使用的行為腳本。
+首先我們要定義一個遊戲實體，它可以是怪物、道具或場景物件，但這邊先以通用物件做範例，它的屬性有辨識 ID、外觀圖像與要使用的行為腳本。
 
-建立一個類別，宣告對應的變數並添加序列化標籤 `[System.Serializable]` 與 XML 的解析標籤 `[XmlType]`、`[XmlAttribute]` 與 `[XmlElement]`。 
+建立一個類別並宣告對應變數，為了使用 `XMLSerializer` 解析資料，我們必須給類別和變數添加序列化標籤 `[System.Serializable]` 與 XML 的元素標籤 `[XmlType]` `[XmlAttribute]` `[XmlElement]`。 
 
 ```cs
 [System.Serializable][XmlType("Entity")]
@@ -137,7 +181,9 @@ public class EntityDefine
 
 ```
 
+<!-- There -->
 而上面程式定義出的 XML 格式長這樣，我們可以在 `<Entity>` 標籤中設置實體的相關參數與資源。建立一個文件並編寫實體的設計內容。
+可以根據喜好與需求建立其他樣式
 
 ```xml
 <Entities>

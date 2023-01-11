@@ -33,20 +33,31 @@ showToc: false
 
 ## 關於樂小呈
 
-HIHI 我是一位遊戲開發者，學習遊戲開發五年，擅長的工具為 Unity Engine 與 C#，夢想是成為技術美術 (Technical Artist)，正在努力學習電腦圖學與著色器技術中 :D
+HIHI 我是一位遊戲開發者，學習遊戲開發五年，擅長的工具為 Unity Engine 與 C#，夢想是成為技術美術，正努力學習電腦圖學、著色器技術和一拖拉庫技美要會的東西 :D
 
 聯絡信箱 angus9456@gmail.com
 
 ### 技能樹
 
 ```Unity Engine
-- GamePlay Programming (C#)
-- Data Driven Programming (Streaming Assets, XML, Lua)
+- GamePlay Programming (C#, Lua)
 - Tool Development (Custom Editor, UI Toolkit)
 - Shader Programming (ShaderLab, HLSL, Compute Shader)
 ```
 
-工作許可：暫無，正在體驗大學生活中 :D
+### 經歷
+
+```Study
+高中 - 非學校型態實驗教育（2017/9 ~ 2020/6）
+大學 - 南台科大多媒體與電腦娛樂科學系（2022/9 ~ now）
+```
+
+```Work
+山鴉工作室 - 遊戲程式（2020/03 ~ now）
+語稼工作室 - 約聘程式與圖形技術支援（2022/1 ~ 2022/8）
+
+工作許可 - 暫無，體驗大學生活中 :D
+```
 
 ## 關於這個網站
 
