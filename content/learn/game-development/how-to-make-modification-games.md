@@ -15,7 +15,7 @@ tags: [unity, game-develop, programming, data-driven, modification]
 # og: "/post/about-learning/featured.jpg"
 
 ## when calling "resources" shortcode, well link to static folder with this path 
-resources: /learn/how-to-make-modification-games/
+resources: /learn/game-development/how-to-make-modification-games/
 
 ## customize page background
 # background: [watercolor-A] 
