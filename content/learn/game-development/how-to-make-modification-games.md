@@ -28,7 +28,7 @@ listable: [recommand, all]
 
 <!--more-->
 
-## 資料驅動 ++
+## 資料驅動 
 
 相信在遊戲領域的各位已經相當熟悉「模組」一詞了，還是直接進入正題吧，首先：
 
@@ -42,7 +42,7 @@ listable: [recommand, all]
 註：不要和資料導向 (Data Oriented Design) 搞混了，查資料時可能會同時出現，但兩者沒有直接關係。
 </c>
 
-### 資料讀取 ++
+### 資料讀取 
 
 通常在遊戲做完並輸出後，當中 <h> 使用的資源都會被引擎打包加密 </h> ，這也代表內容在此時被「固定」了，無法透過常規的手段修改。因此，模組運作的第一個前提就是：開發者必須提供方法...或更直白的說 <h> 「一個資料夾位置」，讓玩家能自由改動其中的資料。 </h>
 
@@ -56,7 +56,7 @@ Steam 強大的工作坊「訂閱」功能也不是什麼神奇的黑魔法，�
 註：Steam 模組的預設資料夾在 C:\Program Files (x86)\Steam\steamapps\workshop\content\gameID，我實做時就從中找了不少參考研究，有興趣可以多去挖寶。
 </c>
 
-### 格式定義 ++
+### 格式定義 
 
 有了第一項前提也不代表隨便扔的資料都能運作，我們 <h> 必須為模組規範好要使用的「定義檔」的格式長怎樣才行 </h> 。假設我們想定義一隻怪物，首先要思考他的屬性有哪些，可能包括文字資訊、行為參數與視覺的呈現方法等。
 
@@ -107,7 +107,7 @@ Sound: sounds/errrrr.mp3
 }
 ```
 
-### 擴展行為 ++
+### 擴展行為 
 
 雖然有前兩者就能達成模組效果，但修改範圍仍被限制在我們提供的模板中，如果希望玩家能創造更多令人驚豔的內容，就得 <h> 提供他們自行「擴展」行為與邏輯的手段 </h> 。但如此程度的擴展就很難不接觸「程式」了，所以了遊戲的核心程式以外，我們也得 <h> 讀取並運行由玩家編寫的程式碼。 </h>
 
@@ -145,7 +145,7 @@ end
 
 總結以上幾點，排除反編譯等特殊手法以後，遊戲能否允許模組將取決於開發者的意願以及能力。接下來就進入實做環節，提供各位在 Unity 中實現效果的範例參考。
 
-## 實作範例 ++
+## 實作範例 
 
 範例使用的環境為 Unity，不過邏輯都是通用的，可以自行轉換至適合的環境與工具中。文章會對使用到的關鍵要素進行解釋，但不會過多深入單一工具的用法與原理，請有興趣的人在自行研究。
 
@@ -157,7 +157,7 @@ end
 
 範例使用的美術資源為 [0x72_DungeonTilesetII_v](https://0x72.itch.io/dungeontileset-ii)
 
-### 定義實體 ++
+### 定義實體 
 
 首先我們要定義一個遊戲實體，它可以是怪物、道具或場景物件，但這邊先以通用物件做範例，它的屬性有辨識 ID、外觀圖像與要使用的行為腳本。
 
@@ -232,7 +232,7 @@ public static T ConvertNode<T>(XmlNode node) where T : class
 public List<EntityDefine> defines;
 
 XmlNode root = dataXML.DocumentElement;
-for (int i = 0; i < root.ChildNodes.Count; i++)
+for (int i = 0; i < root.ChildNodes.Count; i)
 {
     XmlNode node = root.ChildNodes[i];
     Debug.Log(node.Name);
@@ -244,7 +244,7 @@ for (int i = 0; i < root.ChildNodes.Count; i++)
 
 {{< resources/image "example-entities.jpg" >}}
 
-### 載入資源 ++
+### 載入資源 
 
 現在已經能讀取實體的定義資料了，但實例化前還得找出他要使用的資源才行，也就是實體的圖片與行為腳本。除了定義格式以外，我們也 <h> 需要「規定」遊戲資源的存放位置，要求玩家遵守某些資源擺放與命名規則 </h> ，這樣除了能更方便的載入資料，也能有效保持模組檔案整潔。
 
@@ -263,7 +263,7 @@ string[] files = Directory.GetFiles(directoryPath);
 ```cs
 public Dictionary<string, Texture> textures;
 
-for (int i = 0; i < files.Length; i++)
+for (int i = 0; i < files.Length; i)
 {
     string path = files[i];
 
@@ -287,7 +287,7 @@ for (int i = 0; i < files.Length; i++)
 string directoryPath = $"{Application.streamingAssetsPath}\\Scripts";
 string[] files = Directory.GetFiles(directoryPath);
 
-for (int i = 0; i < files.Length; i++)
+for (int i = 0; i < files.Length; i)
 {
     string path = files[i];
     if (path.EndsWith(".lua"))
@@ -312,7 +312,7 @@ function awake()
 end
 ```
 
-### 實例物件 ++
+### 實例物件 
 
 現在解析與載入的工作都完成，終於能生成遊戲實體了。建立一個類別，它代表了實體在遊戲場景中的實例化物件，會儲存部份資料並將外在樣貌顯示出來。
 
@@ -374,7 +374,7 @@ public class GameEntity : MonoBehaviour
 
 ```
 
-### 難題思考 ++
+### 難題思考 
 
 大功告成！
 
@@ -442,7 +442,7 @@ public class GameEntity : MonoBehaviour
 
 無論如何最後都得回到需求上，實做前必須謹慎思考你的目標，並評估你願意付出多少成本完成這項偉大工作。
 
-## 感謝閱讀 ++
+## 感謝閱讀 
 
 雖然這篇筆記的重點是模組開發，但當中的知識不會被用法侷限，即使不讓玩家改動內容，資料驅動也是相當重要的開發技能，它除了讓企劃人員能更方便的改動設計，也是發布後擴充 DLC 與進行熱更新的好方法。
 
@@ -452,7 +452,7 @@ public class GameEntity : MonoBehaviour
 
 {{< outpost/likecoin >}}
 
-### 學習資料 ++
+### 學習資料 
 
 [Game Programming Patterns - Prototype](http://gameprogrammingpatterns.com/prototype.html)  
 
