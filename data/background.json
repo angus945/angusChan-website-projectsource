@@ -24,7 +24,7 @@
         "dark_opacity": 0.2, 
         "dark_image" : "/background/watercolor-black.jpg",
 
-        "light_opacity": 0.3,
+        "light_opacity": 0.25,
         "light_image" : "/background/watercolor-white.jpg"
     },
     {
@@ -38,7 +38,7 @@
         "dark_opacity": 0.2,
         "dark_image" : "/background/watercolor-darkblue.jpg",
 
-        "light_opacity": 0.3,
+        "light_opacity": 0.25,
         "light_image" : "/background/watercolor-lightblue.jpg"
     },
     {
@@ -52,7 +52,7 @@
         "dark_opacity": 0.2,
         "dark_image" : "/background/watercolor-deepblue.jpg",
 
-        "light_opacity": 0.3,
+        "light_opacity": 0.15,
         "light_image" : "/background/watercolor-skyblue.jpg"
     },
     {
