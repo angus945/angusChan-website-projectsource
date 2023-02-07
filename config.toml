@@ -161,13 +161,17 @@ tag = "tags"
     url = "https://github.com/angus945/"
     weight = 1
     [[menu.link]]
+    name = "Facebook"
+    url = "https://www.facebook.com/angucChan"
+    weight = 2
+    [[menu.link]]
     name = "Twitter"
     url = "https://twitter.com/angus9456"
-    weight = 2
+    weight = 3
     [[menu.link]]
     name = "巴哈姆特"
     url = "https://home.gamer.com.tw/homeindex.php?owner=angus945"
-    weight = 3
+    weight = 4
 
 
 
