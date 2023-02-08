@@ -41,12 +41,12 @@ HIHI 我是一位遊戲開發者，學習遊戲開發五年，擅長的工具為
 
 ```Unity Engine
 - GamePlay Programming (C#, Lua)
-- Tool Development (Custom Editor, UI Toolkit)
-- Shader Programming (ShaderLab, HLSL, Compute Shader)
+- Tool Development (Custom Editor, Compute Shader)
+- Shader Programming (HLSL, Unlit-Shader, Image-Effect)
 ```
 
 ```other
-- Documentation Write (Technical, Note, Blog)
+- Documentation (Technical, Note, Blog)
 ```
 
 ### 經歷
