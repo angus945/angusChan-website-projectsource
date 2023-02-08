@@ -11,7 +11,7 @@ tags: []
 socialshare: true
 
 ## image for preview
-# feature: 
+# feature: "/post/about-learning/featured.jpg"
 
 ## image for open graph
 # og: "/post/about-learning/featured.jpg"
