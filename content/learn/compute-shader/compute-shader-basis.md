@@ -8,6 +8,7 @@ draft: false
 description: 計算著色器初學指南
 tags: [compute-shader]
 
+socialshare: true
 ## image for preview
 # feature: "/learn/shader/compute-shader-basis/thread-group-id.jpg"
 

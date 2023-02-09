@@ -8,6 +8,8 @@ draft: false
 description: 條件判斷與變體著色器的筆記
 tags: [unity, shader]
 
+socialshare: true
+
 ## image for preview
 # feature: 
 

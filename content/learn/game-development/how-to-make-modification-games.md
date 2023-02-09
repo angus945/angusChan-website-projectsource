@@ -8,6 +8,8 @@ draft: false
 description: 這次將解釋遊戲模組的運作原理，以及如何在 Unity 中使用 IO、XML 與 Lua 進行實做。
 tags: [unity, game-develop, programming, data-driven, modification]
 
+socialshare: true
+
 ## image for preview
 # feature: 
 
