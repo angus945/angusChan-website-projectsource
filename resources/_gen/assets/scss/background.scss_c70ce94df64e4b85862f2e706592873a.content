@@ -1,9 +1,14 @@
 .background {
-  height: calc(100vh - calc(100vh - 100%));
   width: 100%;
   position: fixed;
   z-index: -100;
-  pointer-events: none; }
+  pointer-events: none;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  height: 100%;
+  overflow: hidden; }
 
 .image-basis {
   background-repeat: no-repeat;
