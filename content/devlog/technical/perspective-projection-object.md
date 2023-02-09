@@ -8,7 +8,7 @@ draft: false
 description: "嘗試研究和實現了《超閾限空間 Superliminal》中神奇的透視操作"
 tags: [shader, post-processing]
 
-socialshare: false
+socialshare: true
 
 ## image for preview
 feature: /devlog/technical/perspective-projection-object/featured.jpg

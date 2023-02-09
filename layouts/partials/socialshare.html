@@ -5,14 +5,18 @@
   {{ $url := printf "%s" .Permalink }}
   {{ $body := print $title ", by " .Site.Title "\n" .Params.description "\n\n" $url "\n" }}
 
+  <hr>
   <section class="social-share">
     <ul class="share-icons">
+      <li>
+        {{ partial "svg/share.svg" (dict "class" "widget-social__link-icon") }}
+      </li>
       <!-- Twitter -->
       <li>
         <a href="https://twitter.com/intent/tweet?&amp;url={{ .Permalink }}&amp;text={{ .Title }}" target="_blank" rel="noopener" aria-label="Share on Twitter" class="share-btn twitter">
           {{ partial "svg/twitter.svg" (dict "class" "widget-social__link-icon") }}
           <p>Twitter</p>
-          </a>
+        </a>
       </li>
 
       <!-- Facebook -->
@@ -24,12 +28,12 @@
       </li>
 
       <!-- LinkedIn -->
-      {{/*  <li>
+      <li>
         <a href="https://www.linkedin.com/shareArticle?mini=true&amp;url={{ $url }}&amp;source={{ $url }}&amp;title={{ $title }}&amp;summary={{ $title }}" target="_blank" rel="noopener" aria-label="Share on LinkedIn" class="share-btn linkedin">
           {{ partial "svg/linkedin.svg" (dict "class" "widget-social__link-icon") }}
             <p>LinkedIn</p>
           </a>
-      </li>  */}}
+      </li>
 
       <!-- WhatsApp -->
       {{/*  <li>
