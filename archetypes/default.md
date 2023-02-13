@@ -27,3 +27,7 @@ socialshare: true
 ---
 
 <!--more-->
+
+<!-- &nbsp; -->
+
+<!-- [text]({{< ref "relpath" >}})。 -->
