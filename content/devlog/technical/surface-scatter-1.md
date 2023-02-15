@@ -43,29 +43,23 @@ gpu instance 生成的，再透過世界座標像素化
 
 {{< resources/image "houdini.gif" >}}
 
-受此啟發 我也想嘗試 實作一次效果 scatter 效果 實現那個蓬蓬樹葉
+受此啟發，我也想嘗試實作一次效果，實現那個蓬蓬樹葉
 
 ### 成果展示
+
+慣例先展示成果
 
 {{< resources/image "result-1.gif" >}}
 
 ## 研究
 
+解釋一下研究過程和原理
+
 ### 模型採樣 
 
-首先 第一步就是 對模型採樣 像 scatter 一樣
+首先，第一步就是要想辦法對模型採樣，我預期透過 compute shader 進行計算，但畢竟它除錯難度太高，還是先透過 C# 做實驗
 
-我原本預期透過 compute shader 生成 但隔一段時間沒摸忘記怎麼 
-
-剛開始就卡住 還是先透過 C# 做實驗比較好 畢竟 shader 真的不好除錯
-
-但沒必要 直接 他不好 研究階段就用不好
-
-所以還是先回到 C# 實現
-
-首先要再表面生成 要取得面資料
-
-Mesh 可以用  vertices 取的頂點 triangles 取的頂點索引 每個面由三個頂點構成，三個索引
+再表面生成得要取得模型的資料，Mesh 可以用  vertices 取的頂點 triangles 取的頂點索引，每個面由三個頂點構成，三個索引
 
 {{< resources/image "mesh.jpg" >}}
 
@@ -74,9 +68,7 @@ int[] triangles = mesh.triangles;
 Vector3[] vertices = mesh.vertices;
 ```
 
-建構出面的是 triangles，每三個 triangles index 會映射到面的三個
-
-遍歷索引 映射到頂點表上可以取得面
+每三個 triangles index 會映射到面的三個頂點，因此只要遍歷索引，就能映射到頂點表上重建模型
 
 ```csharp
 void ForeachFace()
@@ -101,9 +93,9 @@ void ForeachFace()
 
 ### 隨機取點
 
-將所有的面取出後 只要在頂點之間隨機生成 簡單的方法就是透過兩個插值 將隨機值輸入權重
+將所有的面取出後 ，只要在三個點之間隨機生成，就能獲得位於表面的位置了
 
-就能隨機獲得一個位於表面上的點了
+簡單的方法就是透過兩個插值，將隨機值輸入權重，來產生面上的隨機位置
 
 ```csharp
 Vector3 rndBottom = Vector3.Lerp(pointA, pointB, UnityEngine.Random.value);
@@ -114,13 +106,13 @@ scatterPoints.Add(rndPoint);
 
 {{< resources/image "triangle-random.gif" >}}
 
-只要對模型的每個面都做 n 次就能得到類似全息圖的樣子了
+只要對模型的每個面都進行數次，將他顯示就能得到類似全息圖的樣子了
 
 {{< resources/image "scatted-1.jpg" >}}
 
 ### 機率修正
 
-但這種算法會產生一個問題 那就是機率不平均 可以看到第二次插值朝向其中一點的密度比較高
+但這種算法會產生一個問題，那就是機率不平均，可以看到第二次插值朝向其中一點的密度比較高
 
 {{< resources/image "triangle-probability.jpg" >}}
 
