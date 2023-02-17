@@ -93,9 +93,7 @@ void ForeachFace()
 
 ### 隨機取點
 
-將所有的面取出後 ，只要在三個點之間隨機生成，就能獲得位於表面的位置了
-
-簡單的方法就是透過兩個插值，將隨機值輸入權重，來產生面上的隨機位置
+將所有的面取出後 ，只要在三個點之間隨機生成，就能獲得位於表面的位置了，簡單的方法就是透過兩個插值，將隨機值輸入權重，來產生面上的隨機位置
 
 ```csharp
 Vector3 rndBottom = Vector3.Lerp(pointA, pointB, UnityEngine.Random.value);
@@ -106,7 +104,7 @@ scatterPoints.Add(rndPoint);
 
 {{< resources/image "triangle-random.gif" >}}
 
-只要對模型的每個面都進行數次，將他顯示就能得到類似全息圖的樣子了
+只要對模型的每個面都進行數次，將結果顯示就能得到類似全息圖的樣子了
 
 {{< resources/image "scatted-1.jpg" >}}
 
@@ -116,17 +114,13 @@ scatterPoints.Add(rndPoint);
 
 {{< resources/image "triangle-probability.jpg" >}}
 
-為了解決這個也花了些時間找資料 要用平均分布的隨機才行
-
-在三角面上無法平均的隨機，但如果是四角面就不同了 而每個矩形也都是由兩個三角形組成的
+在三角面上無法平均的隨機，但如果是四角面就不同了，而每個矩形也都是由兩個三角形組成的
 
 {{< resources/image "rectangle.gif" >}}
 
-因此我們只要在方形上隨機 然後再判斷 隨機值是否超出範圍 把超出到另一個三角形的點重新映射回原本的三角形上
+因此我們只要在方形上隨機生成，然後再判斷是否超出範圍，把超出到另一個三角形的點重新映射回原本的三角形上就好
 
 {{< resources/image "rectangle-remapping.gif" >}}
-
-反轉插值數值 再重新映射 我們可以把方形想成 上相反左右顛倒的三角形 超過斜邊 就會到另一個三角形
 
 ```csharp
 float abRnd = UnityEngine.Random.value;
@@ -143,42 +137,34 @@ Vector3 acShift = Vector3.Lerp(Vector3.zero, c - a, acRnd);
 return a + abShift + acShift;
 ```
 
-如此就能得出機率平均的散步了
+如此就能得出機率平均的散佈了
 
 {{< resources/image "rectangle-probability.jpg" >}}
 
-### 生成條件 
+### 生成數量
 
-剛開始我是根據指定數量決定每面要生多少個點 但這會有個問題 數量收到模型的面大小與數量影響
-
-面數導致生成數量多 或過少 相同生成次數 在大面看起來低密度 小面看起來高密度  同樣生成五十次
+剛開始我是指定數量決定每面要生多少個點，但這會導致生成數量受到模型面數的直接影響，相同數值會讓大面看起來密度較低，反之小面看起來密度過高。
 
 {{< resources/image "instance-count.jpg" >}}
 
-改成根據 表面積 生成 計算三角面面積 原本我用一連串計算推算三角形的高 再用底乘高的方式蒜面積 但後來發現有更簡潔的算法 透過外積 corss 計算
+為了維持數量的穩定，我改成根據面積計算生成數量，原本我用一連串計算推算三角形的高，但後來發現能直接透過外積 corss 計算平行四邊形的面積
 
 {{< resources/image "triangle-area.jpg" >}}
 
-因為頂點是向量 
-
-行列式 可以算出面積的變化量 而外積的結果
-
-可以透過外積直接取得平行四邊形的面積 
-
-外積的結果是 純量面積 * 向量法線 的 Vector
+因為頂點是向量 ，行列式可以算出面積的變化量，而外積的結果就是純量面積 * 向量法線
 
 {{< resources/image "corss.jpg" >}}
 
 2.5 是影片中範例的外積結果，與我這無關
 
-因此我只要求得外積的長度  除二就是我要的三角形面積了
+因此我只要求得外積的長度，除二就是我要的三角形面積了
 
 ```csharp
 Vector3 cross = Vector3.Cross(pointB - pointA, pointC - pointA);
 float area = length(cross) / 2;
 ```
 
-在每個面上生成時 不是根據數量 而是計算面積 根據面積決定生成次數 每單位面積生成 N 個點，解決密度問題 
+生成參數從數量改成每單位面積的密度，在生成時計算出每面正確的生成量
 
 ```csharp
 float density;
@@ -187,15 +173,13 @@ int amount = area * density;
 for(int i = 0; i < amount; i++) { }
 ```
 
-即使放大表面積 增加生成次數 保持密度
+如此一來，即使放大表面積，生成次數也會自動增加以保持密度穩定
 
 {{< resources/image "instance-density.gif" >}}
 
 ### 平均分布
 
-最後 完全隨機的生成結果 可能發生重疊 所以我
-
-平均分布 用索引值映射到矩形上 輸入插值權重就能 平均散佈在表面上了
+最後，完全隨機的結果可能發生重疊，所以我把生成改成真正的平均分布，用索引值映射到矩形上，讓生成結果整齊排列
 
 ```csharp
 for(int i = 0; i < amount; i++)
@@ -207,9 +191,9 @@ for(int i = 0; i < amount; i++)
 
 {{< resources/image "tidy-remap.jpg" >}}
 
-最後決定忍痛捨棄一半的資料 雖然效能直接對折 但至少結果是更理想的 
+但三角隨機的重新映射會導致太整齊的資料重疊，最後決定忍痛捨棄一半的資料，雖然效能直接對折，但至少結果是更理想的 
 
-除非能直接平均映射在三角形上 不然從矩形生的話可能都不理想
+除非能直接平均映射在三角形上，不然從矩形生的話可能都不理想
 
 {{< resources/image "tidy.gif" >}}
 
