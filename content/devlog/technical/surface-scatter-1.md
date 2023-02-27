@@ -1,12 +1,12 @@
 ---
 title: "【日誌】沿著表面隨機生成"
-date: 2023-02-13
-lastmod: 2023-02-13
+date: 2023-02-27
+lastmod: 2023-02-27
 
 draft: true
 
 description:
-tags: []
+tags: [procedure-generation]
 
 socialshare: true
 
@@ -26,49 +26,41 @@ resources: /devlog/technical/surface-scatter-1/
 # listable: [recommand, all]
 ---
 
-之前就對特殊風格的 3D 渲染感興趣了，毛茸茸的草地和植被看著就令人舒適
+之前就對 Stylize 3D 渲染感興趣了，毛茸茸的花草樹木看著就心情愉快，這次嘗試製作了能幫我沿著物體表面生成植被的工具，說不定能在未來的某時派上用場。
 
 <!--more-->
 
-## 起因
+## 起因 +
 
-之前看到一部影片，有人用 Unity 做出了像素的 3D 渲染，裡面的樹葉和花花草草相當漂亮，聽他解說是透過 身
-gpu instance 生成的，再透過世界座標像素化
+之前看到一部 3D Pixel Rendering 的影片，透過特別的方式實時渲染漂亮的像素場景，每個角度看起來都像一幅精緻的圖畫，也是我最想要追求的目標之一。影片中樹葉與草地就是透過 GPU Instance 達成的，從模型表面生成大量物件，再透過像素 Shader 風格化渲染出漂亮的畫面。
 
 {{< youtube "ERA7-I5nPAU" >}}
 
 &nbsp;
 
-再來，為了為了擴展技美的技能樹，我前陣子玩了一下程序建模軟體 Houdini，裡面有一個節點叫做 Scatter 他可以對輸入的模型採樣，在表面隨機生成點，再透過這些點生成其他物件，相當方便
+除此之外，為了擴展技美的技能樹，我也稍微接觸了下程序建模軟體 Houdini，是一個需要用理性進行美術設計的神奇工具。當中有個實用的節點稱作 Scatter，他可以對輸入的模型採樣，在表面上隨機生成點，並透過這些點再生成其他物件，相當方便。
 
 {{< resources/image "houdini.gif" >}}
 
-受此啟發，我也想嘗試實作一次效果，實現那個蓬蓬樹葉
+受此啟發我也想嘗試實作一次效果，讓我離目標更進一步。
 
-### 成果展示
+### 成果展示 +
 
-慣例先展示成果
+首先！先展示成果吧。我找了一個樹木的 3D 模型，沿著樹葉的 Mesh 資料生成了許多純色方塊，讓它看起來就像畫出來的一樣。
 
 {{< resources/image "result-1.gif" >}}
 
-## 研究
+## 研究 +
 
-解釋一下研究過程和原理
+現在請讓我回過頭解釋一下過程和原理，也是一波三折阿。
 
-### 模型採樣 
+### 模型採樣 +
 
-首先，第一步就是要想辦法對模型採樣，我預期透過 compute shader 進行計算，但畢竟它除錯難度太高，還是先透過 C# 做實驗
+首先，既然要沿著表面生成，第一步就要想辦法取得模型的資料。3D 模型是以許多的三角面組成方式而成，而每個面都會有三個頂點，模型儲存這些資料的方式則是透過頂點陣列與索引陣列。
 
-再表面生成得要取得模型的資料，Mesh 可以用  vertices 取的頂點 triangles 取的頂點索引，每個面由三個頂點構成，三個索引
+{{< resources/image "mesh.jpg" "50%" >}}
 
-{{< resources/image "mesh.jpg" >}}
-
-```csharp
-int[] triangles = mesh.triangles;
-Vector3[] vertices = mesh.vertices;
-```
-
-每三個 triangles index 會映射到面的三個頂點，因此只要遍歷索引，就能映射到頂點表上重建模型
+在 Unity 中可以透過 `Mesh.vertices` 與 `Mesh.triangles` 取得我們要的資料。模型以以三個 `triangles` 為單位表示一個面，只要將索引映射到 `vertices` 就能取得頂點座標，建構出模型的三角面，只要遍歷所有 `triangles` 就能重建整個模型的樣子。
 
 ```csharp
 void ForeachFace()
@@ -76,24 +68,22 @@ void ForeachFace()
     Vector3[] vertices = surface.vertices;
     int[] triangles = surface.triangles;
 
-    Matrix4x4 transformMatrix = transform.localToWorldMatrix;
-
     for (int i = 0; i < triangles.Length; i += 3)
     {
-        Vector3 pointA = transformMatrix.MultiplyPoint(vertices[triangles[i + 0]]);
-        Vector3 pointB = transformMatrix.MultiplyPoint(vertices[triangles[i + 1]]);
-        Vector3 pointC = transformMatrix.MultiplyPoint(vertices[triangles[i + 2]]);
+        Vector3 pointA = vertices[triangles[i + 0]];
+        Vector3 pointB = vertices[triangles[i + 1]];
+        Vector3 pointC = vertices[triangles[i + 2]];
 
         DrawTriangle(pointA, pointB, pointC);
     }
 }
 ```
 
-{{< resources/image "mesh-wireframe.jpg" >}}
+{{< resources/image "mesh-wireframe.jpg" "80%" >}}
 
-### 隨機取點
+### 隨機取點 +
 
-將所有的面取出後 ，只要在三個點之間隨機生成，就能獲得位於表面的位置了，簡單的方法就是透過兩個插值，將隨機值輸入權重，來產生面上的隨機位置
+取得整個模型的資料後，只要以面為單位進行隨機生成就能達成散佈效果了。最簡單的就是透過兩個插值，計算出在表面上的位置，將隨機輸入權重以產生表面上的隨機位置。
 
 ```csharp
 Vector3 rndBottom = Vector3.Lerp(pointA, pointB, UnityEngine.Random.value);
@@ -102,25 +92,27 @@ Vector3 rndPoint = Vector3.Lerp(rndBottom, pointC, UnityEngine.Random.value);
 scatterPoints.Add(rndPoint);
 ```
 
-{{< resources/image "triangle-random.gif" >}}
+{{< resources/image "triangle-random.gif" "80%" >}}
 
-只要對模型的每個面都進行數次，將結果顯示就能得到類似全息圖的樣子了
+大量生成後，將產生的結果視覺化就能得到類似全息圖的樣子了。
 
-{{< resources/image "scatted-1.jpg" >}}
+{{< resources/image "scatted-1.jpg" "80%" >}}
 
-### 機率修正
+### 機率修正 +
 
-但這種算法會產生一個問題，那就是機率不平均，可以看到第二次插值朝向其中一點的密度比較高
+從上面的方塊可以明顯看出角落的聚集了更多點點，這是插值算法的問題，因為機率不平均，可以透過平均分佈來視覺化機率，我們能看到第二次插值指向頂點的一端會有更高的密度。
 
-{{< resources/image "triangle-probability.jpg" >}}
+{{< resources/image "triangle-probability.jpg" "80%" >}}
 
-在三角面上無法平均的隨機，但如果是四角面就不同了，而每個矩形也都是由兩個三角形組成的
+我沒有找到能直接在三角型中平均隨機的算法，但是矩形、平行四邊形就不同了，它們能很好的計算出平均的散佈，因此我們要轉換思路，把四邊形視作兩個三角形計算。
 
-{{< resources/image "rectangle.gif" >}}
+{{< resources/image "rectangle.gif" "80%" >}}
 
-因此我們只要在方形上隨機生成，然後再判斷是否超出範圍，把超出到另一個三角形的點重新映射回原本的三角形上就好
+先在四邊形上隨機生成，再把超出到另一個三角形的點重新映射回原本的三角形，如此一來就不會有不平均的問題了。
 
-{{< resources/image "rectangle-remapping.gif" >}}
+{{< resources/image "rectangle-remapping.gif" "80%" >}}
+
+檢查插值的數值，當水平與垂直的權重相加大於一時，就代表位置會超出三角型的邊界，只要透過反轉權重就能讓它回到原本的三角行了。
 
 ```csharp
 float abRnd = UnityEngine.Random.value;
@@ -137,34 +129,34 @@ Vector3 acShift = Vector3.Lerp(Vector3.zero, c - a, acRnd);
 return a + abShift + acShift;
 ```
 
-如此就能得出機率平均的散佈了
+{{< resources/image "rectangle-probability.jpg" "80%" >}}
 
-{{< resources/image "rectangle-probability.jpg" >}}
+### 數量修正 +
 
-### 生成數量
+為了保持實驗簡單，我直接指定每個面上的採樣次數，當輸入 5 的時候，算法會遍歷整個模型並對所有面隨機生成五次位置。但隨著更多的應用條件出現，我發現這種作法會導致生成結果不理想，因為面數更高的模型會產生更大量的點，並且讓每面的「密度」都不穩定，大面看起來會更稀疏，而之小面會過度擁擠。
 
-剛開始我是指定數量決定每面要生多少個點，但這會導致生成數量受到模型面數的直接影響，相同數值會讓大面看起來密度較低，反之小面看起來密度過高。
+{{< resources/image "instance-count.jpg" "70%" >}}
 
-{{< resources/image "instance-count.jpg" >}}
+為了維持結果穩定，我將輸入的參數從「次數」改變為「密度」，讓算法根據每個面所擁有的「面積」動態改變生成次數。原本我用一連串計算推算三角形的高，再換算出面積，但後來發現能直接用外積長度 / 2 取得結果，花了一點時間消化原理，感謝朋友題點。
 
-為了維持數量的穩定，我改成根據面積計算生成數量，原本我用一連串計算推算三角形的高，但後來發現能直接透過外積 corss 計算平行四邊形的面積
+{{< resources/image "triangle-area.jpg" "80%" >}}
 
-{{< resources/image "triangle-area.jpg" >}}
+首先，在線性代數中我們能透過行列式算出單位面積在線性變換中產生的變化量，因此只要將三角型的三個頂點 `ABC` 換算成向量 `AB` 與向量 `AC`，作為行列式的輸入，就能求得向量構成的平行四邊形面積。
 
-因為頂點是向量 ，行列式可以算出面積的變化量，而外積的結果就是純量面積 * 向量法線
+{{< resources/image "determinant.gif" "80%" "擷取自 3B1B 的 Essence of linear algebra 系列" >}}
 
-{{< resources/image "corss.jpg" >}}
+而在三維空間中，則可以透過外積函式 `corss` 達成目標。將兩個向量輸入至外積函式，會取得另一個垂直於兩向量的法線，而這個法線長度同時也代表了平行四邊型的面積。
 
-2.5 是影片中範例的外積結果，與我這無關
+{{< resources/image "corss.jpg" "80%" "擷取自 3B1B 的 Essence of linear algebra 系列" >}}
 
-因此我只要求得外積的長度，除二就是我要的三角形面積了
+因此，三維中的三角形面積就能透過外積長度 / 2 直接取得，相當快速。
 
 ```csharp
 Vector3 cross = Vector3.Cross(pointB - pointA, pointC - pointA);
 float area = length(cross) / 2;
 ```
 
-生成參數從數量改成每單位面積的密度，在生成時計算出每面正確的生成量
+最後再將面積乘上輸入的密度值，就能確保更大面積的區域會生成更多點點，反之更小的也會降低數量，維持整體密度平均。
 
 ```csharp
 float density;
@@ -173,13 +165,11 @@ int amount = area * density;
 for(int i = 0; i < amount; i++) { }
 ```
 
-如此一來，即使放大表面積，生成次數也會自動增加以保持密度穩定
+{{< resources/image "instance-density.gif" "80%" >}}
 
-{{< resources/image "instance-density.gif" >}}
+### 重疊修正 +
 
-### 平均分布
-
-最後，完全隨機的結果可能發生重疊，所以我把生成改成真正的平均分布，用索引值映射到矩形上，讓生成結果整齊排列
+完全隨機的結果可能發生重疊，這在實際應用上不是個理想的現象，所以我把生成方式改成真正的平均分佈，將索引平均映射到矩形範圍中，產生整齊的結果。
 
 ```csharp
 for(int i = 0; i < amount; i++)
@@ -189,37 +179,58 @@ for(int i = 0; i < amount; i++)
 }
 ```
 
-{{< resources/image "tidy-remap.jpg" >}}
+因為機率修正那部份的改動，導致平均映射又會在三角型重新映射時與其他位置重疊，我嘗試只生成一半的點，透過重新映射填滿三角形。
 
-但三角隨機的重新映射會導致太整齊的資料重疊，最後決定忍痛捨棄一半的資料，雖然效能直接對折，但至少結果是更理想的 
+{{< resources/image "tidy-remap.jpg" "80%" >}}
 
-除非能直接平均映射在三角形上，不然從矩形生的話可能都不理想
+但這樣還是可能發生重疊問題，可以看到接縫處的樣子並不理想，所以最後決定忍痛捨棄一半的資料，直接在整個矩形範圍生成，雖然會導致並行的效能對折，但至少結果是理想的。
 
-{{< resources/image "tidy.gif" >}}
+{{< resources/image "tidy.gif" "80%" >}}
 
-法線插值 
+<p><c>
+註：生成結果斜斜的是因為我沒捨棄計算時的小數點資料，因為捨去的誤差可能導致某些結果重疊，我也不清楚具體原因。
+</c></b>
 
-模型的頂點除了位置以外開會攜帶發法線  計算方法依樣 輸入進三角插值就好
+三角行在各方面來說都有點麻煩呢，不知道有沒有不用重新映射也能達到平均分佈的算法。
 
-有了法線就能知道點朝向的方向 我可以拿他根據法線方向擠出
+### 並行生成 +
 
-{{< resources/image "extrude.gif" >}}
+最後一步，為了在表面上生出很多很多的點，我也把計算搬運到計算著色器中了。算法與 C# 中基本相同，只是資料傳遞上有些改變，需要透過 `ComputeBuffer` 將模型資料傳入 GPU 中才能計算，而生成的結果也會被保存在 GPU Buffer 裡。
 
-### 並行生成
-
-最後 算法研究完畢 就是搬運到 Compute shader 上了 把模型資料傳進 buffer 給 shader 用
-
-```csharp
+```hlsl
 StructuredBuffer<int> trianglesBuffer;
 StructuredBuffer<float3> verticesBuffer;
-StructuredBuffer<float3> normalsBuffer;
+AppendStructuredBuffer<float3> scatterBuffer;
 ```
 
-並行的威力 及時生成十萬個點都沒問題 一直閃示因為每次生都用新的 seed
+並行是以面為單位進行的，因此在複雜的模型上能發揮更好的表現。這裡就不解釋 Compute Shader 的細節了，有興趣的人可以參考我的筆記[【筆記】初學指南，計算著色器]({{< ref "\learn\compute-shader\compute-shader-basis.md" >}})。
 
-{{< resources/image "compute-istance.gif" >}}
+```hlsl
+[numthreads(64, 1, 1)]
+void ScatterKernel (uint3 id : SV_DispatchThreadID)
+{
+    if(id.x >= _FaceCount) return;
+   
+    int index = id.x * 3;
+    float3 vertA = scatterBuffer[trianglesBuffer[index + 0]];
+    float3 vertB = scatterBuffer[trianglesBuffer[index + 1]];
+    float3 vertC = scatterBuffer[trianglesBuffer[index + 2]];
 
-轉移計算到 Compute Shader 錯誤的隨機函式
+    float area = length(cross(vertB - vertA, vertC - vertA)) / 2;
+    
+    int count = area * _Density;
+    for(int i = 0; i < count; i++)
+    {
+        //...
+    }
+}
+```
+
+透過偉大圖學的力量，用並行一口氣生成十萬個點，每幀即時刷新都不是問題。
+
+{{< resources/image "compute-istance.gif" "80%" "一直閃是因為每次更新也會改變 seed" >}}
+
+## 感謝閱讀
 
 ### 結果渲染
 
@@ -227,7 +238,7 @@ StructuredBuffer<float3> normalsBuffer;
 
 {{< resources/image "result-2.gif" >}}
 
-## 感謝閱讀
+{{< outpost/likecoin >}}
 
 ### 參考資料
 

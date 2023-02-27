@@ -6,7 +6,7 @@ lastmod: 2023-02-13T19:25:53+08:00
 draft: true
 
 description:
-tags: []
+tags: [procedure-generation]
 
 socialshare: true
 
@@ -26,7 +26,7 @@ feature: "/devlog/technical/surface-scatter-2/featured.jpg"
 # listable: [recommand, all]
 ---
 
-接續上篇[【日誌】沿著表面隨機生成]()
+接續上篇[【日誌】沿著表面隨機生成]({{< ref "devlog/technical/surface-scatter-1.md" >}})
 
 <!--more-->
 
