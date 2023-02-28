@@ -31,11 +31,11 @@ showToc: false
 
 ---
 
-## 關於樂小呈
+## 關於小呈 (Angus)
 
-HIHI 我是一位遊戲開發者，學習遊戲開發五年，擅長的工具為 Unity Engine 與 C#，夢想是成為遊戲程式、技術美術或圖形工程師？雖然自己也還不清楚，但既然方向是正確的，何不多走一段路再決定要到哪去 :D
+嗨！我是一位遊戲開發者，學習遊戲開發五年，目前 21 歲。擅長的工具為 Unity Engine 與 C#，夢想是當遊戲開發者，成為遊戲程式、技術美術或圖形工程師？雖然自己也還不清楚，但既然方向是正確的，我想多走一些路再決定要到哪去 :D
 
-聯絡信箱 angus9456@gmail.com
+聯絡信箱 : angus9456@gmail.com
 
 ### 技能樹
 
@@ -45,8 +45,14 @@ HIHI 我是一位遊戲開發者，學習遊戲開發五年，擅長的工具為
 - Shader Programming (HLSL, Unlit-Shader, Image-Effect)
 ```
 
-```other
-- Documentation (Technical, Note, Blog)
+<!-- 
+```Modeling
+- Blender (Modeling, UV Unwarp)
+```
+-->
+
+```Other
+- Documentation (Technical, Planning, Blog)
 ```
 
 ### 經歷
@@ -65,7 +71,7 @@ HIHI 我是一位遊戲開發者，學習遊戲開發五年，擅長的工具為
 
 ## 關於這個網站
 
-這裡是我在[巴哈小屋](https://home.gamer.com.tw/homeindex.php?owner=angus945)之外的另一個空間。相較於巴哈，此處會以專業向的內容為主，包括開發日誌、學習筆記以及個人文章等，所有內容都會盡可能解釋的淺顯易懂，將以教致學作為作為文章的寫作方針。目標是打造出像 [The Book of Shaders](https://thebookofshaders.com/) 一樣有趣的互動內容，希望能向讀者們分享學習樂趣。
+這裡是我在巴哈姆特之外的另一個空間，此處會以專業向的內容為主，包括開發日誌、學習筆記以及個人文章等，所有內容都會盡可能解釋的淺顯易懂，將以教致學作為作為文章的寫作方針。目標是打造出像 [The Book of Shaders](https://thebookofshaders.com/) 一樣有趣的互動內容，希望能向讀者們分享學習樂趣。
 
 網站的背景是透過 GLSL 實時渲染的，每次重新整理都會有變化歐～
 
@@ -96,6 +102,4 @@ HIHI 我是一位遊戲開發者，學習遊戲開發五年，擅長的工具為
 
 感謝提供網路資源的廣大社群，以及陪伴我自學的朋友們。
 
-感謝所有機遇以及閱讀到這裡的你 :D
-
-
+感謝所有機遇與閱讀到這裡的你 :D

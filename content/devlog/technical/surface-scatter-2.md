@@ -1,7 +1,7 @@
 ---
-title: "【日誌】讓球體長滿花花"
-date: 2023-02-13T19:25:53+08:00
-lastmod: 2023-02-13T19:25:53+08:00
+title: "【日誌】自動場景植被生成"
+date: 2023-02-27
+# lastmod: 2023-03-01
 
 draft: true
 
@@ -26,31 +26,50 @@ feature: "/devlog/technical/surface-scatter-2/featured.jpg"
 # listable: [recommand, all]
 ---
 
-接續上篇[【日誌】沿著表面隨機生成]({{< ref "devlog/technical/surface-scatter-1.md" >}})
+本篇內容是[【日誌】沿著表面隨機生成]({{< ref "devlog/technical/surface-scatter-1.md" >}})的後續，添加更多實用的生成屬性。
 
 <!--more-->
 
-<!--  [【日誌】沿著表面隨機生成]({{< ref "" >}})。 -->
-
 ## 成果展示
 
+<!-- TODO 成果 -->
+
+讓球體佈滿花朵
 {{< resources/image "flower-ball.gif" >}}
 
-整合功能 開始往真實應用 思考
+## 更進一步 -
 
-bake texture 
+整合功能 開始往真實應用 思考需求
+
+### 多重目標
+
+針對單一物件的採樣 改成能對多個物件 
+
+場景中會有大量物件 場景生成時自動找出物件 輸入
 
 ### 儲存設定
 
-原本的程式只能對一個物體採樣 重構之後 能選擇多個目標 比較貼近實際需求 例如美術編輯好場景之後 自動長出植被
+<!-- 原本的程式只能對一個物體採樣 重構之後 能選擇多個目標 比較貼近實際需求 例如美術編輯好場景之後 自動長出植被 -->
+
+我第一個想到的是重複使用性，
+
+屬性 
+
+相似 生成規則
 
 還有將一些參數移到 scriptable object 能把生成設定處存起來 預先設計好規則來使用
 
 {{< resources/image "multiple-target.gif" >}}
 
-## 更進一步
+### 隨機數值
+
+隨機化 才不會 看起來太過一致
 
 讓每個點生成的時候攜帶隨機值 用來後續計算 三維 用顏色顯示
+
+```csharp
+AppendStructuredBuffer<float3> randomize;
+```
 
 {{< resources/image "random.gif" >}}
 
@@ -60,9 +79,9 @@ bake texture
 {{< resources/image "normal-glitch.gif" >}}
 
 ```csharp
-StructuredBuffer<float3> positions;
-StructuredBuffer<float3> directions;
-StructuredBuffer<float3> randomize;
+AppendStructuredBuffer<float3> positions;
+AppendStructuredBuffer<float3> directions;
+AppendStructuredBuffer<float3> randomize;
 ```
 
 所以把三個 Append 合併成 struct 確保資料是正確的
@@ -125,6 +144,8 @@ dirMat[2] = float3(left.z, direction.z, forwrad.z);
 
 最麻煩的部分就這樣了 
 
+### 生成變化
+
 位移
 
 接著就是基本的 Transform 位移縮放旋轉 就不贅述這部分計算了
@@ -143,6 +164,18 @@ dirMat[2] = float3(left.z, direction.z, forwrad.z);
 
 {{< resources/image "randomize.gif" >}}
 
+除此之外 重構才注意到 矩陣乘法不想要位移的話 w 0 可以撤銷 不用另外建一個矩陣
+
+```csharp
+float3 vertexA = mul(_LocalToWorldMat, float4(verticesBuffer[indexA], 1)).xyz;
+float3 vertexB = mul(_LocalToWorldMat, float4(verticesBuffer[indexB], 1)).xyz;
+float3 vertexC = mul(_LocalToWorldMat, float4(verticesBuffer[indexC], 1)).xyz;
+
+float3 normalA = mul(_LocalToWorldMat, float4(normalsBuffer[indexA], 0)).xyz;
+float3 normalB = mul(_LocalToWorldMat, float4(normalsBuffer[indexB], 0)).xyz;
+float3 normalC = mul(_LocalToWorldMat, float4(normalsBuffer[indexC], 0)).xyz;
+```
+
 ### 生成遮罩
 
 目前是所有採樣的表面都會生成 但實際情況可能不同 有些地方不想生
@@ -157,24 +190,19 @@ dirMat[2] = float3(left.z, direction.z, forwrad.z);
 
 {{< resources/image "filter-fade.gif" >}}
 
-### 矩陣乘法
-
-重構才注意到 矩陣乘法不想要位移的話 w 0 可以撤銷 不用另外建一個矩陣
-
-```csharp
-float3 offet = _LocalToWorldMat._m03_m13_m23;
-float3 vertexA = mul(_LocalToWorldMat, float4(verticesBuffer[indexA], 1)).xyz;
-float3 vertexB = mul(_LocalToWorldMat, float4(verticesBuffer[indexB], 1)).xyz;
-float3 vertexC = mul(_LocalToWorldMat, float4(verticesBuffer[indexC], 1)).xyz;
-
-float3 normalA = mul(_LocalToWorldMat, float4(normalsBuffer[indexA], 0)).xyz;
-float3 normalB = mul(_LocalToWorldMat, float4(normalsBuffer[indexB], 0)).xyz;
-float3 normalC = mul(_LocalToWorldMat, float4(normalsBuffer[indexC], 0)).xyz;
-```
-
 ## 感謝閱讀
 
 {{< resources/image "result.gif" >}}
+
+開學了 加上還沒有急迫的應用需求 先擱置 去研究其他東西
+
+### 更多
+
+噪聲過濾
+
+分支
+
+優化...但一竅不通
 
 ### 缺陷 
 

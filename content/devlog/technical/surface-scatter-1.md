@@ -52,7 +52,7 @@ resources: /devlog/technical/surface-scatter-1/
 
 ## 研究 +
 
-現在請讓我回過頭解釋一下過程和原理，也是一波三折阿。
+現在請讓我回過頭解釋過程和原理，也是一波三折阿。
 
 ### 模型採樣 +
 
@@ -230,22 +230,22 @@ void ScatterKernel (uint3 id : SV_DispatchThreadID)
 
 {{< resources/image "compute-istance.gif" "80%" "一直閃是因為每次更新也會改變 seed" >}}
 
-## 感謝閱讀
+## 感謝閱讀 +
 
-### 結果渲染
+### 結果渲染 +
 
-而且生成完畢的 buffer 還能直接傳給渲染管線 拿來做渲染的計算 蓬蓬樹
+最後我將生成完畢的 buffer 傳入渲染管線，在樹木模型上生成了許多方塊樹葉，產生類似繪畫的樹葉效果。
 
 {{< resources/image "result-2.gif" >}}
 
 {{< outpost/likecoin >}}
 
-### 參考資料
+### 參考資料 +
 
-[https://www.maths.usyd.edu.au/u/MOW/vectors/vectors-11/v-11-7.html](https://www.maths.usyd.edu.au/u/MOW/vectors/vectors-11/v-11-7.html)
+[Generate random points in a triangle](https://blogs.sas.com/content/iml/2020/10/19/random-points-in-triangle.html)
 
-[https://blogs.sas.com/content/iml/2020/10/19/random-points-in-triangle.html](https://blogs.sas.com/content/iml/2020/10/19/random-points-in-triangle.html)
+[Vector products and the area of a triangle](https://www.maths.usyd.edu.au/u/MOW/vectors/vectors-11/v-11-7.html)
 
-[https://www.youtube.com/watch?v=Ip3X9LOh2dk&list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab&index=6](https://www.youtube.com/watch?v=Ip3X9LOh2dk&list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab&index=6)
+[外積 | 線性代數的本質 第八章](https://www.youtube.com/watch?v=eu6i7WJeinw&list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab&index=10)
 
-[https://www.youtube.com/watch?v=eu6i7WJeinw&list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab&index=10](https://www.youtube.com/watch?v=eu6i7WJeinw&list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab&index=10)
+[行列式 | 線性代數的本質 第五章](https://www.youtube.com/watch?v=Ip3X9LOh2dk&list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab&index=6)
