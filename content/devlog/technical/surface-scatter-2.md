@@ -26,30 +26,26 @@ feature: "/devlog/technical/surface-scatter-2/featured.jpg"
 # listable: [recommand, all]
 ---
 
-本篇內容是[【日誌】沿著表面隨機生成]({{< ref "devlog/technical/surface-scatter-1.md" >}})的後續，添加更多實用的生成屬性。
+本篇內容是[【日誌】沿著表面隨機生成]({{< ref "devlog/technical/surface-scatter-1.md" >}})的後續，添加更多實用的生成屬性，更據地形生成不同的植被。
 
 <!--more-->
 
 ## 成果展示
 
-<!-- TODO 成果 -->
+生成數目
+{{< resources/image "result-tree.gif" >}}
 
-讓球體佈滿花朵
-{{< resources/image "flower-ball.gif" >}}
+生成水草
+{{< resources/image "result-aquatic.gif" >}}
 
-## 更進一步 -
+生成花海
+{{< resources/image "result-flower.gif" >}}
+
+## 更進一步
 
 整合功能 開始往真實應用 思考需求
 
-### 多重目標
-
-針對單一物件的採樣 改成能對多個物件 
-
-場景中會有大量物件 場景生成時自動找出物件 輸入
-
 ### 儲存設定
-
-<!-- 原本的程式只能對一個物體採樣 重構之後 能選擇多個目標 比較貼近實際需求 例如美術編輯好場景之後 自動長出植被 -->
 
 我第一個想到的是重複使用性，
 
@@ -61,19 +57,10 @@ feature: "/devlog/technical/surface-scatter-2/featured.jpg"
 
 {{< resources/image "multiple-target.gif" >}}
 
-### 隨機數值
+### 問題修正
 
-隨機化 才不會 看起來太過一致
+法線跳動
 
-讓每個點生成的時候攜帶隨機值 用來後續計算 三維 用顏色顯示
-
-```csharp
-AppendStructuredBuffer<float3> randomize;
-```
-
-{{< resources/image "random.gif" >}}
-
-### 法線跳動  
 我猜測是多個 AppendBuffer 的執行時機問題 索引沒有對上 因為並行 不同　kernel 之間的資料穿插
 
 {{< resources/image "normal-glitch.gif" >}}
@@ -96,6 +83,28 @@ struct ScatterPoint
 
 AppendStructuredBuffer<ScatterPoint> scatterBuffer;
 ```
+
+密度修正
+
+原本已面為單位 計算生成數量 但低於 1 
+
+限制至少一個 但高密度的模型 面小 會很密集
+
+```hlsl
+data.count = max(1, target.area * _Density);
+```
+
+{{< resources/image "density-1.gif" >}}
+
+找出進位時機
+
+```hlsl
+float last = floor(target.area * (index - 1) * _Density);
+float current = floor(target.area * index * _Density);
+data.count = max(current - last, target.area * _Density);
+```
+
+{{< resources/image "density-2.gif" >}}
 
 ### 對齊方向 
 
@@ -158,6 +167,29 @@ dirMat[2] = float3(left.z, direction.z, forwrad.z);
 
 {{< resources/image "extrude.gif" >}}
 
+
+噪聲 在平面上滑動 避免太過整齊
+
+```hlsl
+value.mapping += (rnd1To2(value.seed) - 0.5) * _Noising;
+```
+
+{{< resources/image "noise.gif" >}}
+
+
+### 隨機數值
+
+隨機化 才不會 看起來太過一致
+
+讓每個點生成的時候攜帶隨機值 用來後續計算 三維 用顏色顯示
+
+```csharp
+AppendStructuredBuffer<float3> randomize;
+```
+
+{{< resources/image "random.gif" >}}
+
+
 隨機
 
 以及 當然要有隨機拉 (隨機應該往兩個方向才對 錄的時候才注意到寫錯
@@ -182,9 +214,11 @@ float3 normalC = mul(_LocalToWorldMat, float4(normalsBuffer[indexC], 0)).xyz;
 
 可能太低或太高的 例如只想生成在水平面下
 
+{{< resources/image "filter-height.gif" >}}
+
 或是角度 例如不想讓植物長在山壁上 簡單的距離場計算
 
-{{< resources/image "mask.gif" >}}
+{{< resources/image "filter-direction.gif" >}}
 
 過度 不希望邊界太銳利的話 也可以利用隨機值過度
 
@@ -192,9 +226,13 @@ float3 normalC = mul(_LocalToWorldMat, float4(normalsBuffer[indexC], 0)).xyz;
 
 ## 感謝閱讀
 
-{{< resources/image "result.gif" >}}
+{{< resources/image "result-terrain.gif" >}}
+
+{{< resources/image "result-dinamic.gif" >}}
 
 開學了 加上還沒有急迫的應用需求 先擱置 去研究其他東西
+
+注意事項 Undo 會卡死
 
 ### 更多
 
@@ -204,20 +242,18 @@ float3 normalC = mul(_LocalToWorldMat, float4(normalsBuffer[indexC], 0)).xyz;
 
 優化...但一竅不通
 
-### 缺陷 
-
-她能同時採樣多個物體 但無法防止重疊的位置
-
-{{< resources/image "overlap.jpg" >}}
-
-還有 生成的點會受到採樣 mesh 的每個單面的影響 
-
-{{< resources/image "count.jpg" >}}
+和 Marching Cube 應該能 environment generate 
 
 發現一件可能知道但一直不敢面對的事實
 我一直認為做出工具就能達到自己想要的目的了，但明明我沒有足夠的能力使用自己做的工具
 
 {{< resources/image "result-faild.jpg" >}}
+
+### 缺陷 
+
+她能同時採樣多個物體 但無法防止重疊的位置
+
+{{< resources/image "overlap.jpg" >}}
 
 ### 參考
 
