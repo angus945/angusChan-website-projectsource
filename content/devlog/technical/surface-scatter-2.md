@@ -60,7 +60,7 @@ feature: "/devlog/technical/surface-scatter-2/featured.jpg"
 
 將生成參數移到 ScriptableObject，儲存在資料夾中，用物件的形式也更好進行管理與共用。
 
-{{< resources/image "multiple-target.gif" >}}
+{{< resources/image "multiple-target.gif" "80%" >}}
 
 ### 問題修正 -
 
@@ -68,7 +68,7 @@ feature: "/devlog/technical/surface-scatter-2/featured.jpg"
 
 在表面採樣的時候，除了計算位置以外還會對法線進行插值計算，用於後續使用。但在一些特定的物體上會遇到髮線隨機亂跳的現象，讓我後續計算出錯。
 
-{{< resources/image "normal-glitch.gif" >}}
+{{< resources/image "normal-glitch.gif" "80%" >}}
 
 根據之前寫 ComputeShader 的經驗，我猜測是多個 Buffer 的 Append 執行時機導致。起初我透過多個 Buffer 分別儲存生成的各項屬性，想說「一起添加」的元素應該會有相同的 Index，這是合理的...在線性執行時，但在並行會有多個執行續同時進行自己的添加動作，導致實際的添加順序不可預測，發生索引穿插的現象，讓生成的點使用錯誤的髮線。
 
@@ -109,7 +109,7 @@ AppendStructuredBuffer<ScatterPoint> scatterBuffer;
 data.count = max(1, target.area * _Density);
 ```
 
-{{< resources/image "density-1.gif" >}}
+{{< resources/image "density-1.gif" "80%" >}}
 
 為了修正這點，我們不能粗暴的限制數值，必須找回這些遺失的小數，才能知道真正該生成的數量有多少。由於並行計算無法做累積數值的動作，所以我只能假設所有面的面積都相似，將生成數量乘上面自身的索引值，「猜測」目前為止生成累績的小數數值（例：目前生成了 3 * 1.4 = 4.2 個點）。
 
@@ -125,41 +125,31 @@ float currentCount = target.area * index * _Density;
 float carry = floor(currentCount) - floor(lastCount);
 ```
 
-如此一來，就算生成數量不足 1，留下的小數點也能被計算，確保物件能在正確的時機生成。
+如此一來，就算生成數量不足 1，留下的小數點也能被計算，確保密度低時的生成表現理想。
 
-{{< resources/image "density-2.gif" >}}
+{{< resources/image "density-2.gif" "80%" >}}
 
-### 對齊方向 
+### 對齊方向 -
 
-遇到的最大難題 生成的點雖然有處存方向 但那是獨立的向量 而不是轉換矩陣 如果要讓 GPU instance 正確計算物體的旋轉 得要傳矩陣才行
+雖然生成時會透過法線計算點朝向的方向，但那只是獨立的向量資料，無法讓生成的物件對齊。物件在渲染的時候，他的位移、旋轉與縮放是透過 4x4 的齊次座標矩陣儲存的，vertex shader 會將頂點座標轉換成世界座標，用於後續的轉換工作。
 
-{{< resources/image "not-align.gif" >}}
+{{< resources/image "not-align.gif" "80%" >}}
 
-要怎麼讓物體朝向我要的方向呢 ? 
+要怎麼讓物體指向我要的方向呢？最直觀的方式是把法線轉換成三軸的旋轉角度，在用三角函數建立三維空間的旋轉矩陣，但這樣太慢了，無論寫起來還是運作起來。
 
-可以把方向向量換算成 角度 在用三角函數換算旋轉矩陣 但有更好的方式
+在二維的線性空間中，世界是由 <c>i-hat</c> 與 <r>j-hat</r> 兩個「向量軸」定義的，能透過 2x2 矩陣表示。當物體的原始向量（座標）與兩軸相乘後，就會得到他在線性變換中後的最終位置。
 
-矩陣是空間的線性變換 也可以視作一個向量空間的維度軸定義
+{{< resources/image "matrix-2x2.gif" "80%" >}}
 
-{{< resources/image "transformation.jpg" >}}
+而三維空間則多了一個 <span style="color:#4a94fe">k-hat</span>，同樣可以由 3x3 矩陣表示。因此我只要找出代表空間的三個軸向，就能將點轉向表面指向的方向了。
 
-參考 [https://www.youtube.com/watch?v=kYB8IZa5AuE](https://www.youtube.com/watch?v=kYB8IZa5AuE)
+{{< resources/image "matrix-3x3.jpg" "80%" >}}
 
-三維矩陣的三個欄 (column) 分別代表了線性空間的 三個軸軸向成
+我們能在生成點時用插值取得法向量 (up)，而側邊 (left) 則可以透過頂點相減取得，最後一步就是計算出指向正面 (forward) 的向量為何，能透過 `cross()` 函式取得。
 
-{{< resources/image "matrix3x3.jpg" >}}
+{{< resources/image "direction.gif" "80%" >}}
 
-因此我只要找出一個有我要的方向 與另外兩個垂直向量定義的空間就好 我們已經有法向量 與其中一邊 只要用 corss 再找出最後一個軸即可
-
-將他們組成
-
-註 : 查半天最後還是靠自己想通
-
-只要有方向的向量 和另一個垂直向量 就能求出指向方向的矩陣 
-
-{{< resources/image "direction.gif" >}}
-
-只要將定義出的軸作為旋轉矩陣 就能讓他朝向表面方向 要注意的是我要向上對齊 所以方向要輸入在 Y 軸
+最後只要透過這三個軸建立矩陣，就能獲得使點轉向表面方向的矩陣了。要注意我想向上對齊，所以方向要輸入在 <c>j-hat</c> 軸。
 
 ```csharp
 float3 direction;
@@ -172,54 +162,23 @@ dirMat[1] = float3(left.y, direction.y, forwrad.y);
 dirMat[2] = float3(left.z, direction.z, forwrad.z);
 ```
 
-{{< resources/image "align.gif" >}}
+{{< resources/image "align.gif" "80%" >}}
 
-最麻煩的部分就這樣了 
+### 生成屬性 -
 
-### 生成變化
+最麻煩的對齊完成後，位移、縮放與旋轉也不是問題，就不贅述這部分計算了。
 
-位移
+{{< resources/image "transform.gif" "80%" >}}
 
-接著就是基本的 Transform 位移縮放旋轉 就不贅述這部分計算了
+除了沿世界座標的位移，還有沿著表面方向的擠出效果，透過前面取得的方向矩陣就能達成。
 
-{{< resources/image "transform.gif" >}}
+{{< resources/image "extrude.gif" "80%" >}}
 
-擠出
+為了讓分佈更加自然，生成也添加了噪聲屬性，讓物體隨機在表面上偏移，破壞平均分佈的整齊感。
 
-以及沿著自身方向的擠出 Y 是表面方向朝上 XZ 則是表面的平面 把位移量乘上方向矩陣
+{{< resources/image "noise.gif" "80%" >}}
 
-{{< resources/image "extrude.gif" >}}
-
-
-噪聲 在平面上滑動 避免太過整齊
-
-```hlsl
-value.mapping += (rnd1To2(value.seed) - 0.5) * _Noising;
-```
-
-{{< resources/image "noise.gif" >}}
-
-
-### 隨機數值
-
-隨機化 才不會 看起來太過一致
-
-讓每個點生成的時候攜帶隨機值 用來後續計算 三維 用顏色顯示
-
-```csharp
-AppendStructuredBuffer<float3> randomize;
-```
-
-{{< resources/image "random.gif" >}}
-
-
-隨機
-
-以及 當然要有隨機拉 (隨機應該往兩個方向才對 錄的時候才注意到寫錯
-
-{{< resources/image "randomize.gif" >}}
-
-除此之外 重構才注意到 矩陣乘法不想要位移的話 w 0 可以撤銷 不用另外建一個矩陣
+除此之外，除錯才注意到矩陣相乘時能透過 w 軸分量設為零來抵銷位移計算，因為位移是矩陣第四欄與 vector.w 相乘的結果，之前都忽略了這件事。
 
 ```csharp
 float3 vertexA = mul(_LocalToWorldMat, float4(verticesBuffer[indexA], 1)).xyz;
@@ -231,21 +190,41 @@ float3 normalB = mul(_LocalToWorldMat, float4(normalsBuffer[indexB], 0)).xyz;
 float3 normalC = mul(_LocalToWorldMat, float4(normalsBuffer[indexC], 0)).xyz;
 ```
 
+### 隨機數值 +
+
+隨機是一定要的，畢竟自然物體不會是絕對整齊，每顆草木都有些為的差異存在。我讓每個點生成時根據索引產生一組隨機數值，可以傳入渲染管線中使用。
+
+{{< resources/image "random.gif" "80%" >}}
+
+隨機改變生成參數，讓物體生成時有隨機的旋轉、位移與縮放。
+
+{{< resources/image "randomize.gif" "80%" >}}
+
 ### 生成遮罩
+
+目前為止，
 
 目前是所有採樣的表面都會生成 但實際情況可能不同 有些地方不想生
 
-可能太低或太高的 例如只想生成在水平面下
+可能太低或太高的 
 
-{{< resources/image "filter-height.gif" >}}
+```hlsl
+filteValue = dot(planeDir, result.position);
+```
+
+{{< resources/image "filter-height.gif" "80%" >}}
 
 或是角度 例如不想讓植物長在山壁上 簡單的距離場計算
 
-{{< resources/image "filter-direction.gif" >}}
+```hlsl
+filteValue = dot(direction, result.direction);
+```
+
+{{< resources/image "filter-direction.gif" "80%" >}}
 
 過度 不希望邊界太銳利的話 也可以利用隨機值過度
 
-{{< resources/image "filter-fade.gif" >}}
+{{< resources/image "filter-fade.gif" "80%" >}}
 
 ## 感謝閱讀
 
@@ -283,3 +262,5 @@ float3 normalC = mul(_LocalToWorldMat, float4(normalsBuffer[indexC], 0)).xyz;
 [https://www.cgtrader.com/free-3d-models/exterior/landscape/low-poly-forest-nature-set-free-trial](https://www.cgtrader.com/free-3d-models/exterior/landscape/low-poly-forest-nature-set-free-trial)
 
 [https://www.cgtrader.com/items/644366/download-page](https://www.cgtrader.com/items/644366/download-page)
+
+參考 [https://www.youtube.com/watch?v=kYB8IZa5AuE](https://www.youtube.com/watch?v=kYB8IZa5AuE)
