@@ -30,7 +30,9 @@ feature: "/devlog/technical/surface-scatter-2/featured.jpg"
 
 <!--more-->
 
-## 更進一步
+<!-- TODO 統一用詞 -->
+
+## 更進一步 +
 
 基本的生成算法完成後，接著就是開始往真實應用思考需求，將各種可能的功能進行整合，讓系統更好使用。  
 
@@ -48,7 +50,7 @@ feature: "/devlog/technical/surface-scatter-2/featured.jpg"
 
 {{< resources/image "result-flower.gif" >}}
 
-### 儲存設定 -
+### 儲存設定 +
 
 我第一個想到的是重複使用性，
 
@@ -62,7 +64,7 @@ feature: "/devlog/technical/surface-scatter-2/featured.jpg"
 
 {{< resources/image "multiple-target.gif" "80%" >}}
 
-### 問題修正 -
+### 問題修正 +
 
 **法線跳動**
 
@@ -129,7 +131,7 @@ float carry = floor(currentCount) - floor(lastCount);
 
 {{< resources/image "density-2.gif" "80%" >}}
 
-### 對齊方向 -
+### 對齊方向 +
 
 雖然生成時會透過法線計算點朝向的方向，但那只是獨立的向量資料，無法讓生成的物件對齊。物件在渲染的時候，他的位移、旋轉與縮放是透過 4x4 的齊次座標矩陣儲存的，vertex shader 會將頂點座標轉換成世界座標，用於後續的轉換工作。
 
@@ -164,7 +166,7 @@ dirMat[2] = float3(left.z, direction.z, forwrad.z);
 
 {{< resources/image "align.gif" "80%" >}}
 
-### 生成屬性 -
+### 生成屬性 +
 
 最麻煩的對齊完成後，位移、縮放與旋轉也不是問題，就不贅述這部分計算了。
 
@@ -200,13 +202,11 @@ float3 normalC = mul(_LocalToWorldMat, float4(normalsBuffer[indexC], 0)).xyz;
 
 {{< resources/image "randomize.gif" "80%" >}}
 
-### 生成遮罩
+### 生成遮罩 +
 
-目前為止，
+目前為止，系統會每個傳入的表面都進行採樣，但實際應用上我們可能項限制物件生成的位置，設定物體只能、不能生在哪裡，於是著色器常用的經典技術「距離場」就派上用場了。
 
-目前是所有採樣的表面都會生成 但實際情況可能不同 有些地方不想生
-
-可能太低或太高的 
+根據特定平面進行裁剪，透過向量表示面的朝向，使用 `dot()` 函式將採樣點投影到平面的方向軸上，得出對於平面的最短距離，用於後續的過濾判斷。
 
 ```hlsl
 filteValue = dot(planeDir, result.position);
@@ -214,7 +214,7 @@ filteValue = dot(planeDir, result.position);
 
 {{< resources/image "filter-height.gif" "80%" >}}
 
-或是角度 例如不想讓植物長在山壁上 簡單的距離場計算
+也可以使用角度過濾，透過 `dot()` 函式檢測表面的夾角大小，如果不想讓植物長在山壁上，就能在當表面過於傾斜時把物件過濾掉。
 
 ```hlsl
 filteValue = dot(direction, result.direction);
@@ -222,45 +222,28 @@ filteValue = dot(direction, result.direction);
 
 {{< resources/image "filter-direction.gif" "80%" >}}
 
-過度 不希望邊界太銳利的話 也可以利用隨機值過度
+最後，如果不希望邊界太銳利的話，也可以利用隨機值產生過度範圍。
 
 {{< resources/image "filter-fade.gif" "80%" >}}
 
-## 感謝閱讀
+## 感謝閱讀 +
 
-{{< resources/image "result-terrain.gif" >}}
+大功告成，把地形的模型放進去就能自動生成植被了。地形是使用 Blender 製作的，原本想直接用 Unity Terrain，但它預設只有 Height Map 而已，模型資料是被系統隱藏的，有點可惜。
 
 {{< resources/image "result-dinamic.gif" >}}
 
-開學了 加上還沒有急迫的應用需求 先擱置 去研究其他東西
+我也多坐了幾個地形展示效果，只要生成規則設定好就能直接套用了。
 
-注意事項 Undo 會卡死
+{{< resources/image "result-terrain.gif" >}}
 
-### 更多
+有興趣的人可以玩玩看。但要注意這只是一個實驗玩具而已，有相當多操作缺陷與應用問題在，離能稱做工具還有一大段距離。
 
-噪聲過濾
+[ComputeShader Toolbox - PointCloudScatter](https://github.com/angus945/compute-shader-toolbox/tree/main/Assets/PointCloudScatter)
 
-分支
+因為能力不夠預測需要的功能，在沒有實際需求的情況下很難知道該做什麼，加上學校也開學了，個人規劃上比較希望廣泛的研究各種東西，而不是停在一個地方打磨，所以短期內不會完善這套系統，頂多想到什麼有趣的功能就加加看而已吧 :P
 
-優化...但一竅不通
+### 參考資料
 
-和 Marching Cube 應該能 environment generate 
+[Similar free VR / AR / Low poly 3D Models](https://www.cgtrader.com/free-3d-models/exterior/landscape/low-poly-forest-nature-set-free-trial)
 
-發現一件可能知道但一直不敢面對的事實
-我一直認為做出工具就能達到自己想要的目的了，但明明我沒有足夠的能力使用自己做的工具
-
-{{< resources/image "result-faild.jpg" >}}
-
-### 缺陷 
-
-她能同時採樣多個物體 但無法防止重疊的位置
-
-{{< resources/image "overlap.jpg" >}}
-
-### 參考
-
-[https://www.cgtrader.com/free-3d-models/exterior/landscape/low-poly-forest-nature-set-free-trial](https://www.cgtrader.com/free-3d-models/exterior/landscape/low-poly-forest-nature-set-free-trial)
-
-[https://www.cgtrader.com/items/644366/download-page](https://www.cgtrader.com/items/644366/download-page)
-
-參考 [https://www.youtube.com/watch?v=kYB8IZa5AuE](https://www.youtube.com/watch?v=kYB8IZa5AuE)
+[Essence of linear algebra - Linear transformations](https://www.youtube.com/watch?v=kYB8IZa5AuE)
