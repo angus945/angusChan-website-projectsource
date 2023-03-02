@@ -62,7 +62,7 @@ feature: "/devlog/technical/surface-scatter-2/featured.jpg"
 
 {{< resources/image "multiple-target.gif" >}}
 
-### 問題修正
+### 問題修正 -
 
 **法線跳動**
 
@@ -103,10 +103,7 @@ AppendStructuredBuffer<ScatterPoint> scatterBuffer;
 
 **密度修正**
 
-雖然生成數量已經修正為「面積 x 密度」，但這是單一面的計算，
-原本已面為單位 計算生成數量 但低於 1 
-
-限制至少一個 但高密度的模型 面小 會很密集
+雖然生成數量已經修正為「面積 x 密度」，但這是僅限於單一面的計算，為了避免生成數量小於一導致不生成任何物件，我將數量限制為至少 1 個。這能避免密度數值過低導致沒有任何物件生成，但也導致無論如何每面都會生成一個物件，以至於生成總數至少會等於模型面數。
 
 ```hlsl
 data.count = max(1, target.area * _Density);
@@ -114,14 +111,21 @@ data.count = max(1, target.area * _Density);
 
 {{< resources/image "density-1.gif" >}}
 
-找出進位時機 
+為了修正這點，我們不能粗暴的限制數值，必須找回這些遺失的小數，才能知道真正該生成的數量有多少。由於並行計算無法做累積數值的動作，所以我只能假設所有面的面積都相似，將生成數量乘上面自身的索引值，「猜測」目前為止生成累績的小數數值（例：目前生成了 3 * 1.4 = 4.2 個點）。
 
 ```hlsl
-index += _Seed;
-float last = floor(target.area * (index - 1) * _Density);
-float current = floor(target.area * index * _Density);
-data.count = max(current - last, target.area * _Density);
+float currentCount = target.area * index * _Density;
 ```
+
+取得了小數的累積數值，接著就是要判斷是不是累積超過一個點，或者說發生了「進位」現象。但要如何找出進位時機？只靠數值自身是無法判斷的，必須有東西參照才行，我們可以將「上一個面」生成的數量作為參照，將整數的數量相減就能知道是否發生進位。
+
+```hlsl
+float lastCount = target.area * (index - 1) * _Density;
+float currentCount = target.area * index * _Density;
+float carry = floor(currentCount) - floor(lastCount);
+```
+
+如此一來，就算生成數量不足 1，留下的小數點也能被計算，確保物件能在正確的時機生成。
 
 {{< resources/image "density-2.gif" >}}
 
