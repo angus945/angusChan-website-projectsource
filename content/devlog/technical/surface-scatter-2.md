@@ -30,48 +30,65 @@ feature: "/devlog/technical/surface-scatter-2/featured.jpg"
 
 <!--more-->
 
-## 成果展示
-
-生成數目
-{{< resources/image "result-tree.gif" >}}
-
-生成水草
-{{< resources/image "result-aquatic.gif" >}}
-
-生成花海
-{{< resources/image "result-flower.gif" >}}
-
 ## 更進一步
 
-整合功能 開始往真實應用 思考需求
+基本的生成算法完成後，接著就是開始往真實應用思考需求，將各種可能的功能進行整合，讓系統更好使用。  
 
-### 儲存設定
+### 成果展示 +
+
+樹木，調整生成範圍和允許的地形，不會在陡坡、水底與山頂生成。
+
+{{< resources/image "result-tree.gif" >}}
+
+水草，只能夠在水面高度一下的位置生成。
+
+{{< resources/image "result-aquatic.gif" >}}
+
+花海，只能在山脈的頂峰生長。
+
+{{< resources/image "result-flower.gif" >}}
+
+### 儲存設定 -
 
 我第一個想到的是重複使用性，
 
-屬性 
+以生成規則來說，通常一個植物（或東西）自然出現的條件是固定的，水草只會長在水底下、樹木沿著山壁生長，而高原風大寒冷，只有灌木花草等草本植物
 
-相似 生成規則
+因此我們能將生成「設定」與生成「物體」分開處存，如此的好處是能將設定重複使用
 
-還有將一些參數移到 scriptable object 能把生成設定處存起來 預先設計好規則來使用
+相似的植物不需要 重複調整生成條件 設定出一個高原植物的設定，給所有合適的物件共用
+
+將生成參數移到 ScriptableObject，儲存在資料夾中，用物件的形式也更好進行管理與共用。
 
 {{< resources/image "multiple-target.gif" >}}
 
 ### 問題修正
 
-法線跳動
+**法線跳動**
 
-我猜測是多個 AppendBuffer 的執行時機問題 索引沒有對上 因為並行 不同　kernel 之間的資料穿插
+在表面採樣的時候，除了計算位置以外還會對法線進行插值計算，用於後續使用。但在一些特定的物體上會遇到髮線隨機亂跳的現象，讓我後續計算出錯。
 
 {{< resources/image "normal-glitch.gif" >}}
+
+根據之前寫 ComputeShader 的經驗，我猜測是多個 Buffer 的 Append 執行時機導致。起初我透過多個 Buffer 分別儲存生成的各項屬性，想說「一起添加」的元素應該會有相同的 Index，這是合理的...在線性執行時，但在並行會有多個執行續同時進行自己的添加動作，導致實際的添加順序不可預測，發生索引穿插的現象，讓生成的點使用錯誤的髮線。
 
 ```csharp
 AppendStructuredBuffer<float3> positions;
 AppendStructuredBuffer<float3> directions;
 AppendStructuredBuffer<float3> randomize;
+
+[numthreads(64, 1, 1)]
+void ScatterKernel (uint3 id : SV_DispatchThreadID)
+{
+    //...
+    
+    positions.Append(position);
+    directions.Append(direction);
+    randomize.Append(random);
+}
 ```
 
-所以把三個 Append 合併成 struct 確保資料是正確的
+理解之後就不難修正了，只要把三個 Buffer 合併再一起，透過 struct 一口氣儲存就不用擔心穿插問題了。
 
 ```csharp
 struct ScatterPoint
@@ -84,8 +101,9 @@ struct ScatterPoint
 AppendStructuredBuffer<ScatterPoint> scatterBuffer;
 ```
 
-密度修正
+**密度修正**
 
+雖然生成數量已經修正為「面積 x 密度」，但這是單一面的計算，
 原本已面為單位 計算生成數量 但低於 1 
 
 限制至少一個 但高密度的模型 面小 會很密集
@@ -96,9 +114,10 @@ data.count = max(1, target.area * _Density);
 
 {{< resources/image "density-1.gif" >}}
 
-找出進位時機
+找出進位時機 
 
 ```hlsl
+index += _Seed;
 float last = floor(target.area * (index - 1) * _Density);
 float current = floor(target.area * index * _Density);
 data.count = max(current - last, target.area * _Density);
