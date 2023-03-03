@@ -1,6 +1,6 @@
 ---
 title: "【日誌】自動場景植被生成"
-date: 2023-02-27
+date: 2023-03-03
 # lastmod: 2023-03-01
 
 draft: true
@@ -11,13 +11,13 @@ tags: [procedure-generation]
 socialshare: true
 
 ## image for preview
-# feature: "/post/about-learning/featured.jpg"
+feature: "/devlog/technical/surface-scatter-2/featured.jpg"
 
 ## image for open graph
 # og: "/post/about-learning/featured.jpg"
 
 ## when calling "resources" shortcode, well link to static folder with this path 
-feature: "/devlog/technical/surface-scatter-2/featured.jpg"
+resources: "/devlog/technical/surface-scatter-2/"
 
 ## customize page background
 # background: [watercolor-A] 
@@ -26,35 +26,35 @@ feature: "/devlog/technical/surface-scatter-2/featured.jpg"
 # listable: [recommand, all]
 ---
 
-本篇內容是[【日誌】沿著表面隨機生成]({{< ref "devlog/technical/surface-scatter-1.md" >}})的後續，添加更多實用的生成屬性，更據地形生成不同的植被。
+本篇內容是[【日誌】沿著表面隨機生成]({{< ref "devlog/technical/surface-scatter-1.md" >}})的後續，我添加更多實用的生成屬性，能更據地形生成不同的植被。
 
 <!--more-->
 
 <!-- TODO 統一用詞 -->
 
-## 更進一步 +
+## 更進一步 +-
 
-基本的生成算法完成後，接著就是開始往真實應用思考需求，將各種可能的功能進行整合，讓系統更好使用。  
+上篇的內容是由一棵樹收尾的，展示了利用表面散佈的樹葉效果，但我相信他的潛力不僅止於此，便朝真實應用延伸功能，將各種可能的需求整合進去，讓系統更加豐富與人性化。  
 
-### 成果展示 +
+### 成果展示 +-
 
-樹木，調整生成範圍和允許的地形，不會在陡坡、水底與山頂生成。
+同樣，先來展示這次的成果！
 
-{{< resources/image "result-tree.gif" >}}
-
-水草，只能夠在水面高度一下的位置生成。
+水草群落，只能在水面高度以下生成的植物，透過新系統的遮罩限制物體生成高度。
 
 {{< resources/image "result-aquatic.gif" >}}
 
-花海，只能在山脈的頂峰生長。
+平原樹林，一顆正常的樹是不會長在水底、山壁與山頂的。
+
+{{< resources/image "result-tree.gif" >}}
+
+頂峰花海，在寒冷高原綻放的花朵。
 
 {{< resources/image "result-flower.gif" >}}
 
 ### 儲存設定 +
 
-我第一個想到的是重複使用性，
-
-以生成規則來說，通常一個植物（或東西）自然出現的條件是固定的，水草只會長在水底下、樹木沿著山壁生長，而高原風大寒冷，只有灌木花草等草本植物
+說到應用時我第一個浮現的念頭便是「重複使用性」。以自然規律來說，植物能否生長是受環境限制的，水草只會在水底生長，樹木需要廣闊且深度足夠的平原，而高原風大寒冷，只有最堅韌的花朵們相互爭艷。
 
 因此我們能將生成「設定」與生成「物體」分開處存，如此的好處是能將設定重複使用
 
