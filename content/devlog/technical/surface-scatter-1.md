@@ -6,7 +6,7 @@ date: 2023-03-03
 draft: true
 
 description:
-tags: [procedure-generation]
+tags: [cpmpute-shader, procedure-generation]
 
 socialshare: true
 
@@ -23,10 +23,10 @@ resources: /devlog/technical/surface-scatter-1/
 # background: [watercolor-A] 
 
 ## listout with recommand, new and all pages
-# listable: [recommand, all]
+listable: [recommand, all]
 ---
 
-之前就對 Stylize 3D 渲染感興趣了，鋪在地面上的清脆毛毯，隨風搖曳的蓬鬆樹葉，光待在那賞心悅目的世界裡是一種幸福。總之，這次我製作了沿著物體表面生成大量物件的工具，說不定在未來的某時會派上用場。
+之前就對 Stylize 3D 渲染感興趣了，鋪於地面的清脆毛毯，隨風搖曳的蓬鬆樹葉，光待在那賞心悅目的世界裡是一種幸福。總之，這次我製作了沿著物體表面生成大量物件的工具，說不定在未來的某時會派上用場。
 
 <!--more-->
 
