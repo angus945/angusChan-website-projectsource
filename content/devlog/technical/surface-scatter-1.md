@@ -238,7 +238,7 @@ void ScatterKernel (uint3 id : SV_DispatchThreadID)
 
 ### 結果渲染
 
-將生成結果傳入渲染管線，再加上光照計算就有繪畫風的樹葉了。研究的第一階段到此為止，接下來就是朝實際應用思考，後續請見[【日誌】自動場景植被生成]({{< ref "devlog/technical/surface-scatter-2.md" >}})。
+將生成結果傳入渲染管線，再加上光照計算就有繪畫風的樹葉了。研究的第一階段到此為止，接下來就是朝實際應用思考，後續請見[【日誌】根據地形生成場景植被]({{< ref "devlog/technical/surface-scatter-2.md" >}})。
 
 {{< resources/image "result-2.gif" >}}
 

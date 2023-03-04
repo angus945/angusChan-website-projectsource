@@ -26,7 +26,7 @@ resources: "/devlog/technical/surface-scatter-2/"
 listable: [recommand, all]
 ---
 
-本篇內容是[【日誌】沿著表面隨機生成]({{< ref "devlog/technical/surface-scatter-1.md" >}})的後續，我添加更多實用的生成屬性，能更據地形生成不同的植被。
+本篇內容是[【日誌】在模型表面隨機散佈物體]({{< ref "devlog/technical/surface-scatter-1.md" >}})的後續，我添加更多實用的生成屬性，能更據地形生成不同的植被。
 
 <!--more-->
 
