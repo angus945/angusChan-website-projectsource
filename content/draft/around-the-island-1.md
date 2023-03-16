@@ -237,7 +237,7 @@ resources: /post/around-the-island/
 
 可惜隔天還要早起，不然我願意在這裡待到半夜。晚上九點半，第一天的行程也告一段落，簡單梳洗後，將今日所見記入日誌，便早早休息了。
 
-### 池上 田野
+### 池上 田野 -
 
 時間來到第二天，雖然本來就有早起的習慣，但為了搭上早上七點的火車，我提早兩個小時就開始今天的旅程。
 
@@ -254,6 +254,7 @@ resources: /post/around-the-island/
 {{< resources/image "day2-0_mirror-2.jpg"  >}}
 
 巨大的鏡面倒影整個世界，雲與天空就在自己的腳下
+來不及用文字描述 就用照片保存
 雖然相片的視線更加狹窄，但它能將時間凍結，永久保存這些轉瞬的美好。
 
 {{< resources/image "day2-0_mirror-3.jpg"  >}}
@@ -263,7 +264,93 @@ resources: /post/around-the-island/
 
 ---
 
-[池上](https://www.notion.so/507c3489a139436eb95337d452fcac1c)
+大約七點就到了池上，
+
+步行尋找早餐店
+
+{{< resources/image "day2-1_chishang.jpg"  >}}
+
+池上豆之間享用早餐 ，起司豆皮卷 150$
+
+雖然觀光商店價格偏高，但不得不說豆皮口感很不錯，外層皮酥脆 內層柔軟 一口咬下可以感受到 層次，內餡的起司也是 雖然起司口味比較鹹 但配上甜薑片 
+
+豆奶製品 飽足感意外的豐富
+
+{{< resources/image "day2-1_breakfirst.jpg"  >}}
+
+用餐完畢後， 在車站附近找了腳踏車出租店 客尊鐵馬出租廣場 計次租車 100 
+
+同時 寄放行李 只留水壺與腳架 離開市區
+
+{{< resources/image "day2-1_bike.jpg"  >}}
+
+腳踏車 一出市區視野遼闊了起來
+
+沿著湖岸騎行 廣闊
+
+一群幼稚園的 孩子們 在老師的監護下 沿著 賽跑 
+
+歇息片刻 繼續
+
+沿著旅遊傳單的地圖 往伯郎大道
+
+{{< resources/image "day2-1_lake.jpg"  >}}
+
+池上必經的景點 伯朗大道 
+
+零星的遊客 
+
+長段的下坡
+
+{{< resources/image "day2-1_bolang-1.jpg"  >}}
+
+沿著伯朗大道
+
+看著山脈綿延數里 影沒在地平線的盡頭
+
+沿著 的是 無邊的田野
+
+{{< resources/image "day2-1_bolang-2.jpg"  >}}
+
+{{< resources/image "day2-1_bolang-3.jpg"  >}}
+
+金城武樹 早上沒人 
+
+坐下歇息的路人 看來我不是當金城武的料
+
+{{< resources/image "day2-1_tree.jpg"  >}}
+
+<!-- 河堤 客家文化園區 -->
+
+農場
+
+稻草卷 淡季 + 平日來 不然無法獨享
+
+{{< resources/image "day2-1_straw.jpg"  >}}
+
+<!-- 在農會買了一隻 冰棒  -->
+
+返回 往天堂之路
+
+農家的守護犬追趕 好在
+
+大水車
+
+天堂路
+
+{{< resources/image "day2-1_heaven.jpg"  >}}
+
+買池上飯包到湖畔吃
+
+{{< resources/image "day2-1_launch.jpg"  >}}
+
+吃完午餐 時間接近兩點 坐在原處多休息了半個小時
+
+最後再騎一圈湖畔道路 回到市區還車 一共在池上待了五個小時 把整個池上鄉繞了遍
+
+{{< resources/image "day2-1_lakeback.jpg"  >}}
+
+---
 
 搭兩個小時車，我是個不怕無聊的人，比較不需要打發時間， 路上沒甚麼滑手機，只要有音樂能讓我進入自己的心裡世界就好。實際上，我的手機裡也沒有一款遊戲，對我來說，手機是工具的延伸，不需要過多的娛樂功能，手機上的遊戲會分散我注意力。
 
@@ -282,21 +369,234 @@ Google 搜索到以諾廚房，在昏暗的街道上尋找。我點了一碗帶�
 {{< resources/image "day2-2_room.jpg"  >}}
 
 
-### 新城 太魯閣
+### 新城 太魯閣 -
 
-第三天
+同樣，早上六點多，收拾 把衣服吹乾 開始第三天的旅程
 
-[新城](https://www.notion.so/6be02cd5797940639714f1f5f8486c4e)
+---
 
-[羅東](https://www.notion.so/d1f08398a5fc4f598bfd79e53c25136b)
+七點半抵達
 
-### 福隆 猴硐
+想租腳踏車 
+
+老闆提醒 好心 不會那樣騎 一路上坡 除非運動 可以搭公車
+
+還有時間 先吃早餐
+
+{{< resources/image "day3-1_breakfirst.jpg"  >}}
+
+恍神 看到公車轉過來 愣了一下 差點忘了攔
+
+搭到九曲洞
+
+垂直的震撼 史詩 我渺小
+
+壯闊 水流在山谷間的迴響 相片無法捕捉
+
+車費貴爆 25
+
+{{< resources/image "day3-1_taroko-1.jpg"  >}}
+{{< resources/image "day3-1_taroko-2.jpg"  >}}
+{{< resources/image "day3-1_taroko-3.jpg"  >}}
+{{< resources/image "day3-1_taroko-4.jpg"  >}}
+
+離開等車遇到學生團 搭遊覽車 方便輕鬆
+
+但一群人感覺就很煩躁 自己的自在
+
+下山
+
+租腳踏車 騎到海岸 只有和尚 注意安全 謝謝
+
+真實的海浪聲 與影片錄影不同
+
+遠 靜謐
+
+{{< resources/image "day3-1_beach.jpg"  >}}
+
+天空之鏡
+
+趁沒人拍照
+
+自己很麻煩 腳架喬半天 反射的頭被切到了
+
+沙灘車 旅團
+
+{{< resources/image "day3-1_skymirror-1.jpg"  >}}
+
+行銷鬼才
+
+{{< resources/image "day3-1_skymirror-2.jpg"  >}}
+
+騎到新城海堤 吹風涼爽
+
+原本想騎到 立霧溪出海口 但時間不夠 12 點了 先找東西吃
+
+{{< resources/image "day3-1_seawall.jpg"  >}}
+
+路邊小米甜甜圈 買了個原味 35 酥脆外皮 彈性的內線 無糖但小米本身的微微甜味
+
+{{< resources/image "day3-1_desert.jpg"  >}}
+
+蓋飯拉麵 點了 炸雞酥蓋飯 99 
+
+湯汁滲入米飯 微甜
+
+{{< resources/image "day3-1_launch.jpg"  >}}
+
+一點還車 回到車站 等區間
+
+---
+
+稍微在蘇澳新停留 但評估不往蘇澳
+
+三點到羅東 
+
+沒有櫻花的步道 反方向名宿
+
+往回走 公園 **羅東文化工場**
+
+{{< resources/image "day3-2_workinghouse.jpg"  >}}
+
+沒花的花牆
+
+往民宿走 隨便進一家水餃店 吃完天色也暗了
+
+{{< resources/image "day3-2_dinner.jpg"  >}}
+
+回名宿 買個麵包路上吃 司康 麻吉球
+
+{{< resources/image "day3-2_desert.jpg"  >}}
+
+整排名宿 公園的關係？
+
+最後一站好像都不好逛 可惜晚了不然這麼大的公園想逛
+
+夫妻有事先出門 不小心太早到了 在外面稍等了一下 剛好看明天的路線 還讀了一下日文
+
+{{< resources/image "day3-2_house.jpg"  >}}
+
+名宿漂亮  香味 免費吐司 果醬
+
+洗澡不小心摔到沐浴乳 破動
+
+借洗衣機
+
+有另一位房客 個住各的 沒過多交集
+
+### 福隆 猴硐 -
 
 第四天
+早上五點起來 整理行李 稍微在烘一下衣服
 
-[福隆](https://www.notion.so/e6f3693b353445ff977dfec622e26822)
+看公車時刻 剛好吃早餐 
 
-[猴硐](https://www.notion.so/9c81f5ddcdd34cf69624c36880ceb4ac)
+烤免費吐司 花生
+
+{{< resources/image "day4-0_breakfirst.jpg"  >}}
+
+與店家的貓貓道別，走到道路上等回到車站的公車
+
+{{< resources/image "day4-0_cat.jpg"  >}}
+
+剛下過雨
+
+提早上公車 司機聊天 聽他講故事
+
+七點的車次，我決定跳過宜蘭，直接到福隆
+
+{{< resources/image "day4-0_luodong.jpg"  >}}
+
+出門時反而是最多人的 上班上課
+
+超帥的女車掌？ 
+
+上班族和學生下完 帥車掌也坐下歇息
+
+我的世界
+
+到龜山站就只剩我了
+
+{{< resources/image "day4-0_guishan.jpg"  >}}
+
+沒什麼能拍 都是醜建築擋著
+
+---
+
+八點抵達福隆車站，飄著晨雨，山邊稍微露出一些陽光
+
+太早 出租店還沒開
+
+{{< resources/image "day4-1_fulong.jpg"  >}}
+
+海灘 發電廠
+
+{{< resources/image "day4-1_beach.jpg"  >}}
+
+沿著道路的自行車道 騎的心情沒很好 一堆貨車的噪音
+
+{{< resources/image "day4-1_road.jpg"  >}}
+
+騎到鹽寮
+
+電廠
+
+休息區沒開 
+
+藍灣咖啡 沒開
+
+鳥不生蛋 
+
+決定往回福隆
+
+龍門吊橋
+
+雨勢變大
+
+{{< resources/image "day4-1_bridge.jpg"  >}}
+
+回到福榮
+
+心情真的沒很好 不知道是因為太累了 天氣 還是車來車往的噪音 
+
+鳥不生蛋 
+
+十點多
+
+Google 隨便找了一家
+
+看起來不錯 但還沒營業 坐在外面的位置上休息
+
+做一下後 店家的人來了 等他們營業
+
+海派廚房 花生培根手打牛肉堡 380 
+
+之前在漢堡王點一次花生的就愛上了 老闆娘親切
+
+{{< resources/image "day4-1_launch.jpg"  >}}
+
+壯觀的漢堡 吃的超飽 一方面天氣不好 沒地方逛 
+
+搭 12 點的車離開 遠離卡車的嘶吼聲
+
+---
+
+猴硐
+
+{{< resources/image "day4-2_houtong.jpg"  >}}
+
+總之貓貓 待了一個小時 村子裏 飄雨 漫步 輕鬆自在 心情平復 剛剛的疲憊一掃而空 細雨漫步
+
+{{< resources/image "day4-2_cat-1.jpg"  >}}
+{{< resources/image "day4-2_cat-2.jpg"  >}}
+{{< resources/image "day4-2_cat-3.jpg"  >}}
+{{< resources/image "day4-2_cat-4.jpg"  >}}
+{{< resources/image "day4-2_cat-5.jpg"  >}}
+{{< resources/image "day4-2_cat-6.jpg"  >}}
+
+前往 今天的最後一站
+
+---
 
 第四天的最後一站，瑞芳，約在下午一點多抵達。
 
@@ -342,15 +642,57 @@ Google 搜索到以諾廚房，在昏暗的街道上尋找。我點了一碗帶�
 
 {{< resources/image "day5-0_start.jpg"  >}}
 
+---
+
 [山佳](https://www.notion.so/7d627d916332486789f1d8c1b0f3e602)
 
 [鶯歌](https://www.notion.so/283e64f2e35f489fbe99708532251b80)
 
-[桃園](https://www.notion.so/6695d0782d3e40f4b2d0b0a3e78576e8)
+---
+
+疲憊 城市 混亂 走了一段
+
+{{< resources/image "day5-3_daoyuan.jpg"  >}}
+
+買可頌
+
+{{< resources/image "day5-3_desert.jpg"  >}}
+
+走到公園
+
+坐下休息
+
+小孩子們吵鬧
+
+{{< resources/image "day5-3_park.jpg"  >}}
+
+{{< resources/image "day5-3_river.jpg"  >}}
+
+晚餐 麵+小菜
+
+{{< resources/image "day5-3_dinner.jpg"  >}}
+
+等到入住時間
+
+電梯煙味 擔心 沒事
+
+直接躺一個半小時
+
+起來梳洗一下 學一下日文 八九點 睡到隔天 忘了拍房間
 
 ### 竹南 海堤
 
 第六天
+
+五點起床 整理 出發
+
+漆黑的 道路 走著下雨
+
+到車站搭六點多車 往新竹
+
+{{< resources/image "day6-0_start.jpg"  >}}
+
+---
 
 [竹南](https://www.notion.so/820d20e01fa440598616790c376ca088)
 

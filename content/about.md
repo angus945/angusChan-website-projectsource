@@ -100,6 +100,6 @@ showToc: false
 
 感謝 [Patricio Gonzalez Vivo](https://github.com/patriciogonzalezvivo/glslCanvas) 提供的網頁著色器函式庫
 
-感謝提供網路資源的廣大社群，以及陪伴我自學的朋友們
+感謝提供資源的廣大社群，以及陪伴我學習的朋友們
 
 感謝所有機遇與閱讀到這裡的你 (´▽`ʃ♡ƪ)"
