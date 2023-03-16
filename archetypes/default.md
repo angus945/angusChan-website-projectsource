@@ -30,4 +30,4 @@ socialshare: true
 
 <!-- &nbsp; -->
 
-<!-- [text]({{< ref "relpath" >}})。 -->
+<!-- [text]({{ ref "relpath" }})。 -->
