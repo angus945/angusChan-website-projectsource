@@ -6,6 +6,8 @@ tags: []
 
 type: special
 layout: "all"
+
+sitemap_ignore: true
 ---
 
 <!--more-->

@@ -1,4 +1,5 @@
 {{ define "main" }}
+
 <article>
     {{ if eq (.Param "show-title") true }}
         <h2 class="post-item post-title">
@@ -17,6 +18,9 @@
         {{ $content := partial "content/color-replace.html" (dict "Content" $content ) }} 
         {{ $content := partial "content/code-block.html" (dict "Content" $content ) }} 
         {{/*  {{ partial "content/code-block.html" (dict "Content" $content ) }}   */}}
+
+        {{/*  {{ if and (isset .Parent true)(ne .Parent.Params.sitemap_ignore_child true) }}  */}}
+        {{/*  {{ (Parent)}}  */}}
 
         {{ $content | safeHTML }}
 

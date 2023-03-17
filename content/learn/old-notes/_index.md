@@ -9,6 +9,9 @@ tags: []
 
 ## listout with recommand, new and all pages
 listable: [all]
+
+sitemap_ignore: true
+sitemap_ignore_child: true
 ---
 
 存放一些比較初期的學習筆記，包括 C#, Unity, Shader 等等

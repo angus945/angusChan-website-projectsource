@@ -3,6 +3,9 @@ title: "{{ replace .Name "-" " " | title }}"
 date: {{ .Date }}
 # lastmod: {{ .Date }}
 
+show-title: true
+show-meta: true
+
 draft: true
 
 description:
@@ -24,10 +27,12 @@ socialshare: true
 
 ## listout with recommand, new and all pages
 # listable: [recommand, all]
+
+# sitemap_ignore: true
 ---
 
 <!--more-->
 
 <!-- &nbsp; -->
 
-<!-- [text]({{ ref "relpath" }})。 -->
+<!-- [text]({ ref "relpath" })。 -->
