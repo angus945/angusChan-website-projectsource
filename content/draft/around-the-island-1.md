@@ -634,7 +634,7 @@ Google 隨便找了一家
 
 {{< resources/image "day4-3_bread.jpg"  >}}
 
-### 鶯歌 陶瓷
+### 鶯歌 陶瓷 -
 
 第五天
 
@@ -644,15 +644,72 @@ Google 隨便找了一家
 
 ---
 
-[山佳](https://www.notion.so/7d627d916332486789f1d8c1b0f3e602)
+一個小時的車程 七點抵達了
 
-[鶯歌](https://www.notion.so/283e64f2e35f489fbe99708532251b80)
+沒有置物櫃
+
+{{< resources/image "day5-1_shanjia.jpg"  >}}
+
+鐵道地景公園
+
+{{< resources/image "day5-1_park-1.jpg"  >}}
+
+鹿角溪公園
+
+{{< resources/image "day5-1_park-2.jpg"  >}}
+
+好的人在遛狗 16 度 蔥油餅 40
+
+{{< resources/image "day5-1_breakfirst.jpg"  >}}
+
+河濱公園 下雨 離開吧
+
+{{< resources/image "day5-1_park-3.jpg"  >}}
+
+---
+
+台鐵寄放行李
+
+{{< resources/image "day5-2_yingge.jpg"  >}}
+
+到老街 無人 散步
+
+{{< resources/image "day5-2_oldstreet-1.jpg"  >}}
+{{< resources/image "day5-2_oldstreet-2.jpg"  >}}
+
+博物館 外圍散步
+
+{{< resources/image "day5-2_museum-1.jpg"  >}}
+
+藝術園區 漫步 繞了一圈 坐在椅子上 吹著涼風
+
+{{< resources/image "day5-2_museum-2.jpg"  >}}
+
+學生今日免費 進場 館內暖和
+
+{{< resources/image "day5-2_museum-3.jpg"  >}}
+
+國際咖啡杯大賽
+
+{{< resources/image "day5-2_mug.jpg"  >}}
+
+老街 厚道飲食店 雞腿飯 115 
+
+滿滿配菜 大片雞腿 卡茲外皮
+
+{{< resources/image "day5-2_launch.jpg"  >}}
+
+往藝術中心 風很大 沒有開 
+
+時間 一點 回車站 拿回行李 熟悉的重量感
+
+{{< resources/image "day5-2_park.jpg"  >}}
 
 ---
 
 疲憊 城市 混亂 走了一段
 
-{{< resources/image "day5-3_daoyuan.jpg"  >}}
+{{< resources/image "day5-3_taoyuan.jpg"  >}}
 
 買可頌
 
@@ -680,7 +737,7 @@ Google 隨便找了一家
 
 起來梳洗一下 學一下日文 八九點 睡到隔天 忘了拍房間
 
-### 竹南 海堤
+### 竹南 海堤 -
 
 第六天
 
@@ -694,9 +751,112 @@ Google 隨便找了一家
 
 ---
 
-[竹南](https://www.notion.so/820d20e01fa440598616790c376ca088)
+七點抵達 託運未開
 
-[白沙屯](https://www.notion.so/4c1b2e381f91469b818b61dd3bfbc4c5)
+置物櫃 想到所有錢放身上不太好 留一千再包包
+
+{{< resources/image "day6-1_zhunan.jpg"  >}}
+
+上鎖 忘了水壺 買飲料 冷泡茶
+
+石頭找餐 牛肉可頌 90
+
+{{< resources/image "day6-1_breakfirst.jpg"  >}}
+
+無法註冊 icash youbike 
+
+下雨 回到車站前思考
+
+嘗試信用卡 但授權失敗 不懂
+
+應該是 2000 的預授權金被擋
+
+往回一站到崎頂 至少步行方便
+
+旅途沒有一帆風順的
+
+{{< resources/image "day6-2_qiding.jpg"  >}}
+
+看風車 觀景台 子母隧道
+
+{{< resources/image "day6-2_tunnel.jpg"  >}}
+
+{{< resources/image "day6-2_park-1.jpg"  >}}
+{{< resources/image "day6-2_park-2.jpg"  >}}
+
+回車站 短暫太陽 天橋等車 拍照
+
+{{< resources/image "day6-2_train.jpg"  >}}
+
+到預定的下一站
+
+縱貫海線 風力裝置藝術
+
+{{< resources/image "day6-2_travel-1.jpg"  >}}
+{{< resources/image "day6-2_travel-2.jpg"  >}}
+
+---
+
+路上蛋塔 吸引買了三個 100 忘了拍車站
+
+{{< resources/image "day6-3_tart.jpg"  >}}
+
+十一點 廟口飯麵館
+
+{{< resources/image "day6-3_temple.jpg"  >}}
+
+炸醬麵 油豆腐 95
+
+初一 廟口熱鬧了些
+
+{{< resources/image "day6-3_launch.jpg"  >}}
+
+不錯吃 但不飽 還好買了蛋塔 路上慢慢啃
+
+花枝丸 35
+
+{{< resources/image "day6-3_seawall-1.jpg"  >}}
+
+到海邊 石頭坐著 聽風聲 海聲
+
+風力發電 近看的壓迫感 可怕 照片拍不出
+
+{{< resources/image "day6-3_beach.jpg"  >}}
+
+巨龍 威壓
+
+走在海堤上 到下一站 聽海聲 吹風 散步
+
+中午 總算出太陽了
+
+{{< resources/image "day6-3_seawall-2.jpg"  >}}
+{{< resources/image "day6-3_seawall-3.jpg"  >}}
+{{< resources/image "day6-3_seawall-4.jpg"  >}}
+{{< resources/image "day6-3_seawall-5.jpg"  >}}
+
+把外套和發熱衣退掉 感受太陽的溫暖 還有涼爽的海風
+
+順風走 輕鬆
+
+{{< resources/image "day6-3_seawall-6.jpg"  >}}
+
+20 分鐘 太陽又隱藏 只剩強勁海風 穿回風衣 繼續行走
+
+到小涼亭 吃第二個蛋塔
+
+新埔海堤
+
+到新埔 有一個小時 還好昨天多休息
+
+ 前面有段更漂亮的海堤 可惜 走下去又是另外兩個小時了
+
+ 到車站 下班剛好十分鐘只有我在
+
+時間兩點 出發去今天到最後一站
+
+{{< resources/image "day6-4_xinpul.jpg"  >}}
+
+---
 
 抵達車站後，出站時檢查車票的站務遇到一些疑惑，稍微停留了一下。因為今天是春節了，正常情況下疏運期間是不允許使用 TRPass 乘車的，但我卻買到了。可能因為是學生票，只允許區間和莒光自由坐的關係，所以是特例，總之辛苦站務人員了。
 
@@ -704,20 +864,20 @@ Google 隨便找了一家
 
 因為離今天的過夜地點有些距離，在市區之外，所以到達旅店後沒打算再離開，就先在車站附近吃了速食，麥香魚加地瓜條 114，沒錯我是麥香魚派的！
 
-{{< resources/image "day6-3_dinner.jpg"  >}}
+{{< resources/image "day6-5_dinner.jpg"  >}}
 
 店門口的空間擠了多輛機車，幾台汽車更是佔據大量空間，看著市區的混亂交通，直到公車繞過臨停車輛，停在站牌前面。
 
 大約三點抵達今天的住處 好瓦文旅 ，我想這是旅程中住到最棒的房間了， 任由我獨享的舍房，木質香氣充滿室內，讓人愉快。
 
-{{< resources/image "day6-3_room.jpg"  >}}
+{{< resources/image "day6-5_room.jpg"  >}}
 
 外面還有社交空間，提供群體遊客的家長和小孩遊們娛樂，但我享受獨自一人，坐在落低窗旁欣賞遠離城市的美景。聽著音樂，讀著日文，直到天色暗下，早早休息。
 
-{{< resources/image "day6-3_window.jpg"  >}}
+{{< resources/image "day6-5_window.jpg"  >}}
 
 
-### 扇形車庫
+### 扇形車庫 -
 
 第七天
 
@@ -729,10 +889,116 @@ Google 隨便找了一家
 
 {{< resources/image "day7-0_sharoku.jpg"  >}}
 
-[彰化](https://www.notion.so/e2e9c2c30ddb41e5ab9f927cd6116aea)
+---
 
-[二水](https://www.notion.so/e1fac71374ae4c60894ec859ae37e633)
+過年的清早，抵達彰化車站，在 (即將熱鬧) 的街道上，
 
+{{< resources/image "day7-1_changhua.jpg"  >}}
+
+春假清早的道路 無人
+
+到扇形車庫前 先在沿路上 找早餐 城市漢堡
+
+{{< resources/image "day7-1_breakfirst.jpg"  >}}
+
+3D 彩繪
+
+{{< resources/image "day7-1_paint.jpg"  >}}
+
+太早了 還沒開 到公園 閒晃 
+
+坐著休息 聽音樂 寫寫作 
+
+我以後應該多試試 在外面寫作 反而沒那麼容易分心
+
+遛狗
+
+練機車
+
+九點 太陽出來 地磚的玻璃碎屑閃爍
+
+九點多 繼續 先去買個飲料
+
+{{< resources/image "day7-1_park.jpg"  >}}
+
+九點五十回到門口 開始有人等待
+
+前一分鐘 人潮 應該昨天來才對的
+
+不喜歡人群 拍幾張就先離開了
+
+{{< resources/image "day7-1_roundhouse-1.jpg"  >}}
+
+{{< resources/image "day7-1_roundhouse-2.jpg"  >}}
+
+戶羽機關車園區。  拾肆手作
+
+小火車冰淇淋 69 老闆人好 幫拍照
+
+{{< resources/image "day7-1_icecreen.jpg"  >}}
+
+吃冰 聽演唱 想多呆 但人太多 而且也要十一點了 但要去下一站了
+
+忘了拍店面
+
+{{< resources/image "day7-1_show.jpg"  >}}
+
+走回車站 街上熱鬧許多
+
+好像是第一次被檢查學生證 可能春節疏運？
+
+或是我這張票其實有點問題 希望沒造成他們太大困擾
+
+與過去整週相比 人潮大了多 但我反而開始想回家了
+
+… 我決定回家 
+
+人潮要在區間上休息也有難度 背著背包要站走也吃力
+
+雖然環島只有七天 但出發前和朋友還玩了三天 也是走路走滿 我已經連玩十天了
+
+---
+
+還是下車了 笑死
+
+大明火燒麵 麵一份 炸粉腸 沒有菜單
+
+客人 絡繹不絕 四個人在廚房和 高效 三個同時 大鍋子炒
+
+聞起來有焦味 但吃起來不會
+
+粉腸對我來說 偏鹹 配麵和飲料
+
+兩百 幹好貴 最不滿意的一餐出爐
+
+{{< resources/image "day7-2_launch.jpg"  >}}
+
+{{< resources/image "day7-2_park.jpg"  >}}
+
+原本還想搭集集線 但還是先算了
+
+結果還是搭上了 笑死 剛好集集線的車在月台
+
+因為天災 所以只能搭到 集集
+
+{{< resources/image "day7-2_travel.jpg"  >}}
+
+集集
+
+{{< resources/image "day7-3_jiji.jpg"  >}}
+
+{{< resources/image "day7-3_park.jpg"  >}}
+
+{{< resources/image "day7-3_rail.jpg"  >}}
+
+{{< resources/image "day7-3_desert.jpg"  >}}
+
+啟程回家
+
+{{< resources/image "day7-3_return-1.jpg"  >}}
+{{< resources/image "day7-3_return-2.jpg"  >}}
+{{< resources/image "day7-3_return-3.jpg"  >}}
+{{< resources/image "day7-3_return-end.jpg"  >}}
 
 ## 結語
 
