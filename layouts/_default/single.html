@@ -14,14 +14,8 @@
     <!-- post main content -->
     <div class="post-content markdown-body">
         {{ $content := .Content }}
-        {{/*  {{ partial "content/color-replace.html" (dict "Content" $content ) }}   */}}
         {{ $content := partial "content/color-replace.html" (dict "Content" $content ) }} 
         {{ $content := partial "content/code-block.html" (dict "Content" $content ) }} 
-        {{/*  {{ partial "content/code-block.html" (dict "Content" $content ) }}   */}}
-
-        {{/*  {{ if and (isset .Parent true)(ne .Parent.Params.sitemap_ignore_child true) }}  */}}
-        {{/*  {{ (Parent)}}  */}}
-
         {{ $content | safeHTML }}
 
         {{ partial "socialshare.html" . }}
