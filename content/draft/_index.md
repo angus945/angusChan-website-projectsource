@@ -9,6 +9,7 @@ show-title: false
 show-meta: false
 
 sitemap_ignore: true
+sitemap_ignore_child: true
 ---
 
 草稿

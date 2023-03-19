@@ -40,7 +40,7 @@ defaultTheme = "dark"              # default theme when first visit (auto|dark|l
 recommand = "5"
 
 # Source URL of the website, will appear in the footer
-sourceURL = "https://github.com/angus945/angus945.github.io"
+sourceURL = "https://github.com/angus945/angusChan-website-projectsource"
 
 # Use CloudFlare Workers to accelerate the Google Analytics
 # If you are using this please comment the googleAnalytics above

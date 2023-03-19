@@ -37,7 +37,7 @@ resources: /post/around-the-island/
 
 ## 結語
 
-
+旅遊三次 預備 當下 回顧
 
 ---
 

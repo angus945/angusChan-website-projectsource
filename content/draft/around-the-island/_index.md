@@ -29,7 +29,7 @@ resources: /post/around-the-island/
 # show-meta: false
 
 sitemap_ignore: false
-sitemap_ignore_child: true
+sitemap_ignore_child: false
 ---
 
 <!--more-->
@@ -38,6 +38,10 @@ sitemap_ignore_child: true
 
 <!-- [text]({{ ref "relpath" }})。 -->
 
-轉載與使用文中照片請備本文網址與標題 ({{< ref "draft/around-the-island/_index.md" >}}) 
+引用文中照片請備本文網址與標題 ({{< ref "draft/around-the-island/_index.md" >}}) 
+
+轉載文章請參考 About 中的規則
 
 篇幅過長 拆分成多篇 以日為單位
+
+且不得宣稱所有 只有本站提供的社交連結為官方承認的分身 
