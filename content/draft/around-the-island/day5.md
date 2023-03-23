@@ -29,8 +29,6 @@ resources: /post/around-the-island/
 # listable: [recommand, all]
 ---
 
-<!--more-->
-
 <!-- &nbsp; -->
 
 <!-- [text]({ ref "relpath" })。 -->
@@ -39,6 +37,8 @@ resources: /post/around-the-island/
 ## 第五天 +
 
 五點起床，窗外的滴答聲告知早晨天氣，收拾行李快步離去，安靜的街道使我心情平復，迎接地五天的行程。在車站吃下昨天的麵包當早餐，等待六點的班次。
+
+<!--more-->
 
 {{< resources/image "day5-0_start.jpg"  >}}
 

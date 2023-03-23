@@ -35,9 +35,7 @@ resources: /post/around-the-island/
 
 <!-- [text]({ ref "relpath" })。 -->
 
-### 扇形車庫 -
-
-第七天
+## 第七天 +
 
 早上五點半，在空無一人的舍房里起床，簡單梳洗後，把背包從置物櫃取出，回到大廳準備退房。輕快的音樂讓人想多坐一會，如果不趕時間，我願意從書櫃挑一本書籍，坐著幾小時。旅館離車站有一段距離，太陽還沒出來，我請櫃檯叫了計程車，道謝後搭車離開。
 
@@ -47,27 +45,23 @@ resources: /post/around-the-island/
 
 {{< resources/image "day7-0_sharoku.jpg"  >}}
 
----
+### 彰化 -
 
-過年的清早，抵達彰化車站，在 (即將熱鬧) 的街道上，
+初一的早晨，抵達彰化車站，在 (即將熱鬧) 的街道上，
 
 {{< resources/image "day7-1_changhua.jpg"  >}}
 
-春假清早的道路 無人
+會在此站停留，主要是被扇形車庫 吸引
 
-到扇形車庫前 先在沿路上 找早餐 城市漢堡
+耳聞過幾次 但似乎從未親自走訪
+
+先在沿路上 找早餐 城市漢堡
 
 {{< resources/image "day7-1_breakfirst.jpg"  >}}
 
-3D 彩繪
+用餐後，前去扇形車庫才發現尚未開放入場，只好先在週邊閒晃。穿越漂亮的彩繪街道，到附近的小公園，坐著休息、聽音樂、寫作，平常寫作都是在家或學校的空閒，感覺待在室外寫也別有一番風味。
 
 {{< resources/image "day7-1_paint.jpg"  >}}
-
-太早了 還沒開 到公園 閒晃 
-
-坐著休息 聽音樂 寫寫作 
-
-我以後應該多試試 在外面寫作 反而沒那麼容易分心
 
 遛狗
 
@@ -75,13 +69,9 @@ resources: /post/around-the-island/
 
 九點 太陽出來 地磚的玻璃碎屑閃爍
 
-九點多 繼續 先去買個飲料
-
 {{< resources/image "day7-1_park.jpg"  >}}
 
-九點五十回到門口 開始有人等待
-
-前一分鐘 人潮 應該昨天來才對的
+時間接近開園，我回到門口，此時也聚集滿了等待的人潮，或許我應該昨天就先
 
 不喜歡人群 拍幾張就先離開了
 
@@ -89,17 +79,17 @@ resources: /post/around-the-island/
 
 {{< resources/image "day7-1_roundhouse-2.jpg"  >}}
 
-戶羽機關車園區。  拾肆手作
+到隔壁的戶羽機關車園區觀賞，  拾肆手作
 
 小火車冰淇淋 69 老闆人好 幫拍照
 
-{{< resources/image "day7-1_icecreen.jpg"  >}}
+{{< resources/image "day7-1_show.jpg"  >}}
 
 吃冰 聽演唱 想多呆 但人太多 而且也要十一點了 但要去下一站了
 
 忘了拍店面
 
-{{< resources/image "day7-1_show.jpg"  >}}
+{{< resources/image "day7-1_icecreen.jpg"  >}}
 
 走回車站 街上熱鬧許多
 
@@ -115,7 +105,7 @@ resources: /post/around-the-island/
 
 雖然環島只有七天 但出發前和朋友還玩了三天 也是走路走滿 我已經連玩十天了
 
----
+### 二水
 
 還是下車了 笑死
 
@@ -141,7 +131,7 @@ resources: /post/around-the-island/
 
 {{< resources/image "day7-2_travel.jpg"  >}}
 
-集集
+### 集集
 
 {{< resources/image "day7-3_jiji.jpg"  >}}
 
@@ -151,9 +141,12 @@ resources: /post/around-the-island/
 
 {{< resources/image "day7-3_desert.jpg"  >}}
 
-啟程回家
+### 回家
 
 {{< resources/image "day7-3_return-1.jpg"  >}}
+
 {{< resources/image "day7-3_return-2.jpg"  >}}
+
 {{< resources/image "day7-3_return-3.jpg"  >}}
+
 {{< resources/image "day7-3_return-end.jpg"  >}}
