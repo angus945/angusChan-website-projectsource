@@ -1,5 +1,5 @@
 ---
-title: "2. 池上 田野 17+"
+title: "2. 池上、單車與伯朗大道"
 date: 2023-03-17T18:00:00+08:00
 # lastmod: 2023-03-17T18:43:27+08:00
 
@@ -81,6 +81,7 @@ resources: /post/around-the-island/
 <!-- TODO 插入個人內容 -->
 
 {{< resources/image "day2-1_bolang-2.jpg"  >}}
+
 {{< resources/image "day2-1_bolang-3.jpg"  >}}
 
 途經金城武樹，嘗試用腳架拍了一張照片，感覺像坐下歇息的路人，看來我不是當金城武的料。
@@ -90,8 +91,11 @@ resources: /post/around-the-island/
 騎到伯朗大道的底部後，我沿著河堤道路繼續移動，途經客家文化園區與池上降落場，還在農會買了一隻檸檬冰棒享用。
 
 {{< resources/image "day2-1_road-1.jpg"  >}}
+
 {{< resources/image "day2-1_road-2.jpg"  >}}
+
 {{< resources/image "day2-1_road-3.jpg"  >}}
+
 {{< resources/image "day2-1_straw.jpg"  >}}
 
 <!-- 農家的守護犬追趕，破狗 -->
@@ -99,7 +103,9 @@ resources: /post/around-the-island/
 繞行完渡假園區的範圍，我也騎回天堂之路，把漏掉的風景一一遊覽。
 
 {{< resources/image "day2-1_field.jpg"  >}}
+
 {{< resources/image "day2-1_heaven.jpg"  >}}
+
 {{< resources/image "day2-1_lakeback.jpg"  >}}
 
 最後，我終於回到車站，買了池上飯包，再帶到湖畔悠閒享用。時間來到下午三點，經過五個小時的漫遊後，我搭上前往花蓮的列車，前往今天的最後一站。

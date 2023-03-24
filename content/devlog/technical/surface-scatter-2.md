@@ -6,7 +6,7 @@ date: 2023-03-03
 draft: false
 
 description: "接續【日誌】沿著表面隨機生成，能更據地形生成不同的植被的工具"
-tags: [cpmpute-shader, procedure-generation]
+tags: [compute-shader, procedure-generation]
 
 socialshare: true
 

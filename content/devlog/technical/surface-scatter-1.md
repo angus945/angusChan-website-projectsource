@@ -6,7 +6,7 @@ date: 2023-03-02
 draft: false
 
 description: "我製作了沿著物體表面生成大量物件的工具，說不定在未來的某時會派上用場"
-tags: [cpmpute-shader, procedure-generation]
+tags: [compute-shader, procedure-generation]
 
 socialshare: true
 
