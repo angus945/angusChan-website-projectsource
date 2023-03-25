@@ -33,6 +33,8 @@ resources: /post/around-the-island/
 
 <!--more-->
 
+> 這是環島系列的第七篇文章，目錄請見 [【遊記】第一次獨自旅遊，我的環島之旅]({{< ref "post/around-the-island/" >}})
+
 {{< resources/image "day7-0_lobby.jpg"  >}}
 
 六點，抵達沙鹿車站，等待前往彰化的首班列車，開始環島旅途的最後一天。也是在抵達車站的時候，發現自己把水壺落在旅店了，還好他們有提供寄送服務。
@@ -122,3 +124,7 @@ resources: /post/around-the-island/
 <!-- 回到大橋，時間已經六點 回到 習慣的房間 煮麵 將照片匯出 休息
 
 {{< resources/image "day7-3_return-end.jpg"  >}} -->
+
+> 回目錄 [【遊記】第一次獨自旅遊，我的環島之旅]({{< ref "post/around-the-island/" >}})  
+> 上一篇 [竹南、崎頂與海堤散步]({{< ref "post/around-the-island/day6" >}})  
+> 下一篇 [收穫、結語與行人地獄]({{< ref "post/around-the-island/end" >}})  
