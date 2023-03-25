@@ -42,6 +42,7 @@ resources: /post/around-the-island/
 收拾好行李，六點準時出門，搭上前往新火車站的公車，開始第二天的旅程。
 
 {{< resources/image "day2-0_taitung-1.jpg"  >}}
+
 {{< resources/image "day2-0_taitung-2.jpg"  >}}
 
 到池上的路途中有許多水稻田，在太陽越過山頭的瞬間，閃耀的星芒也映射在水稻田裡的美景。

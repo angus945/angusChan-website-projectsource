@@ -17,11 +17,16 @@
             <!-- list -->
             <div class="col-12 col-md-9 float-left content">
                 {{ block "main" . }}{{ end }}
+
+                {{ partial "socialshare.html" . }}
+                {{ partial "copyright.html" . }}
+
             </div>
             {{ partial "sidebar.html" . }}
         </div>
         {{ partial "components.html" . }}
     </main>
+    
 
     {{ partial "footer.html" . }}
     {{ partial "scripts-end.html" . }}

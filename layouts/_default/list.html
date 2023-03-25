@@ -17,7 +17,10 @@
     {{ end}}  
     
     <div class="post-content markdown-body">
-        {{ .Content }}
+        {{ $content := .Content }}
+        {{ $content := partial "content/color-replace.html" (dict "Content" $content ) }} 
+        {{ $content := partial "content/code-block.html" (dict "Content" $content ) }} 
+        {{ $content | safeHTML }}
     </div>
 </article>
 
