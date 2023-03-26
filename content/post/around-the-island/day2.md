@@ -101,8 +101,6 @@ resources: /post/around-the-island/
 
 {{< resources/image "day2-1_straw.jpg"  >}}
 
-<!-- 農家的守護犬追趕，破狗 -->
-
 繞完空蕩的渡假園區，我也騎回天堂之路，把漏掉的風景一一遊覽。
 
 {{< resources/image "day2-1_field.jpg"  >}}
