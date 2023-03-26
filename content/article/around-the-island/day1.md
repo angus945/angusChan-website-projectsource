@@ -132,4 +132,4 @@ resources: /article/around-the-island/
 
 > 回目錄 [【遊記】第一次獨自旅遊，我的環島之旅]({{< ref "article/around-the-island/" >}})  
 > 上一篇 [起因、計畫與行前預備]({{< ref "article/around-the-island/prepare" >}})  
-> 下一篇 [知本、台東與街頭藝人]({{< ref "article/around-the-island/day2" >}})  
+> 下一篇 [池上、單車與伯朗大道]({{< ref "article/around-the-island/day2" >}})  
