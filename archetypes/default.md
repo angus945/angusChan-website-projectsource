@@ -14,10 +14,10 @@ tags: []
 socialshare: true
 
 ## image for preview
-# feature: "/post/about-learning/featured.jpg"
+# feature: "/article/about-learning/featured.jpg"
 
 ## image for open graph
-# og: "/post/about-learning/featured.jpg"
+# og: "/article/about-learning/featured.jpg"
 
 ## when calling "resources" shortcode, well link to static folder with this path 
 # resources: /common/

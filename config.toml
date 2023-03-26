@@ -148,8 +148,8 @@ tag = "tags"
     url = "/learn/"
     weight = 4
     [[menu.nav]]
-    name = "Post"
-    url = "/post/"
+    name = "Article"
+    url = "/article/"
     weight = 5
     [[menu.nav]]
     name = "About"

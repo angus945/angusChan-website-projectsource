@@ -12,7 +12,7 @@ tags: []
 # feature: 
 
 ## image for open graph
-# og: "/post/about-learning/featured.jpg"
+# og: "/article/about-learning/featured.jpg"
 
 ## when calling "resources" shortcode, well link to static folder with this path 
 # resources: /common/
