@@ -199,7 +199,7 @@ public class CustomRenderFeature : ScriptableRendererFeature
 
 如此一來，基本的設置模板就完成了 但目前仍未有任何效果 因為我們沒有在 CommandBuffer 中天加任何命令
 
-### 渲染物件
+### 渲染物件 -
 
 假設我想渲染一個物體
 
@@ -210,73 +210,130 @@ Mesh mesh;
 Matrix4x4 transform;
 Material material;
 
-public void SetRenderObject(Mesh mesh, Matrix4x4 transform, Material material)
+public void SetRenderObject(Mesh mesh, Vector3 position, Vector3 rotation, Vector3 scale, Material material)
 {
     this.mesh = mesh;
-    this.transform = transform;
+    this.transform = Matrix4x4.TRS(position, Quaternion.Euler(rotation), scale);
     this.material = material;
 }
 ```
 
+添加渲染命令
+
 ```cs.CustomRenderPass
-if(mesh != null && material != null)
+public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
 {
-    command.DrawMesh(mesh, transform, material);
+    CommandBuffer command = CommandBufferPool.Get("Command");
+
+    if(mesh != null && material != null)
+    {
+        command.DrawMesh(mesh, transform, material, 0, 0);
+    }
+
+    context.ExecuteCommandBuffer(command);
+
+    CommandBufferPool.Release(command);
 }
 ```
 
+回到 RenderFeature，建立要使用的屬性，傳入 
 
+此時 Inspector 就會出現對應的參數 我們在 `Create()` 時加入
 
-顯示屬性
+```cs.CustomRenderFeature
+[SerializeField] Mesh mesh;
+[SerializeField] Vector3 position;
+[SerializeField] Vector3 rotation;
+[SerializeField] Vector3 scale;
+[SerializeField] Material material;
 
+public override void Create()
+{
+    renderPass = new CustomRenderPass();
 
+    renderPass.SetRenderObject(mesh, position, rotation, scale, material);
+}
+```
 
+{{< resources/image "drawmesh-inspector.jpg" >}}
 
+使用一個簡單的 Lambert Model 的 Unlit Shader，可以看到場景中出現一個物體 (沒看到的話可以確認一下 scale)，改變參數時也會引響到他
 
-<!-- TODO -->
+每當 Inspector 改變參數時 都會重新調用一次 Create
 
-### 訪問資料
+```hlsl
+fixed4 frag (v2f i, uint id : SV_INSTANCEID) : SV_Target
+{
+    float3 lightDir = _WorldSpaceLightPos0.xyz;
+    float light = dot(lightDir, i.normal);
+    
+    return fixed4(light.xxx, 1);
+}
+```
 
-<!-- TODO 要放哪? 使用 Inspector 修改資料會重建 Feature -->
+{{< resources/image "drawmesh.gif" >}}
+
+<p><c>
+註：我原本是使用 URP 的 Lit 材質，但他在 commandBuffer DrawMesh 中會變成黑色，不確定原因，可能是 URP 有一些工作不會再 Feature 進行，所以才建新的 Unlit 來用。
+</c></p>
+
+### 訪問資料 -
 
 GraphicsSettings 與 QualitySettings 可以訪問到當前的渲染管線資料，但是 ScriptableRendererData 是封裝的，所以要靠反射? 取得，原理不清楚
 
-取得之後就能得到 rendererFeatures，可以再透過名稱取得特定的資料
 
-```csharp
+```cs.FeatureAccess
 RenderPipelineAsset pipelineAsset = GraphicsSettings.renderPipelineAsset;
 //RenderPipelineAsset pipelineAsset = (RenderPipelineAsset)QualitySettings.renderPipeline;
-
-FieldInfo propertyInfo = pipelineAsset.GetType().GetField("m_RendererDataList", BindingFlags.Instance | BindingFlags.NonPublic);
-ScriptableRendererData renderData = ((ScriptableRendererData[])propertyInfo?.GetValue(pipelineAsset))?[0];
-
-List<ScriptableRendererFeature> features = renderData.rendererFeatures;
-GPUInstenceFeature feature = features.Find(n => n.name == "FeatureName") as GPUInstenceFeature;
 ```
 
-[https://blog.csdn.net/boyZhenGui/article/details/125974779](https://blog.csdn.net/boyZhenGui/article/details/125974779)
+取得之後就能得到 rendererFeatures，可以再透過名稱取得特定的資料
 
-### 開關效果
+```cs.FeatureAccess
+FieldInfo propertyInfo = pipelineAsset.GetType().GetField("m_RendererDataList", BindingFlags.Instance | BindingFlags.NonPublic);
+ScriptableRendererData renderData = ((ScriptableRendererData[])propertyInfo?.GetValue(pipelineAsset))?[0];
+```
+
+或你嫌這樣太麻煩的話，也可以直接建立 Field 指定你的 RederData，效果相同
+
+```cs.FeatureAccess
+[SerializeField] ScriptableRendererData rendererData;
+```
+
+最後再透過 名稱取得指定的 Feature
+
+```cs.FeatureAccess
+List<ScriptableRendererFeature> features = renderData.rendererFeatures;
+GPUInstenceFeature feature = features.Find(n => n.name == "CustomRenderFeature") as GPUInstenceFeature;
+```
+
+<!-- https://blog.csdn.net/boyZhenGui/article/details/125974779 -->
+
+### 修改參數 -
 
 能透過程式開關特定 Feature
 
-```csharp
-feature.SetActive();
+```cs.FeatureAccess
+feature.SetActive(true);
+feature.SetActive(false);
 ```
+
+{{< resources/image "modify-active.gif" >}}
 
 或是修改 Feature 中的屬性，但需要建立對應的接口才行
 
-```csharp
-CustomRenderFeature customFeature = feature as CustomRenderFeature;
-customFeature.SetShader("Custom/Blur");
+```cs.FeatureAccess
+feature.SetScale(scale);
 ```
 
-```csharp
-public void SetShader(string v)
+```cs.CustomRenderFeature
+public void SetScale(Vector3 scale)
 {
-    material = new Material(Shader.Find(shaderName));
+    renderPass.SetRenderObject(mesh, position, rotation, scale, material);
 }
 ```
+
+{{< resources/image "modify-scale.gif" >}}
 
 ### 添加移除 
 
@@ -298,8 +355,6 @@ void OnDisable()
     renderData.rendererFeatures.Remove(removeFeature);
 }
 ```
-
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/563c472e-5c60-41ec-b560-5f4b79e11097/Untitled.png)
 
 ## 範例
 
