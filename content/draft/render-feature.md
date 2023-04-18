@@ -335,28 +335,78 @@ public void SetScale(Vector3 scale)
 
 {{< resources/image "modify-scale.gif" >}}
 
-### 添加移除 
+### 添加移除 -
 
-盡量不要
+能夠訪問到 RenderData 後，也能透過程式添加、移除指定的 Feature
 
-OnDisable 必須
+RenderFeature 的是繼承了 ScriptableObject 所以可以透過 ScriptableObject.CreateInstance 建立
 
 ```csharp
-{
-    CustomRenderFeature addFeature = ScriptableObject.CreateInstance<CustomRenderFeature>();
-    addFeature.name = "AddedFeature";
+ScriptableRendererFeature addFeature = ScriptableObject.CreateInstance<CustomRenderFeature>();
+renderData.rendererFeatures.Add(addFeature);
+```
 
-    renderData.rendererFeatures.Add(addFeature);
-    addFeature.SetShader("Custom/Blur");
-}
-void OnDisable()
-{
-    ScriptableRendererFeature removeFeature = renderData.rendererFeatures.Find(n => n.name == "AddedFeature");
-    renderData.rendererFeatures.Remove(removeFeature);
+不過要注意的是 renderData 也是資料夾中的 ScriptableObject，因此在編輯器中修改的內容會被保留，當退出遊玩模式後會發生 Missing 的問題，為了避免這種情況，最好是在離開時手動移除
+
+{{< resources/image "add-feature-missing.jpg" >}}
+
+```cs
+renderData.rendererFeatures.Remove(addFeature);
+```
+
+當然，你也可以在運行時移除任何 Feature 只要透過名稱尋找即可
+
+```cs
+ScriptableRendererFeature removeFeature = renderData.rendererFeatures.Find(n => n.name == "AddedFeature");
+renderData.rendererFeatures.Remove(removeFeature);
+```
+
+## 範例 -
+
+最後，來提供一些範例
+
+### 透視效果 -
+
+首先是經典的範例，能用 URP 預設的 Feature 達成 請容許我直接放參考影片
+
+因為真的沒必要再寫一次一樣的東西 :P
+
+{{< youtube "szsWx9IQVDI" >}}
+
+&nbsp;
+
+### 全域遮罩 -
+
+也是不用寫自訂 Feature 的效果
+
+改變 Filtering 不要渲染受影響的物件
+
+```hlsl
+fixed4 frag (v2f i) : SV_Target
+{  
+    float distance = (length(i.worldPos - _SDFCulling.xyz) - _SDFCulling.w) * _SDFCullingDir;
+
+    clip(distance);
+
+    return 1;
 }
 ```
 
-## 範例
+建立 RenderObject Feature 
+
+{{< resources/image "culling-setup.jpg" >}}
+
+{{< resources/image "culling-feature-blank.jpg" >}}
+
+{{< resources/image "culling-blank.gif" >}}
+
+{{< resources/image "culling-feature-shaded.jpg" >}}
+
+{{< resources/image "culling-shaded.gif" >}}
+
+Sakura Rabbit 啟發
+
+{{< resources/image "cullig-sakura-rabbit.gif" >}}
 
 ### 畫面處理
 
