@@ -1,5 +1,5 @@
 ---
-title: "Render Feature"
+title: "【筆記】用 Render Feature 擴展 URP 管線"
 date: 2023-04-17T09:03:10+08:00
 # lastmod: 2023-04-17T09:03:10+08:00
 
@@ -37,9 +37,9 @@ resources: /learn/scriptable-render-pipeline/render-feature/
 
 但不需要接觸到太底層的管線程式碼
 
-比較好接觸的實用
-
 URP 中提供的
+
+比較好接觸的實用功能 RenderFeature
 
 這篇筆記適合已經有 Shader 基礎，了解渲染管線基礎知識
 
@@ -361,25 +361,17 @@ ScriptableRendererFeature removeFeature = renderData.rendererFeatures.Find(n => 
 renderData.rendererFeatures.Remove(removeFeature);
 ```
 
-## 範例 -
+## 實作範例 -
 
 最後，來提供一些範例
-
-### 透視效果 -
-
-首先是經典的範例，能用 URP 預設的 Feature 達成 請容許我直接放參考影片
-
-因為真的沒必要再寫一次一樣的東西 :P
-
-{{< youtube "szsWx9IQVDI" >}}
-
-&nbsp;
 
 ### 全域遮罩 -
 
 也是不用寫自訂 Feature 的效果
 
-改變 Filtering 不要渲染受影響的物件
+{{< resources/image "culling-setup.jpg" >}}
+
+建立一個 SDF Shader
 
 ```hlsl
 fixed4 frag (v2f i) : SV_Target
@@ -392,133 +384,144 @@ fixed4 frag (v2f i) : SV_Target
 }
 ```
 
-建立 RenderObject Feature 
-
-{{< resources/image "culling-setup.jpg" >}}
+建立 RenderObject Feature 用覆寫材質渲染 就能渲染出受到 SDF 的物件了 要讓他寫入深度
 
 {{< resources/image "culling-feature-blank.jpg" >}}
 
 {{< resources/image "culling-blank.gif" >}}
 
+在渲染一次物體，但這次用物件自己的材質 但是改變 Depth Test 使用 Equal 將 SDF 作為遮罩
+
 {{< resources/image "culling-feature-shaded.jpg" >}}
 
 {{< resources/image "culling-shaded.gif" >}}
 
-Sakura Rabbit 啟發
+這是受 Sakura Rabbit 啟發的 邊緣的發光可以用後處理達成
 
 {{< resources/image "cullig-sakura-rabbit.gif" >}}
 
-### 畫面處理
+### 畫面處理 -
 
-與 Built in 不同，不能在 OnRenderImage 寫後處理 
+畫面後處理 對渲染完畢的結果進行處理 達成更多效果 PostProcessing, ImageEffect
 
-沒那麼方便，但相對有更高的維護性與擴展性
+URP 與 Built in 不同，不能在 OnRenderImage 寫後處理 沒那麼方便，但相對有更高的維護性與擴展性
 
-後處理使用的材質球
+<!-- 後處理使用的材質球 -->
 
-`RenderTargetIdentifier` 儲存 RT 的指標 各種擴展管線 取的儲存渲染目標都會使用
+在原本的 OnRenderImage 函式，有兩個輸入 source 與 destination，一個為原始圖片的來源 另一個是處理後圖片的位置，我們會透過 Blit 進行畫面處理，使用材質球的 fragment shader 
 
-`RenderTargetHandle` 著色器變數的指標，也可以儲存 RT ，但需要先被定義
+會需要兩個 RT 是因為 Blit 不能指定與來源相通的目標 所以要先用一個臨時的 RT 暫存，等處理完畢再複製回 FrameBuffer
 
-初始化 傳入材質球與設定
-
-以及 Pass 的執行時機 renderPassEvent 
-
-```csharp
-public class CustomRenderPass : ScriptableRenderPass
+```cs
+Material material;
+void OnRenderImage(RenderTexture source, RenderTexture destination)
 {
-    Material material;
-    RenderTargetIdentifier sourceTexture;
-    RenderTargetHandle tempTexture;
-
-    public RenderPass(Material material) : base()
-    {
-        this.material = material;
-        tempTexture.Init("_TempTexture");
-
-        renderPassEvent = RenderPassEvent.AfterRenderingPostProcessing;
-    }
+    Graphics.Blit(source, destination, material);
 }
 ```
 
-RenderPassEvent 當中包括各種渲染順序
+而在 URP 的自訂 RenderPass 中，需要靠自己處裡上面幾項工作 
 
-傳遞圖片的來源 
+透過 `RenderTargetIdentifier` 儲存圖片來源 FrameBuffer，`RenderTargetHandle` 處存臨時 RT，透過建構函式傳入要使用的材質球
 
-```csharp
+```cs.ImageEffectPass
+Material material;
+RenderTargetIdentifier sourceTexture;
+RenderTargetHandle tempTexture;
+
+public ImageEffectPass(Material material)
+{
+    this.material = material;
+    tempTexture.Init("_TempTexture");
+
+    renderPassEvent = RenderPassEvent.AfterRenderingPostProcessing;
+}
+```
+
+`RenderTargetIdentifier` 儲存 RT 的指標 各種擴展管線 取的儲存渲染目標都會使用 可以用它來取得 處存 FrameBuffer 的位置
+
+`RenderTargetHandle` 著色器變數的指標，也可以儲存 RT ，但需要先被定義?  
+
+Shader 的 Properity 是透過 index 處存的 ShaderID Shader.PropertyToID
+
+<!-- https://zhuanlan.zhihu.com/p/115080701 -->
+
+<!-- https://docs.unity3d.com/ScriptReference/Rendering.CommandBuffer.GetTemporaryRT.html -->
+
+需要一個函式來指定 圖片的來源 
+
+```cs.ImageEffectPass
 public void SetSource(RenderTargetIdentifier source)
 {
     this.sourceTexture = source;
 }
 ```
 
-- [ ]  `tempTexture.Init(””)` 中間字串是 Shader Prop 名稱，但 Shader 不需要建立對應?
+透過 RenderTextureDescriptor 取得渲染目標的 RT ，RenderTextureDescriptor 包括建立 RT 需要的所有變數，我們可以透過 GetTemporaryRT 建立一個 RT 根據 ShaderPropID 建立一個 RT 並存在全域，而 depthBufferBits 則是設定是否啟用 Depth, Stencil Buffer
 
-`CommandBufferPool.Get("Name")` 取得 CommandBuffer 並命名
+> This creates a temporary render texture with given parameters, and sets it up as a global shader property with nameID
 
-`command.GetTemporaryRT(id, cameraTextureDesc, FilterMode.Bilinear);`
+<!-- https://docs.unity3d.com/ScriptReference/RenderTextureDescriptor.html -->
 
-`Blit()` 將 RT 從來源複製到目標上，並經過 Shader
+<!-- https://docs.unity3d.com/ScriptReference/Rendering.CommandBuffer.GetTemporaryRT.html -->
 
-Blit 不允許寫入自己，所以要執行兩次，一次是經過 Shader 的效果，第二次是單純複製回去
-
-`context.ExecuteCommandBuffer(buffer);`
-
-執行 Buffer 中的命令
-
-`CommandBufferPool.Release(buffer);`
-
-釋放用完的 buffer
-
-```csharp
+```cs.ImageEffectPass
 public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
 {
-    CommandBuffer command = CommandBufferPool.Get("Command");
+    //...
+    
+    RenderTextureDescriptor cameraTargetDescriptor = renderingData.cameraData.cameraTargetDescriptor;
+    cameraTargetDescriptor.depthBufferBits = 0;
+    command.GetTemporaryRT(tempTexture.id, cameraTargetDescriptor, FilterMode.Bilinear);
 
-    RenderTextureDescriptor cameraTextureDesc = renderingData.cameraData.cameraTargetDescriptor;
-    cameraTextureDesc.depthBufferBits = 0;
-    command.GetTemporaryRT(tempTexture.id, cameraTextureDesc, FilterMode.Bilinear);
-
-    command.Blit(sourceTexture, tempTexture.Identifier(), material, 0);
-    command.Blit(tempTexture.Identifier(), sourceTexture);
-    //Blit(command, sourceTexture, tempTexture.Identifier(), material, 0);
-    //Blit(command, tempTexture.Identifier(), sourceTexture);
-
-    context.ExecuteCommandBuffer(command);
-
-    CommandBufferPool.Release(command);
+    //...
 }
 ```
 
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/8f3f8bbf-9d2c-4351-ac64-412cb5aaab86/Untitled.png)
+最後就是後處裡發揮效果的部分了 先透過一個 blit 將來源複製到臨時 RT，並經過 Material 的 Shader 效果
 
-[https://docs.unity3d.com/ScriptReference/Rendering.ScriptableRenderContext.ExecuteCommandBuffer.html](https://docs.unity3d.com/ScriptReference/Rendering.ScriptableRenderContext.ExecuteCommandBuffer.html)
+處理完之後再用另一個 Blit 複製回 frame buffer
 
-在渲染完畢時調用，用於釋放 RT
+```cs.ImageEffectPass
+public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
+{
+    //...command.GetTemporaryRT
 
-在繪製完畢後 清除的命令
+    command.Blit(sourceTexture, tempTexture.Identifier(), material, 0);
+    command.Blit(tempTexture.Identifier(), sourceTexture);
+    
+    //...
+}
+```
 
-他會把清除命令的 commandBuffer 傳入 給你添加命令
+<!-- https://docs.unity3d.com/ScriptReference/Rendering.ScriptableRenderContext.ExecuteCommandBuffer.html -->
 
-不需要自己 Get 或 Release
+最後要把用完的 RT 釋放，SRP Render Pass 有一個函式 `FrameCleanup` 會傳入清除的 Command，我們可以添加 ReleaseTemporaryRT 進去
 
-```csharp
+```cs.ImageEffectPass
 public override void FrameCleanup(CommandBuffer cmd)
 {
     cmd.ReleaseTemporaryRT(tempTexture.id);
 }
 ```
 
-回到 Feature 設置
+回到 Feature 設置，在 Create 函式裡建立 mass 並傳入畫面處理的 pass
 
-```csharp
+```cs.ImageEffectFeature
 [SerializeField] string shaderName;
-CustomRenderPass pass;
+
+ImageEffectPass pass;
 
 public override void Create()
 {
-    pass = new CustomRenderPass(new Material(Shader.Find(shaderName)));
+    Material material = new Material(Shader.Find(shaderName));
+    pass = new ImageEffectPass(material);
 }
+```
+
+最後在 AddRenderPasses 中設置 renderTarget，並將 pass 添加進渲染管線
+
+```cs
 public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
 {
     pass.SetSource(renderer.cameraColorTarget);
@@ -527,152 +530,53 @@ public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingD
 }
 ```
 
-建立一個 Shader, Custom/Desaturate，回到 Inspector 設置 ShaderName 就會有效果了
+回到 Editor 建立一個預設的 ImageEffectShader (負片效果) ，並 RenderData 加入我們的 Feature，就能在 game view 看到效果了
 
-```csharp
-fixed4 frag (v2f i) : SV_Target
+{{< resources/image "image-effect.jpg" >}}
+
+<!-- https://youtu.be/MLl4yzaYMBY -->
+
+### 批量繪製 -
+
+也可以把 GPU instance 轉移到 Render Feature 中 基本上作法和一般的沒兩樣 只是 Graphics 命令改成用 CommandBuffer
+
+跳過基本的計算著色器內容，不了解計算著色器的讀者可以先參考 [【筆記】初學指南，計算著色器]({{< ref "/learn/compute-shader/compute-shader-basis" >}})
+
+這裡就只展示編寫的差異 不從頭開始了
+
+```cs.GPUInstancePass
+public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
 {
-    fixed4 col = tex2D(_MainTex, i.uv);
-    return Luminance(col);
+    CommandBuffer command = CommandBufferPool.Get("Command");
+
+    command.SetBufferCounterValue(resultBuffer, 0);
+    //resultBuffer.SetCounterValue(0);
+
+    command.DispatchCompute(compute, kernel, (instanceCount / 640 + 1), 1, 1);
+    //compute.Dispatch(kernel, (instanceCount / 640 + 1), 1, 1);
+
+    command.CopyCounterValue(resultBuffer, argsBuffer, sizeof(uint));
+    //ComputeBuffer.CopyCount(resultBuffer, argsBuffer, sizeof(uint));
+
+    command.DrawMeshInstancedIndirect(instanceMesh, 0, material, 0, argsBuffer);
+    //Graphics.DrawMeshInstancedIndirect(instanceMesh, 0, material, new Bounds(Vector3.zero, new Vector3(100.0f, 100.0f, 100.0f)), argsBuffer);
+
+    context.ExecuteCommandBuffer(command);
+
+    CommandBufferPool.Release(command);
 }
 ```
 
-![螢幕擷取畫面 2023-04-11 165315.jpg](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/6d4a9c3f-9c62-42f2-91e2-c9ec15fedc2a/%E8%9E%A2%E5%B9%95%E6%93%B7%E5%8F%96%E7%95%AB%E9%9D%A2_2023-04-11_165315.jpg)
+繪製草地植被等等 可能會會更好維護
 
-[https://youtu.be/MLl4yzaYMBY](https://youtu.be/MLl4yzaYMBY)
-
-### 批量繪製
-
-也可以把 GPU instance 轉移到 Render Feature 中
-
-基本上作法和一般的沒兩樣 只是 Graphics 命令改成用 CommandBuffer
-
-跳過基本的計算著色器內容
-
-```csharp
-class GPUInstancePass : ScriptableRenderPass
-{
-    //other codes ...
-
-    public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
-    {
-        CommandBuffer command = CommandBufferPool.Get("Command");
-
-        command.SetBufferCounterValue(resultBuffer, 0);
-        command.DispatchCompute(compute, kernel, (instanceCount / 640 + 1), 1, 1);
-        command.CopyCounterValue(resultBuffer, argsBuffer, sizeof(uint));
-        command.DrawMeshInstancedIndirect(instanceMesh, 0, material, 0 , argsBuffer);
-
-        context.ExecuteCommandBuffer(command);
-
-        CommandBufferPool.Release(command);
-    }
-}
-```
-
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/f4ec70db-60cd-46f3-94ae-9e2df8e863a3/Untitled.png)
-
----
-
-[https://youtu.be/EB5HiqDl7VE](https://youtu.be/EB5HiqDl7VE)
-
-[Unity - Scripting API: Mesh.GetVertexBuffer](https://docs.unity3d.com/ScriptReference/Mesh.GetVertexBuffer.html)
-
-vertex buffer?
-
-[Unity - Scripting API: Mesh.GetVertexBuffer](https://docs.unity3d.com/ScriptReference/Mesh.GetVertexBuffer.html)
-
-https://docs.google.com/document/d/1_YrJafo9_ZsFm4-8K2QlD0k3RgwZ_49tSA84paobfcY/edit#
-
-SkinnedMeshRenderer
-
-[https://github.com/Unity-Technologies/MeshApiExamples](https://github.com/Unity-Technologies/MeshApiExamples)
-
-修改 GPU 中的共用 vertex buffer
-
-```csharp
-Debug.Log(mesh.GetVertexBufferStride(0));
-Debug.Log(mesh.GetVertexAttribute(0));
-Debug.Log(mesh.GetVertexAttribute(1));
-Debug.Log(mesh.GetVertexAttribute(2));
-Debug.Log(mesh.GetVertexAttribute(3));
-Debug.Log(mesh.GetVertexAttribute(4));
-```
-
-Plane, Quad
-
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/6345c6d2-71cd-4fee-90bd-105a3542a55d/Untitled.png)
-
-Sphere, Cube, Cylinder, Capsule
-
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/8faa79f7-14e0-4d3b-b10e-f750d52f4511/Untitled.png)
-
-- attr = 屬性
-- fmt = 格式
-- dim = 維度
-- stream = ??
-
-- Position
-
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/57195604-0a6a-461c-8a38-c6d98fe43839/Untitled.png)
-
-透過檢查 知道有沒有錯誤
-
-```glsl
-int _BufferStride;
-int _VertexCount;
-
-[numthreads(64,1,1)]
-void CSMain (uint3 id : SV_DispatchThreadID)
-{
-    if(id.x >= _VertexCount) return;
-
-    uint3 rawVertex = vertexBuffer.Load3(id.x * _BufferStride);
-    float3 vertex = asfloat(rawVertex);
-
-    uint3 rawNormal = vertexBuffer.Load3(id.x * _BufferStride + 12);
-    float3 normal = asfloat(rawNormal);
-
-    checkVertexBuffer[id.x] = vertex;
-    checkNormalBuffer[id.x] = normal;
-}
-```
-
-```csharp
-checkVertexBuffer.GetData(checkVertex);
-
-for (int i = 0; i < mesh.vertexCount; i++)
-{
-    if (mesh.vertices[i] != checkVertex[i])
-    {
-        Debug.LogError(i);
-    }
-}
-```
-
----
-
-全域物件效果 SDF 遮罩
-
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/8224038c-96aa-427b-80a7-22cedc010656/Untitled.png)
-
-```csharp
-fixed4 frag (v2f i) : SV_Target
-{  
-    float distance = (length(i.worldPos - _SDFCulling.xyz) - _SDFCulling.w) * _SDFCullingDir;
-
-    clip(distance);
-
-    return 1;
-}
-```
-
-Depth Test Equal
-
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/8570724b-3cc7-4818-b9dd-b29f710bda59/Untitled.png)
+{{< resources/image "gpu-instance.jpg" >}}
 
 ## 結語
+
+(基本上所有 Graphics 與 ComptueShader 命令都有可以)
 
 ### 參考資料
 
 [CREATE YOUR OWN RENDERER WITHOUT CODE in Unity!](https://youtu.be/szsWx9IQVDI)
+
+{{< youtube "szsWx9IQVDI" >}}
