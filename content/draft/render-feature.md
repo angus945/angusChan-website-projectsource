@@ -526,13 +526,11 @@ public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingD
 
 <!-- https://youtu.be/MLl4yzaYMBY -->
 
-### 批量繪製 -
+### 批量繪製 +
 
-也可以把 GPU instance 轉移到 Render Feature 中 基本上作法和一般的沒兩樣 只是 Graphics 命令改成用 CommandBuffer
+最後的範例，如果對計算著色器有一定程度的熟悉，可能會知道 GPU Instance 這玩意，它能用極低的成本繪製出巨量的物件。而當然，它也能被寫進 Render Feature 中，兩者差異不大，只是原先調用命令對象從 Graphics 改成 CommandBuffer 而已。
 
-跳過基本的計算著色器內容，不了解計算著色器的讀者可以先參考 [【筆記】初學指南，計算著色器]({{< ref "/learn/compute-shader/compute-shader-basis" >}})
-
-這裡就只展示編寫的差異 不從頭開始了
+這裡就跳過基本內容，只展示兩者的編寫差異了。不了解計算著色器的讀者可以參考 [【筆記】初學指南，計算著色器]({{< ref "/learn/compute-shader/compute-shader-basis" >}}) 噢 (ゝ∀･)
 
 ```cs.GPUInstancePass
 public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
@@ -557,16 +555,23 @@ public override void Execute(ScriptableRenderContext context, ref RenderingData 
 }
 ```
 
-繪製草地植被等等 可能會會更好維護
-
 {{< resources/image "gpu-instance.jpg" >}}
 
 ## 結語
 
 (基本上所有 Graphics 與 ComptueShader 命令都有可以)
 
+SRP 真的方便許多
+
+之前曾經用 Camera.AddCommandBuffer 擴展過 Bulit-in 管線
+
+成效相當糟糕
+
+{{< resources/assets "assets" "> 筆記中的所有腳本都在這 <" >}}
+
 ### 參考資料
 
 [CREATE YOUR OWN RENDERER WITHOUT CODE in Unity!](https://youtu.be/szsWx9IQVDI)
 
 {{< youtube "szsWx9IQVDI" >}}
+
