@@ -232,6 +232,8 @@ fixed4 frag (v2f i, uint id : SV_INSTANCEID) : SV_Target
 
 {{< resources/image "drawmesh.gif" >}}
 
+<!-- TODO assets -->
+
 <p><c>
 註：我原本是使用 URP 的 Lit 材質，但他在 CommandBuffer DrawMesh 中會變成黑色，不確定原因。
 </c></p>
@@ -318,19 +320,24 @@ renderData.rendererFeatures.Add(addFeature);
 renderData.rendererFeatures.Remove(addFeature);
 ```
 
-## 實作範例 -
+## 實作範例 +
 
-最後，來提供一些範例
+最後來提供一些範例，讓我們對這項強大的功能有更進一步的理解。
 
-### 全域遮罩 -
+### 全域遮罩 +
 
-也是不用寫自訂 Feature 的效果
+距離場 (Signed Distance Field) 是著色器中經常使用的技巧，無論遮罩剔除或或經典的溶解效果都是常見的應用。但我之前就在想，難道距離場一定要寫在每個腳本中嗎？有沒有更泛用的全域解方？之前一直想不到，直到我接觸 Render Feature 後才研究出理想的實現方法。
+
+這是不用寫自訂 Feature 的效果，只要用 URP 的預設功能幾可。首先要先給受影響的物件設置 Layer，並在 Filtering 中將圖層移除，確保物體不會被預設的方法渲染。
 
 {{< resources/image "culling-setup.jpg" >}}
 
-建立一個 SDF Shader
+建立一個 Unlit Shader ，我們會在當中透過球體距離場進行像素剔除，至於原理這裡就不多做贅述，基本的 SDF 應用而已。接著用 Shader 建立一顆材質球。
 
 ```hlsl
+uniform float _SDFCullingDir;
+uniform float4 _SDFCulling;
+
 fixed4 frag (v2f i) : SV_Target
 {  
     float distance = (length(i.worldPos - _SDFCulling.xyz) - _SDFCulling.w) * _SDFCullingDir;
@@ -341,33 +348,45 @@ fixed4 frag (v2f i) : SV_Target
 }
 ```
 
-建立 RenderObject Feature 用覆寫材質渲染 就能渲染出受到 SDF 的物件了 要讓他寫入深度
+回到 RenderData 物件，在最下方添加 Render Objects Feature，並且將 Filters 的渲染圖層設置為要渲染的物件圖層。不過它特別的地方是你可以用一些選項來覆寫原本的設定，例如材質與深度設定。所以我們要將材質換成自己的，並設定一般的深度寫入功能。
 
 {{< resources/image "culling-feature-blank.jpg" >}}
 
+設定完成後，只要在場景中將剔除資訊傳入 Shader，就能產生全域的距離場效果了。
+
+```cs
+[SerializeField] Transform cullingSphere;
+[SerializeField] bool cullIn;
+
+void Update()
+{
+    Vector4 cullingSDF = cullingSphere.position;
+    cullingSDF.w = cullingSphere.localScale.x / 2;
+
+    Shader.SetGlobalVector("_SDFCulling", cullingSDF);
+    Shader.SetGlobalFloat("_SDFCullingDir", cullIn ? 1 : -1);
+}
+```
+
 {{< resources/image "culling-blank.gif" >}}
 
-在渲染一次物體，但這次用物件自己的材質 但是改變 Depth Test 使用 Equal 將 SDF 作為遮罩
+但這樣還是讓所有物件都用相同材質渲染不是嗎？別急，接下來才是魔法發生的地方，我們可以讓物體再用他的材質渲染一次。建立另一個 Render Objects 的效果，但這次不覆寫材質球與深度寫入，只進行深度測試而已，將測試改為 Equal 就能達成全域的 SDF 效果了。
 
 {{< resources/image "culling-feature-shaded.jpg" >}}
 
+還記得第一次渲染時寫入的深度資料嗎？這個效果的原理是透過一次的 SDF 渲染，在 Depth Buffer 中建立深度「遮罩」，再用第二次的渲染將物件畫在遮罩覆蓋的範圍中。
+
 {{< resources/image "culling-shaded.gif" >}}
 
-這是受 Sakura Rabbit 啟發的 邊緣的發光可以用後處理達成
+效能可能沒那麼理想？畢竟渲染了兩次物體，但至少，這是我覺得比較好維護的作法了。至於特效部份可以用後處裡達成，這裡就先跳過了。這是受 Sakura Rabbit 啟發的研究，他真的相當厲害 XD
 
 {{< resources/image "cullig-sakura-rabbit.gif" >}}
 
-### 畫面處理 -
+### 畫面處理 +
 
-畫面後處理 對渲染完畢的結果進行處理 達成更多效果 PostProcessing, ImageEffect
+無論要叫它後處理還是畫面效果都一樣，這是一種對渲染完畢的結果進行二次處理的特效手段，用來給畫面添加如景深、模糊、光暈等特效的方法。與 Built-in 管線不同的是，URP 不能在 `OnRenderImage()` 中編寫效果，不太方便，但相對的是更良好的維護與擴展性。
 
-URP 與 Built in 不同，不能在 OnRenderImage 寫後處理 沒那麼方便，但相對有更高的維護性與擴展性
-
-<!-- 後處理使用的材質球 -->
-
-在原本的 OnRenderImage 函式，有兩個輸入 source 與 destination，一個為原始圖片的來源 另一個是處理後圖片的位置，我們會透過 Blit 進行畫面處理，使用材質球的 fragment shader 
-
-會需要兩個 RT 是因為 Blit 不能指定與來源相通的目標 所以要先用一個臨時的 RT 暫存，等處理完畢再複製回 FrameBuffer
+先來看看原本的 `OnRenderImage()` 函式。這裡有兩個輸入 `source` 與 `destination`，一個為原始圖片的來源，而另一個則是處理完的圖片去向，我們會透過 `Blit()` 進行畫面處理，使用材質球的中的 fragment shader 對圖片的每個像素進行修改。 
 
 ```cs
 Material material;
@@ -377,9 +396,11 @@ void OnRenderImage(RenderTexture source, RenderTexture destination)
 }
 ```
 
-而在 URP 的自訂 RenderPass 中，需要靠自己處裡上面幾項工作 
+這裡需要兩個 `RenderTexture` 的原因是，`Blit()` 不能指定與來源相通的目標作為複製對象，所以要先用一個臨時的 RT 暫存，等處理完畢再複製回 FrameBuffer，而 `RenderImage()` 幫我們完成了這項工作。
 
-透過 `RenderTargetIdentifier` 儲存圖片來源 FrameBuffer，`RenderTargetHandle` 處存臨時 RT，透過建構函式傳入要使用的材質球
+<!-- https://docs.unity3d.com/ScriptReference/MonoBehaviour.OnRenderImage.html -->
+
+在 URP 的 RenderPass 中，上述工作需要靠自己達成。建立一個 `RenderTargetIdentifier` 與 `RenderTargetHandle` 的變數，作為圖片來源以及暫存的圖片位置。為了使用自訂的材質處理，還要在建構函式提供對應的變數輸入。
 
 ```cs.ImageEffectPass
 Material material;
@@ -395,31 +416,29 @@ public ImageEffectPass(Material material)
 }
 ```
 
-`RenderTargetIdentifier` 儲存 RT 的指標 各種擴展管線 取的儲存渲染目標都會使用 可以用它來取得 處存 FrameBuffer 的位置
+**RenderTargetIdentifier**
 
-`RenderTargetHandle` 著色器變數的指標，也可以儲存 RT ，但需要先被定義?  
+這是儲存 RenderTexture 的指標。在各種管線擴展中，想取的畫面渲染的目標都會使用，可以用它儲存 FrameBuffer 或任何 RenderTexture 的位置。
 
-Shader 的 Properity 是透過 index 處存的 ShaderID Shader.PropertyToID
+**RenderTargetHandle**
+
+這是著色器變數的 ID。為了效能，所有的 Shader 參數都是透過 ID 儲存的，這可以避免使用名稱（字串）訪問時的 Hash 開銷。
+
+在這裡可以把他當成封裝 `RenderTargetIdentifier` 的類別，你可以先透過 `Init()` 函式指定名稱，直到需要臨時 RenderTexture 時，它會用這個名稱幫你建立一個。
+
+**RenderTextureDescriptor**
+
+這是包裝了建立 RenderTexture 所需資訊的類別，同樣是為了更高的效能，可以拿它建立我們需要的 RenderTexture。
+
+<!-- https://blog.csdn.net/mango9126/article/details/126418331 -->
 
 <!-- https://zhuanlan.zhihu.com/p/115080701 -->
 
 <!-- https://docs.unity3d.com/ScriptReference/Rendering.CommandBuffer.GetTemporaryRT.html -->
 
-需要一個函式來指定 圖片的來源 
-
-```cs.ImageEffectPass
-public void SetSource(RenderTargetIdentifier source)
-{
-    this.sourceTexture = source;
-}
-```
-
-透過 RenderTextureDescriptor 取得渲染目標的 RT ，RenderTextureDescriptor 包括建立 RT 需要的所有變數，我們可以透過 GetTemporaryRT 建立一個 RT 根據 ShaderPropID 建立一個 RT 並存在全域，而 depthBufferBits 則是設定是否啟用 Depth, Stencil Buffer
-
-> This creates a temporary render texture with given parameters, and sets it up as a global shader property with nameID
+根據先前對 `OnRenderImage()` 與 `Blit()` 的解釋，首先我們要建立一個臨時的 RenderTexture 作為 `Blit()` 複製的對象。透過 `cameraTargetDescriptor` 訪問渲染目標的格式並保存，我們可以修改 `depthBufferBits` 來控制暫存圖片是否使用深度與模板緩衝區。
 
 <!-- https://docs.unity3d.com/ScriptReference/RenderTextureDescriptor.html -->
-
 <!-- https://docs.unity3d.com/ScriptReference/Rendering.CommandBuffer.GetTemporaryRT.html -->
 
 ```cs.ImageEffectPass
@@ -429,15 +448,25 @@ public override void Execute(ScriptableRenderContext context, ref RenderingData 
     
     RenderTextureDescriptor cameraTargetDescriptor = renderingData.cameraData.cameraTargetDescriptor;
     cameraTargetDescriptor.depthBufferBits = 0;
+
+    //...
+}
+```
+
+透過 `GetTemporaryRT()` 命令取得 `RenderTexture`，它會根據我們傳入的 ID 與圖片格式，在全域建立一個臨時的 RenderTexture。
+
+```cs.ImageEffectPass
+public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
+{
+    //...cameraTargetDescriptor.depthBufferBits = 0;
+    
     command.GetTemporaryRT(tempTexture.id, cameraTargetDescriptor, FilterMode.Bilinear);
 
     //...
 }
 ```
 
-最後就是後處裡發揮效果的部分了 先透過一個 blit 將來源複製到臨時 RT，並經過 Material 的 Shader 效果
-
-處理完之後再用另一個 Blit 複製回 frame buffer
+處裡完前置作業後，剩下的就和 `OnRenderImage()` 沒什麼差別了。透過 `Blit()` 將影像來源複製到臨時的 RenderTexture 裡，並經過 Fragment Shader 完成後處裡效果，再用另一個 Blit 複製回 frame buffer。
 
 ```cs.ImageEffectPass
 public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
@@ -453,7 +482,7 @@ public override void Execute(ScriptableRenderContext context, ref RenderingData 
 
 <!-- https://docs.unity3d.com/ScriptReference/Rendering.ScriptableRenderContext.ExecuteCommandBuffer.html -->
 
-最後要把用完的 RT 釋放，SRP Render Pass 有一個函式 `FrameCleanup` 會傳入清除的 Command，我們可以添加 ReleaseTemporaryRT 進去
+在完成畫面處裡後，還要把臨時的 RenderTexture 釋放。Render Pass 有提供 `FrameCleanup()` 函式可以讓我們編寫釋放工作。
 
 ```cs.ImageEffectPass
 public override void FrameCleanup(CommandBuffer cmd)
@@ -462,7 +491,16 @@ public override void FrameCleanup(CommandBuffer cmd)
 }
 ```
 
-回到 Feature 設置，在 Create 函式裡建立 mass 並傳入畫面處理的 pass
+最後，我們還需要一個函式來指定要處理的圖片來源。 
+
+```cs.ImageEffectPass
+public void SetSource(RenderTargetIdentifier source)
+{
+    this.sourceTexture = source;
+}
+```
+
+完成 RenderPass 的作業後，就是回到 Feature 中完成後續設置。把 Material 與渲染目標傳入，並將 pass 添加進渲染管線中。
 
 ```cs.ImageEffectFeature
 [SerializeField] string shaderName;
@@ -474,11 +512,6 @@ public override void Create()
     Material material = new Material(Shader.Find(shaderName));
     pass = new ImageEffectPass(material);
 }
-```
-
-最後在 AddRenderPasses 中設置 renderTarget，並將 pass 添加進渲染管線
-
-```cs
 public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
 {
     pass.SetSource(renderer.cameraColorTarget);
@@ -487,7 +520,7 @@ public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingD
 }
 ```
 
-回到 Editor 建立一個預設的 ImageEffectShader (負片效果) ，並 RenderData 加入我們的 Feature，就能在 game view 看到效果了
+最後的最後，回到 Editor 裡建立預設的 ImageEffectShader （負片效果），並在 RenderData 中加入我們的 Feature，設置完畢就能在 GameView 看到效果了！
 
 {{< resources/image "image-effect.jpg" >}}
 
