@@ -31,84 +31,59 @@ resources: /learn/scriptable-render-pipeline/render-feature/
 # sitemap_ignore: true
 ---
 
-## SRP
-
-允許開發者更方便的擴展渲染管線
-
-但不需要接觸到太底層的管線程式碼
-
-URP 中提供的
-
-比較好接觸的實用功能 RenderFeature
-
-這篇筆記適合已經有 Shader 基礎，了解渲染管線基礎知識
-
-想開始接觸 SRP 的人
-
-<!--more-->
-
 <!-- &nbsp; -->
 
 <!-- [text]({ ref "relpath" })。 -->
 
-### 環境設定 -
+## SRP -
 
-為了避免未知問題，請確保版本與環境一致
+可腳本化的渲染管線 (Scriptable Render Pipeline) 是 Unity 提供開發者的一個渲染管線擴展方法，能讓我們更方便的從頭制定渲流程，物件、光照、陰影和後處裡效果等。
 
-版本 Unity 2021.3.22f1
+但從頭開發一次渲染管線會需要做許多繁瑣工作，而我們有時只是想給管線添加一些自訂功能，沒必要
 
-注意不要用 URP 模板建立專案 可能遇到問題
+所以 Unity 也提供了現成的管線模板 (URP, HDRP?)，以及對管線進行功能擴充的強大功能 - RenderFeature。
 
-3D Core (3D 核心)
+這篇筆記適合已經有 Shader 基礎，並且了解渲染管線的基礎知識，想開始接觸 SRP (URP) 的人。本文會省略基本的著色器內容，讓內容著重在 RenderFeature 的細節與運用上。
+
+<!--more-->
+
+### 環境設定 +
+
+如果你要同時進行實做練習，請確保版本與環境一致，避免出現未知的錯誤。本文編寫時使用的版本為 Unity 2021.3.22f1，專案模板是 3D Core (3D 核心)。請 <r> 不要 </r> 用 URP 模板建立專案，一些進階的設定可能會導致學習時遇到過多干擾。
 
 {{< resources/image "setup-create.jpg" >}}
 
-導入 URP
+取而代之，我們會在專案建立後透過 Packge Manager 導入 Universal Render Pipeline，並手動改變渲染管線設定。
 
 {{< resources/image "setup-install.jpg" >}}
 
-建立 PipelineAsset
+導入完成後，在資料夾中建立 URP Asset。Create > Rendering > URP Asset (with Universal Renderer)
 
 {{< resources/image "setup-pipeline-asset.jpg" >}}
 
-設置管線
+開啟專案設定圖形設定，將剛剛建立的管線資料放入 SRP Setting 中。Edit > Project Settings > Graphics > Scriptable Render Pipeline Settings。
 
 {{< resources/image "setup-pipeline.jpg" >}}
 
+## 基本資訊 +
 
-## 基本資訊 -
+在建立管線資料的同時，資料夾也出現了另一個有 _Renderer 後綴的物件，這是 SRP 的 Render Data 物件，我們會在裡面進行各種渲染設定，讓使用者客製化參數調整。URP 的 Render Data 中包括了基礎的渲染設定 Layer, Path, Shadow 等等。
 
-在建立時出現的 Render Data，裡面包括基礎的渲染設定 Layer, Path, Shadow 等等
-
-最下面有一個 AddRenderFeature 就是今天的主角
+在設定的最下面有個 RenderFeatures 就是今天的主角，點擊按鈕會出現一些選項，是 URP 中預設的擴充功能，一些簡單的效果不用編寫程式就達成。但我們先深入原理，晚點再來談效果與範例。
 
 {{< resources/image "basis-render-data.jpg" >}}
 
-點擊後會出現一些選項，是 URP 中預設的
+管線的核心功能，可能包括渲染物件、光照、陰影等處理，而 Feature 則是附加在管線上的「擴展」功能，透過內部實做的 Pass 達成期望效果。管線可以有多個擴展，而每個擴展也可以有複數個實做內容。
 
-有些不用程式碼的效果能直接實現 例如被遮擋的物體
-
-但我們先深入 等等再來談效果與範例 層次結構
-
-管線的核心功能，可能包括渲染物件、光照、陰影等處理
-
-Feature 則是附加在管線上的「擴展」功能，而 Pass 則是擴展功能的實做。
-
-管線可以有多個擴展，而每個擴展也可以有複數個實做內容
-
-{{< resources/image "basis-hierarchy.png" "40%" >}}
+<!-- {{< resources/image "basis-hierarchy.png" "40%" >}} -->
 
 <!-- TODO 換更好的圖 -->
 
-### 擴展管線 -
+### 擴展管線 +
 
-首先，擴展管線需要建立一個 繼承 `ScriptableRendererFeature` 的類別
+首先，擴展管線需要建立一個腳本，並繼承 `ScriptableRendererFeature`。當中有兩個函式需要實做 `Create()` 與 `AddRenderPasses()`。 `Create()` 會在遊戲初次載入時調用，用來給 Render Feature 初始化內容，而 `AddRenderPasses()` 會在每一幀調用，用來將實做內容註冊進管線當中。
 
-需要實做兩個函式 `Create()` 與 `AddRenderPasses()`。 `Create()` 會在 遊戲初次載入時調用，用來給 Render Feature 初始化內容
-
-`AddRenderPasses()` 每一幀都會被調用，用來給渲染管線添加自訂命令
-
-```csharp
+```cs.CustomRenderFeature
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
@@ -125,23 +100,19 @@ public class CustomRenderFeature : ScriptableRendererFeature
 }
 ```
 
-開啟資料夾中的 Pipeline Asset 可以 Add Render Feature
-
-這樣就成功在管線上添加了擴展功能
+回到編輯器中，現在 RenderData 已經可以添加我們自訂的擴展功能了。
 
 {{< resources/image "basis-feature-add.jpg" "80%" >}}
 
-### 擴展實做 -
+### 擴展實做 +
 
-實做擴展功能 我們必須建立一個 Pass
+實做擴展功能我們必須建立一個 Pass。
 
-想成在渲染管線中的 一次渲染命令 而 ScriptableRenderPass 則是一種自訂義渲染命令的手段
+先不談優化與真實原理，在這裡，我們可以先把它想成是用於達成某些目的「一系列」渲染命令，我們會根據需求將一項項的命令註冊給渲染管線，讓它在時當的時機執行內容。
 
-<!-- 用繪圖來說 可以想像成一筆畫？ -->
+建立一個類別，繼承 `ScriptableRenderPass`，並實做 `Execute()` 函式與建構函式。
 
-建立一個類別，繼承 `ScriptableRenderPass`
-
-```csharp
+```cs.CustomRenderPass
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
@@ -149,7 +120,7 @@ class CustomRenderPass : ScriptableRenderPass
 {
     public CustomRenderPass()
     {
-        // renderPassEvent = RenderPassEvent.AfterRenderingOpaques;
+
     }
     public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
     {
@@ -158,15 +129,9 @@ class CustomRenderPass : ScriptableRenderPass
 }
 ```
 
-需要實作一個 Execute 函式 用來編寫 Pass 要執行的命令 他會在每禎調用 我們會將要執行的命令傳入 ScriptableRenderContext context 當中
+`Execute` 函式是用來設定命令的地方，在 Unity 中我們會用 `CommandBufer` 保存 GPU 命令，並交由渲染管線執行內容。透過 `CommandBufferPool` 取得 Buffer 物件，將所需的功能添加完畢後，再用 `ExecuteCommandBuffer()` 執行命令，最後透過 `Release()` 釋放用完的緩衝區。
 
-在 Unity 中，我們會用 CommandBufer 保存 GPU 命令 透過 CommandBufferPool 取得 添加命令，
-
-context.ExecuteCommandBuffer 會將 而是將命令排進管線的更底層中，等實際渲染的時候調用
-
-最後當命令傳遞完畢後，就能釋放用完的 Buffer
-
-```csharp
+```cs.CustomRenderPass
 public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
 {
     CommandBuffer command = CommandBufferPool.Get("Command");
@@ -179,7 +144,7 @@ public override void Execute(ScriptableRenderContext context, ref RenderingData 
 }
 ```
 
-回到 Feature
+這裡的 `ExecuteCommandBuffer` 並不是「馬上」執行命令，而是將命令排進管線的更底層中，等實際渲染的時候調用。回到 Feature，最後要在 `Create()` 中建立 Pass 物件，並透過 `AddRenderPasses()` 中將其註冊進管線中。
 
 ```cs.CustomRenderFeature
 public class CustomRenderFeature : ScriptableRendererFeature
@@ -197,30 +162,17 @@ public class CustomRenderFeature : ScriptableRendererFeature
 }
 ```
 
-如此一來，基本的設置模板就完成了 但目前仍未有任何效果 因為我們沒有在 CommandBuffer 中天加任何命令
+如此一來，一個沒有任何效果的擴展功能就完成了。
 
-### 渲染物件 -
+### 渲染物件 +
 
-假設我想渲染一個物體
-
-設置資源
+假設我想渲染一個物體，可以透過 `DrawMesh()` 命令達成，使用 `CommandBuffer.DrawMesh()` 將命令排進緩衝區。
 
 ```cs.CustomRenderPass
 Mesh mesh;
 Matrix4x4 transform;
 Material material;
 
-public void SetRenderObject(Mesh mesh, Vector3 position, Vector3 rotation, Vector3 scale, Material material)
-{
-    this.mesh = mesh;
-    this.transform = Matrix4x4.TRS(position, Quaternion.Euler(rotation), scale);
-    this.material = material;
-}
-```
-
-添加渲染命令
-
-```cs.CustomRenderPass
 public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
 {
     CommandBuffer command = CommandBufferPool.Get("Command");
@@ -236,9 +188,18 @@ public override void Execute(ScriptableRenderContext context, ref RenderingData 
 }
 ```
 
-回到 RenderFeature，建立要使用的屬性，傳入 
+但命令是在 Pass 中執行的，記得提供接口傳遞渲染需要的資訊，模型、矩陣與材質等等。
 
-此時 Inspector 就會出現對應的參數 我們在 `Create()` 時加入
+```cs.CustomRenderPass
+public void SetRenderObject(Mesh mesh, Vector3 position, Vector3 rotation, Vector3 scale, Material material)
+{
+    this.mesh = mesh;
+    this.transform = Matrix4x4.TRS(position, Quaternion.Euler(rotation), scale);
+    this.material = material;
+}
+```
+
+回到 RenderFeature，建立要使用的屬性欄位後，Inspector 就會出現對應的參數讓我們調整，只要在 `Create()` 函式傳入 Pass 就能讓渲染產生效果了。
 
 ```cs.CustomRenderFeature
 [SerializeField] Mesh mesh;
@@ -257,9 +218,7 @@ public override void Create()
 
 {{< resources/image "drawmesh-inspector.jpg" >}}
 
-使用一個簡單的 Lambert Model 的 Unlit Shader，可以看到場景中出現一個物體 (沒看到的話可以確認一下 scale)，改變參數時也會引響到他
-
-每當 Inspector 改變參數時 都會重新調用一次 Create
+建立一個簡單的 Unlit Shader 進行測試，使用 Lambert 進行光照計算。設置完各種參數後，應該能看到場景中出現一個物體（沒看到的話可以確認一下 Scale），而任何參數的變動都會即時產生影響，因為在 Inspector 中改變參數的同時，`Create()` 都會被重新調用。
 
 ```hlsl
 fixed4 frag (v2f i, uint id : SV_INSTANCEID) : SV_Target
@@ -274,53 +233,60 @@ fixed4 frag (v2f i, uint id : SV_INSTANCEID) : SV_Target
 {{< resources/image "drawmesh.gif" >}}
 
 <p><c>
-註：我原本是使用 URP 的 Lit 材質，但他在 commandBuffer DrawMesh 中會變成黑色，不確定原因，可能是 URP 有一些工作不會再 Feature 進行，所以才建新的 Unlit 來用。
+註：我原本是使用 URP 的 Lit 材質，但他在 CommandBuffer DrawMesh 中會變成黑色，不確定原因。
 </c></p>
 
-### 訪問資料 -
+### 訪問資料 +
 
-GraphicsSettings 與 QualitySettings 可以訪問到當前的渲染管線資料，但是 ScriptableRendererData 是封裝的，所以要靠反射? 取得，原理不清楚
-
+除了從 Inspector 進行初始設定以外，我們也能透過程式修改參數。GraphicsSettings 與 QualitySettings 可以訪問到當前的管線資料。
 
 ```cs.FeatureAccess
 RenderPipelineAsset pipelineAsset = GraphicsSettings.renderPipelineAsset;
 //RenderPipelineAsset pipelineAsset = (RenderPipelineAsset)QualitySettings.renderPipeline;
 ```
 
-取得之後就能得到 rendererFeatures，可以再透過名稱取得特定的資料
+但 `ScriptableRendererData` 是被封裝的，所以要靠反射 (Reflection) 取得，原理我還不清楚，總之有效 :P
 
 ```cs.FeatureAccess
 FieldInfo propertyInfo = pipelineAsset.GetType().GetField("m_RendererDataList", BindingFlags.Instance | BindingFlags.NonPublic);
 ScriptableRendererData renderData = ((ScriptableRendererData[])propertyInfo?.GetValue(pipelineAsset))?[0];
 ```
 
-或你嫌這樣太麻煩的話，也可以直接建立 Field 指定你的 RederData，效果相同
+如果你嫌這樣麻煩的話，也可以直接用變數指定 RederData，效果相同。
 
 ```cs.FeatureAccess
 [SerializeField] ScriptableRendererData rendererData;
 ```
 
-最後再透過 名稱取得指定的 Feature
+最後，我們就能取得 RederData 中的所有 Feature，如果要尋找特定內容的話，可以透過名稱進行篩選。
 
 ```cs.FeatureAccess
 List<ScriptableRendererFeature> features = renderData.rendererFeatures;
 GPUInstenceFeature feature = features.Find(n => n.name == "CustomRenderFeature") as GPUInstenceFeature;
 ```
 
+至於名稱就是我們在添加擴展時，於第一個 Name 欄位填寫的內容。
+
+{{< resources/image "feature-access-name.jpg" >}}
+
 <!-- https://blog.csdn.net/boyZhenGui/article/details/125974779 -->
 
-### 修改參數 -
+### 修改內容 +
 
-能透過程式開關特定 Feature
+**開關功能**
+
+在成功訪問 Feature 的資料後，我們也能對它的參數進行修改。首先是開關效果，只要調用 `SetActive()` 即可達成。
 
 ```cs.FeatureAccess
 feature.SetActive(true);
 feature.SetActive(false);
 ```
 
+**修改參數**
+
 {{< resources/image "modify-active.gif" >}}
 
-或是修改 Feature 中的屬性，但需要建立對應的接口才行
+我們也可以 Feature 中的自訂參數，但需要建立對應的接口才行。
 
 ```cs.FeatureAccess
 feature.SetScale(scale);
@@ -335,30 +301,21 @@ public void SetScale(Vector3 scale)
 
 {{< resources/image "modify-scale.gif" >}}
 
-### 添加移除 -
+**添加移除**
 
-能夠訪問到 RenderData 後，也能透過程式添加、移除指定的 Feature
-
-RenderFeature 的是繼承了 ScriptableObject 所以可以透過 ScriptableObject.CreateInstance 建立
+最後，我們也能透過程式添加、移除指定的 Feature。所以可以透過 ScriptableObject 的 `CreateInstance<T>()` 建立我們想要的類別，再將它加入 renderData 的列表中。
 
 ```csharp
 ScriptableRendererFeature addFeature = ScriptableObject.CreateInstance<CustomRenderFeature>();
 renderData.rendererFeatures.Add(addFeature);
 ```
 
-不過要注意的是 renderData 也是資料夾中的 ScriptableObject，因此在編輯器中修改的內容會被保留，當退出遊玩模式後會發生 Missing 的問題，為了避免這種情況，最好是在離開時手動移除
+不過要注意的是， RenderData 也是資料夾中的 ScriptableObject，因此在編輯器中修改的內容會被保留，當退出遊玩模式後會發生 Missing 的問題。為了避免這種情況，最好是在離開時手動移除
 
 {{< resources/image "add-feature-missing.jpg" >}}
 
 ```cs
 renderData.rendererFeatures.Remove(addFeature);
-```
-
-當然，你也可以在運行時移除任何 Feature 只要透過名稱尋找即可
-
-```cs
-ScriptableRendererFeature removeFeature = renderData.rendererFeatures.Find(n => n.name == "AddedFeature");
-renderData.rendererFeatures.Remove(removeFeature);
 ```
 
 ## 實作範例 -
