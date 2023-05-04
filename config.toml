@@ -12,6 +12,16 @@ ignoreErrors = ["error-disable-taxonomy"]
 ## Change this two to switch between different language
 languageCode = "zh-hant"           # For RSS, view https://www.rssboard.org/rss-language-codes
 defaultContentLanguage = "zh-hant" # For HTML page, now support: en, zh-hans, zh-hant, ja, nl, pl, it
+[languages]
+  [languages.zh-hant]
+    languageName = "Chinese"
+    weight = 1
+  [languages.en]
+    languageName = "English"
+    weight = 2
+  [languages.jp]
+    languageName = "Japanese"
+    weight = 3
 
 summaryLength = 100 # Custom summary length, add <!--more--> in post file to custom split point
 paginate = 10
