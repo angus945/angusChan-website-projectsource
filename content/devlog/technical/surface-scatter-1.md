@@ -207,7 +207,7 @@ StructuredBuffer<float3> verticesBuffer;
 AppendStructuredBuffer<float3> scatterBuffer;
 ```
 
-並行是以面為單位進行的，也更貼合實際情況會使用的複雜表面。這裡就不解釋細節了，有興趣的人可以參考以前的筆記[【筆記】初學指南，計算著色器]({{< ref "\learn\compute-shader\compute-shader-basis.md" >}})。
+並行是以面為單位進行的，也更貼合實際情況會使用的複雜表面。這裡就不解釋細節了，有興趣的人可以參考以前的筆記[【筆記】初學指南，計算著色器]({{< ref "/learn/compute-shader/compute-shader-basis.md" >}})。
 
 ```hlsl
 [numthreads(64, 1, 1)]
