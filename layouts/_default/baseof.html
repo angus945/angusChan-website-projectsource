@@ -19,6 +19,7 @@
                 {{ block "main" . }}{{ end }}
 
                 {{ partial "socialshare.html" . }}
+                {{ partial "comments/giscus.html" . }}
                 {{ partial "copyright.html" . }}
 
             </div>
@@ -26,7 +27,6 @@
         </div>
         {{ partial "components.html" . }}
     </main>
-    
 
     {{ partial "footer.html" . }}
     {{ partial "scripts-end.html" . }}
