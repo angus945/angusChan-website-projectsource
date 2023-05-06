@@ -10,16 +10,16 @@ disableKinds = ["taxonomy"]
 ignoreErrors = ["error-disable-taxonomy"]
 
 ## Change this two to switch between different language
-languageCode = "zh-hant"           # For RSS, view https://www.rssboard.org/rss-language-codes
-defaultContentLanguage = "zh-hant" # For HTML page, now support: en, zh-hans, zh-hant, ja, nl, pl, it
+languageCode = "zh-tw"           # For RSS, view https://www.rssboard.org/rss-language-codes
+defaultContentLanguage = "zh-tw" # For HTML page, now support: en, zh-hans, zh-hant, ja, nl, pl, it
 [languages]
-  [languages.zh-hant]
+  [languages.zh-tw]
     languageName = "Chinese"
     weight = 1
   [languages.en]
     languageName = "English"
     weight = 2
-  [languages.jp]
+  [languages.ja]
     languageName = "Japanese"
     weight = 3
 
