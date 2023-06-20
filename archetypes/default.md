@@ -29,6 +29,8 @@ socialshare: true
 # listable: [recommand, all]
 
 # sitemap_ignore: true
+# socialshare: true
+# comment: true
 ---
 
 <!--more-->
