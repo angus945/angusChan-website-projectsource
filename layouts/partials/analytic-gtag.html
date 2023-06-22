@@ -1,0 +1,14 @@
+
+{{ $id := "G-LTVT6WYDT4" }}
+<!-- GA -->
+<script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+    gtag('config', '{{ . }}');
+    console.log("HI");
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id={{ $id }}"></script>

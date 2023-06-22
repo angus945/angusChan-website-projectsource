@@ -26,7 +26,8 @@ defaultContentLanguage = "zh-tw" # For HTML page, now support: en, zh-hans, zh-h
 summaryLength = 100 # Custom summary length, add <!--more--> in post file to custom split point
 paginate = 10
 
-googleAnalytics = "G-LTVT6WYDT4" # Set your Google Analytics UA here
+# GoogleAnalytics = "G-LTVT6WYDT4" # Set your Google Analytics UA here
+# 寫死在 partial 
 
 [outputFormats]
 [outputFormats.SearchIndex]
