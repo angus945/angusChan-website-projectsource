@@ -5,6 +5,7 @@
     {{ $page.Content }} 
 </div>
 
+
 {{ $Pages := where .Site.Pages "Params.listable" "intersect" (slice "recommand") }}
 {{/*  https://gohugo.io/functions/jsonify/  */}}
 
