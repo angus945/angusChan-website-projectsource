@@ -26,7 +26,7 @@
 
 <script src="https://threejs.org/build/three.min.js"></script>
 <script type="text/javascript">
-
+    
     var seed = Math.random();
     var backgroundData = randomBackground("{{ $datas }}"); 
 
@@ -81,7 +81,7 @@
         clock = new THREE.Clock();
         camera.position.z = 1;
 
-        var geometry = new THREE.PlaneBufferGeometry( 2, 2 );
+        var geometry = new THREE.PlaneGeometry( 2, 2 );
         var material = createMaterial(uniforms, data.vert, data.frag);
         var mesh = new THREE.Mesh( geometry, material );
         scene.add( mesh );
