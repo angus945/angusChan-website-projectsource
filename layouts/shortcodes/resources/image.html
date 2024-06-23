@@ -5,10 +5,80 @@
 {{ $width := (.Get 1)}}
 {{ $comment := (.Get 2)}}
 
-<div class="image" style="width: {{ $width }};" >
-    <img src="{{ $resources }}{{ $image }}" alt="image display error, please report: [{{ $resources }}{{ $image }}]">
+<div class="image image-container" style="width: {{ $width }};" >
+    <img src="{{ $resources }}{{ $image }}" alt="image display error, please report: [{{ $resources }}{{ $image }}]" class="thumbnail">
     <p style="opacity: 0.5">
         {{$comment}}
     </p>
 </div>
 
+<div id="popup" class="popup">
+    <span class="close">&times;</span>
+    <img class="popup-content" id="popup-img">
+</div>
+
+<script type="text/javascript">
+
+// Get the modal
+var popup = document.getElementById('popup');
+
+// Get the images and insert them inside the modal
+var imgs = document.querySelectorAll('.thumbnail');
+var popupImg = document.getElementById("popup-img");
+
+// Variable to track zoom state and scroll positions
+var isZoomed = false;
+var scrollX = 0;
+var scrollY = 0;
+
+imgs.forEach(function(img) {
+    img.onclick = function(){
+        popup.style.display = "flex";  // Use flex to center the popup
+        document.body.style.overflow = 'hidden';  // Prevent background scrolling
+        popupImg.src = this.src;
+        isZoomed = false;  // Reset zoom state
+        popupImg.classList.remove("zoomed");  // Ensure image is not zoomed initially
+        popupImg.style.transformOrigin = 'center center';  // Reset transform origin
+        popupImg.style.transform = 'scale(1)';  // Reset scale
+    }
+});
+
+// Add click event to the popup image to toggle zoom
+popupImg.onclick = function(event) {
+    if (isZoomed) {
+        popupImg.classList.remove("zoomed");
+        // popupImg.style.transformOrigin = 'center center';
+        popupImg.style.transform = 'scale(1)';
+    } else {
+        var rect = popupImg.getBoundingClientRect();
+        var offsetX = (event.clientX - rect.left) / rect.width * 100; // Percentage
+        var offsetY = (event.clientY - rect.top) / rect.height * 100; // Percentage
+
+        scrollX = window.scrollX;  // Save the current scroll position
+        scrollY = window.scrollY;
+
+        popupImg.classList.add("zoomed");
+        popupImg.style.transformOrigin = `${offsetX}% ${offsetY}%`;
+        popupImg.style.transform = 'scale(2)'; // Adjust this value to control the zoom level
+    }
+    isZoomed = !isZoomed;  // Toggle zoom state
+}
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() { 
+    popup.style.display = "none";
+    document.body.style.overflow = '';  // Restore background scrolling
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target == popup) {
+        popup.style.display = "none";
+        document.body.style.overflow = '';  // Restore background scrolling
+    }
+}
+
+</script>
