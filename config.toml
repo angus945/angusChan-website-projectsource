@@ -13,15 +13,15 @@ ignoreErrors = ["error-disable-taxonomy"]
 languageCode = "zh-tw"           # For RSS, view https://www.rssboard.org/rss-language-codes
 defaultContentLanguage = "zh-tw" # For HTML page, now support: en, zh-hans, zh-hant, ja, nl, pl, it
 [languages]
-  [languages.zh-tw]
-    languageName = "Chinese"
-    weight = 1
-  [languages.en]
-    languageName = "English"
-    weight = 2
-  [languages.ja]
-    languageName = "Japanese"
-    weight = 3
+[languages.zh-tw]
+languageName = "Chinese"
+weight = 1
+[languages.en]
+languageName = "English"
+weight = 2
+[languages.ja]
+languageName = "Japanese"
+weight = 3
 
 summaryLength = 100 # Custom summary length, add <!--more--> in post file to custom split point
 paginate = 10
@@ -43,9 +43,9 @@ home = ["HTML", "RSS", "SearchIndex"]
 post = "/:section/:filename/" # Custom post links, e.g. "/:year/:month/:title/"
 
 [params]
-author = "AngusChan"                # You can also set author in post front matter individually
+author = "AngusChan"                   # You can also set author in post front matter individually
 subTitle = "Stay Hungry, Stay Foolish"
-defaultTheme = "dark"              # default theme when first visit (auto|dark|light)
+defaultTheme = "dark"                  # default theme when first visit (auto|dark|light)
 
 # recommand count in home page
 recommand = "5"
@@ -85,10 +85,10 @@ copyrightStartYear = "2021"
 # Open Graph & Twitter Card variables
 # You can also set description and images in post front matter individually
 description = "AngusChan's website"
-og = "/siteImage/head.png"                                          # This will use the image called og.png in static/img folder
+og = "/siteImage/head.png"          # This will use the image called og.png in static/img folder
 
 ## customize page background
-background = ["watercolor-a", "watercolor-b", "watercolor-c"] 
+background = ["watercolor-a", "watercolor-b", "watercolor-c"]
 
 # customize display
 show-title = true
@@ -142,53 +142,55 @@ endLevel = 3
 tag = "tags"
 
 [menu]
-    [[menu.nav]]
-    name = "Home"
-    url = "/"
-    weight = 1
-    [[menu.nav]]
-    name = "All"
-    url = "/all/"
-    weight = 2
-    [[menu.nav]]
-    name = "Devlog"
-    url = "/devlog/"
-    weight = 3
-    [[menu.nav]]
-    name = "Learn"
-    url = "/learn/"
-    weight = 4
-    [[menu.nav]]
-    name = "Article"
-    url = "/article/"
-    weight = 5
-    [[menu.nav]]
-    name = "About"
-    url = "/about"
-    weight = 6
-    # [[menu.nav]]
-    # name = "Search"
-    # url = "/search/"
-    # weight = 6
+[[menu.nav]]
+name = "Home"
+url = "/"
+weight = 1
+[[menu.nav]]
+name = "All"
+url = "/all/"
+weight = 2
+[[menu.nav]]
+name = "Devlog"
+url = "/devlog/"
+weight = 3
+[[menu.nav]]
+name = "Learn"
+url = "/learn/"
+weight = 4
+[[menu.nav]]
+name = "Article"
+url = "/article/"
+weight = 5
+[[menu.nav]]
+name = "About"
+url = "/about"
+weight = 6
+# [[menu.nav]]
+# name = "Search"
+# url = "/search/"
+# weight = 6
 
-    [[menu.link]]
-    name = "GitHub"
-    url = "https://github.com/angus945/"
-    weight = 1
-    [[menu.link]]
-    name = "Facebook"
-    url = "https://www.facebook.com/angucChan"
-    weight = 2
-    [[menu.link]]
-    name = "Twitter"
-    url = "https://twitter.com/angus9456"
-    weight = 3
-    [[menu.link]]
-    name = "Bahamut"
-    url = "https://home.gamer.com.tw/homeindex.php?owner=angus945"
-    weight = 4
-
-
+[[menu.link]]
+name = "GitHub"
+url = "https://github.com/angus945/"
+weight = 1
+[[menu.link]]
+name = "Facebook"
+url = "https://www.facebook.com/angucChan"
+weight = 2
+[[menu.link]]
+name = "Twitter"
+url = "https://twitter.com/angus9456"
+weight = 3
+[[menu.link]]
+name = "Bahamut"
+url = "https://home.gamer.com.tw/homeindex.php?owner=angus945"
+weight = 4
+[[menu.link]]
+name = "Instagram"
+url = "https://www.instagram.com/angus_chan_yi/"
+weight = 5
 
 
 [build]
