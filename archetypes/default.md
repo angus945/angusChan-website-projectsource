@@ -38,3 +38,5 @@ socialshare: true
 <!-- &nbsp; -->
 
 <!-- [text]({ ref "relpath" })。 -->
+
+<!-- {{< resources/image "paht" "90%" "comment" >}} -->
