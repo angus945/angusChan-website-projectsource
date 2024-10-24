@@ -40,3 +40,5 @@ socialshare: true
 <!-- [text]({ ref "relpath" })。 -->
 
 <!-- {{< resources/image "paht" "90%" "comment" >}} -->
+
+<!-- 尊重著作權，文章轉載規則請見：[https://angus945.github.io/about/](https://angus945.github.io/about/) -->
