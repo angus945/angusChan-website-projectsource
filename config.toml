@@ -191,7 +191,10 @@ weight = 4
 name = "Instagram"
 url = "https://www.instagram.com/angus_chan_yi/"
 weight = 5
-
+[[menu.link]]
+name = "Medium"
+url = "https://medium.com/@angus9456"
+weight = 6
 
 [build]
 noJSConfigInAssets = true
